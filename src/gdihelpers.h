@@ -1,0 +1,14 @@
+//////////////////////////////////////////////////////////////////////////
+//
+// luawinapi - winapi wrapper for Lua
+// Copyright (C) 2011 Klaus Oberhofer. See copyright notice in
+// LICENSE file
+//
+// GDI helper functions
+//
+//////////////////////////////////////////////////////////////////////////
+
+#pragma once
+
+extern void WINAPI DrawXorBar(HDC hdc, int x1, int y1, int width, int height);
+

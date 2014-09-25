@@ -1,17 +1,3 @@
-# Introduction
-
-LuaWinAPI wraps a subset of the WinAPI structures and functions.
-
-# Supported subset
-
-see gen/functions.def and gen/struct.def for the supported subset
-
-# Documentation
-
-see luacwrap.html within the doc directory
-
-# License
-
 LuaWinAPI is licensed under the terms of the MIT license reproduced below.
 This means that LuaWinAPI is free software and can be used for both academic
 and commercial purposes at absolutely no cost.

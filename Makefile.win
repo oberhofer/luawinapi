@@ -1,0 +1,16 @@
+
+{src}.c{src}.obj:
+	cl /c /MD /Fo$@ $(CFLAGS) /Isrc $<
+
+all: src\libluawinapi.dll
+	IF EXIST src\libluawinapi.dll.manifest del src\libluawinapi.dll.manifest
+
+src\libluawinapi.dll: src\enumwindow.obj src\gdihelpers.obj src\gen_abstractions.obj src\gen_structs.obj src\luaaux.obj src\stdcallthunk.obj src\winapi.obj src\wndproc.obj 
+	link /dll /out:$*.dll /def:$*.def $** $(LUA_LIB) $(LUACWRAP_LIB) kernel32.lib user32.lib gdi32.lib comctl32.lib comdlg32.lib Msimg32.lib
+	IF EXIST src\$*.dll.manifest mt -manifest src\$*.dll.manifest -outputresource:src\$*.dll;2
+
+install: 
+	copy src\libluawinapi.dll "$(BINDIR)"
+
+clean:
+	del src\*.dll src\*.obj src\*.exp src\*.lib src\*.dll.manifest

@@ -1,0 +1,36 @@
+#------
+# LuaWinAPI makefile configuration
+#
+
+CROSS=i586-mingw32msvc
+
+#------
+# Output file names
+#
+EXT=dll
+
+LUAWINAPI_MAJOR=0
+LUAWINAPI_VERSION=$(LUAWINAPI_MAJOR).1.0
+
+LUAWINAPI_LIBNAME=libwinapi.$(EXT)
+
+#------
+# Lua includes and libraries
+#
+LUA_INCDIR=-I/usr/$(CROSS)/include/lua/5.1
+LUA_LIBDIR=-I/usr/$(CROSS)/lib
+
+LUACWRAP_INCDIR=-I/home/klaus/luacwrap/src
+
+#------
+# Compiler and linker settings
+# for Linux
+CC=$(CROSS)-gcc
+DEF=
+CFLAGS= $(LUA_INCDIR) $(LUACWRAP_INCDIR) $(DEF) -Wall -O2
+LDFLAGS=-O -shared
+LD=$(CROSS)-gcc
+
+#------
+# End of makefile configuration
+#

@@ -1,0 +1,652 @@
+#
+# Declaration file with WinAPI structs
+#
+
+#########################################################################
+# Kernel32
+
+typedef struct _OSVERSIONINFOW {
+    DWORD dwOSVersionInfoSize;
+    DWORD dwMajorVersion;
+    DWORD dwMinorVersion;
+    DWORD dwBuildNumber;
+    DWORD dwPlatformId;
+    WCHAR szCSDVersion[128];
+} OSVERSIONINFOW;
+
+[notCE] typedef struct _OSVERSIONINFOEXW {
+    DWORD dwOSVersionInfoSize;
+    DWORD dwMajorVersion;
+    DWORD dwMinorVersion;
+    DWORD dwBuildNumber;
+    DWORD dwPlatformId;
+    WCHAR szCSDVersion[128];
+    WORD  wServicePackMajor;
+    WORD  wServicePackMinor;
+    WORD  wSuiteMask;
+    BYTE  wProductType;
+    BYTE  wReserved;
+} OSVERSIONINFOEXW;
+
+typedef struct _SECURITY_ATTRIBUTES {
+    DWORD  nLength;
+    LPVOID lpSecurityDescriptor;
+    BOOL   bInheritHandle;
+} SECURITY_ATTRIBUTES;
+
+typedef struct _STARTUPINFOW {
+    DWORD cb;
+    LPWSTR lpReserved;
+    LPWSTR lpDesktop;
+    LPWSTR lpTitle;
+    DWORD dwX;
+    DWORD dwY;
+    DWORD dwXSize;
+    DWORD dwYSize;
+    DWORD dwXCountChars;
+    DWORD dwYCountChars;
+    DWORD dwFillAttribute;
+    DWORD dwFlags;
+    WORD wShowWindow;
+    WORD cbReserved2;
+    LPBYTE lpReserved2;
+    HANDLE hStdInput;
+    HANDLE hStdOutput;
+    HANDLE hStdError;
+} STARTUPINFOW;
+
+typedef struct _PROCESS_INFORMATION {
+    HANDLE hProcess;
+    HANDLE hThread;
+    DWORD dwProcessId;
+    DWORD dwThreadId;
+} PROCESS_INFORMATION;
+
+#########################################################################
+# System32
+
+typedef struct _GUID {
+    ULONG  Data1;
+    USHORT Data2;
+    USHORT Data3;
+    BYTE   Data4[8];
+} GUID;
+
+typedef struct tagPOINT {
+    LONG x;
+    LONG y;
+} POINT;
+
+typedef struct tagPOINTS {
+    SHORT x;
+    SHORT y;
+} POINTS;
+
+typedef struct tagSIZE {
+    LONG cx;
+    LONG cy;
+} SIZE;
+
+typedef struct tagRECT 
+{
+    LONG left;
+    LONG top;
+    LONG right;
+    LONG bottom;
+} RECT;
+
+typedef struct tagMSG {
+    HWND hwnd;
+    UINT message;
+    WPARAM wParam;
+    LPARAM lParam;
+    DWORD time;
+    POINT pt;
+} MSG;
+
+#########################################################################
+# User32
+
+typedef struct tagWNDCLASSW {
+    UINT style;
+    WNDPROC lpfnWndProc;
+    int cbClsExtra;
+    int cbWndExtra;
+    HINSTANCE hInstance;
+    HICON hIcon;
+    HCURSOR hCursor;
+    HBRUSH hbrBackground;
+    LPCWSTR lpszMenuName;
+    LPCWSTR lpszClassName;
+} WNDCLASSW;
+
+[notCE] typedef struct tagWNDCLASSEXW {
+    UINT cbSize;
+    UINT style;
+    WNDPROC lpfnWndProc;
+    int cbClsExtra;
+    int cbWndExtra;
+    HINSTANCE hInstance;
+    HICON hIcon;
+    HCURSOR hCursor;
+    HBRUSH hbrBackground;
+    LPCWSTR lpszMenuName;
+    LPCWSTR lpszClassName;
+    HICON hIconSm;
+} WNDCLASSEXW;
+
+typedef struct tagCREATESTRUCTW {
+    [luaref] PVOID lpCreateParams;
+    HINSTANCE hInstance;
+    HMENU hMenu;
+    HWND hwndParent;
+    int cy;
+    int cx;
+    int y;
+    int x;
+    LONG style;
+    LPCWSTR lpszName;
+    LPCWSTR lpszClass;
+    DWORD dwExStyle;
+} CREATESTRUCTW;
+
+[notCE] typedef struct tagWINDOWPLACEMENT {
+    UINT length;
+    UINT flags;
+    UINT showCmd;
+    POINT ptMinPosition;
+    POINT ptMaxPosition;
+    RECT rcNormalPosition;
+} WINDOWPLACEMENT;
+
+typedef struct tagNMHDR {
+    HWND hwndFrom;
+    UINT_PTR idFrom;
+    UINT code;
+} NMHDR;
+
+#if (_WIN32_IE >= 0x400)
+[notCE] typedef struct tagNMITEMACTIVATE {
+    NMHDR hdr;
+    int iItem;
+    int iSubItem;
+    UINT uNewState;
+    UINT uOldState;
+    UINT uChanged;
+    POINT ptAction;
+    [luaref] LPARAM lParam;
+    UINT uKeyFlags;
+} NMITEMACTIVATE;
+#endif /* _WIN32_IE >= 0x400 */
+
+
+typedef struct tagPAINTSTRUCT {
+    HDC hdc;
+    BOOL fErase;
+    RECT rcPaint;
+    BOOL fRestore;
+    BOOL fIncUpdate;
+    BYTE rgbReserved[32];
+} PAINTSTRUCT;
+
+typedef struct {
+    DWORD style;
+    DWORD dwExtendedStyle;
+    WORD cdit;
+    short x;
+    short y;
+    short cx;
+    short cy;
+} DLGTEMPLATE;
+
+typedef struct {
+    DWORD style;
+    DWORD dwExtendedStyle;
+    short x;
+    short y;
+    short cx;
+    short cy;
+    WORD id;
+} DLGITEMTEMPLATE;
+
+typedef struct tagCOPYDATASTRUCT {
+    ULONG_PTR dwData;
+    DWORD cbData;
+    PVOID lpData;
+} COPYDATASTRUCT;
+
+typedef struct tagTPMPARAMS {
+    UINT cbSize;
+    RECT rcExclude;
+} TPMPARAMS;
+
+#typedef struct tagMENUITEMINFOA {
+#    UINT cbSize;
+#    UINT fMask;
+#    UINT fType;
+#    UINT fState;
+#    UINT wID;
+#    HMENU hSubMenu;
+#    HBITMAP hbmpChecked;
+#    HBITMAP hbmpUnchecked;
+#    ULONG_PTR dwItemData;
+#    LPSTR dwTypeData;
+#    UINT cch;
+#if (WINVER >= 0x0500)
+#    HBITMAP hbmpItem;
+#endif /* WINVER >= 0x0500 */
+#} MENUITEMINFOA;
+
+typedef struct tagMENUITEMINFOW {
+    UINT cbSize;
+    UINT fMask;
+    UINT fType;
+    UINT fState;
+    UINT wID;
+    HMENU hSubMenu;
+    HBITMAP hbmpChecked;
+    HBITMAP hbmpUnchecked;
+    ULONG_PTR dwItemData;
+    LPWSTR dwTypeData;
+    UINT cch;
+#if (WINVER >= 0x0500)
+#    HBITMAP hbmpItem;
+#endif /* WINVER >= 0x0500 */
+} MENUITEMINFOW;
+
+typedef struct tagACCEL {
+    BYTE fVirt;
+    WORD key;
+    WORD cmd;
+# !!! not supported by MingW headers
+#    [onlyCE] WORD pad;
+} ACCEL;
+
+
+#########################################################################
+# GDI
+
+typedef struct tagLOGPEN {
+    UINT lopnStyle;
+    POINT lopnWidth;
+    COLORREF lopnColor;
+} LOGPEN;
+
+typedef struct tagLOGFONTW {
+    LONG lfHeight;
+    LONG lfWidth;
+    LONG lfEscapement;
+    LONG lfOrientation;
+    LONG lfWeight;
+    BYTE lfItalic;
+    BYTE lfUnderline;
+    BYTE lfStrikeOut;
+    BYTE lfCharSet;
+    BYTE lfOutPrecision;
+    BYTE lfClipPrecision;
+    BYTE lfQuality;
+    BYTE lfPitchAndFamily;
+    WCHAR lfFaceName[32];
+} LOGFONTW;
+
+#########################################################################
+# CommCtl32
+
+# list view
+
+typedef struct tagLVCOLUMNW { 
+    UINT mask; 
+    int fmt; 
+    int cx; 
+    LPWSTR pszText; 
+    int cchTextMax; 
+    int iSubItem; 
+    int iImage;
+    int iOrder;
+} LVCOLUMNW; 
+
+typedef struct tagLVITEMW {
+    UINT mask;
+    int iItem;
+    int iSubItem;
+    UINT state;
+    UINT stateMask;
+    LPWSTR pszText;
+    int cchTextMax;
+    int iImage;
+    [luaref] LPARAM lParam;
+    int iIndent;
+#if (_WIN32_WINNT >= 0x501)
+    [notCE] int iGroupId;
+#    UINT cColumns;
+#    PUINT puColumns;
+#endif /* _WIN32_WINNT >= 0x501 */
+#if (_WIN32_WINNT >= 0x0600)
+#    int *piColFmt;
+#    int iGroup;
+#endif /* _WIN32_WINNT >= 0x0600 */
+} LVITEMW;
+
+typedef struct tagLVDISPINFOW {
+    NMHDR   hdr;
+    LVITEMW item;
+} NMLVDISPINFOW;
+
+typedef struct tagNMLISTVIEW {
+    NMHDR hdr;
+    int iItem;
+    int iSubItem;
+    UINT uNewState;
+    UINT uOldState;
+    UINT uChanged;
+    POINT ptAction;
+    [luaref] LPARAM lParam;
+} NMLISTVIEW;
+
+typedef struct tagLVKEYDOWN {
+    NMHDR hdr;
+    WORD  wVKey;
+    UINT  flags;
+} NMLVKEYDOWN;
+
+#if (_WIN32_WINNT >= 0x501)
+[notCE] typedef struct tagLVGROUP {
+    UINT cbSize;
+    UINT mask;
+    LPWSTR pszHeader;
+    int cchHeader;
+    LPWSTR pszFooter;
+    int cchFooter;
+    int iGroupId;
+    UINT stateMask;
+    UINT state;
+    UINT uAlign;
+#if (_WIN32_WINNT >= 0x0600)
+    LPWSTR pszSubtitle;
+    UINT cchSubtitle;
+    LPWSTR pszTask;
+    UINT cchTask;
+    LPWSTR pszDescriptionTop;
+    UINT cchDescriptionTop;
+    LPWSTR pszDescriptionBottom;
+    UINT cchDescriptionBottom;
+    int iTitleImage;
+    int iExtendedImage;
+    int iFirstItem;
+    UINT cItems;
+    LPWSTR pszSubsetTitle;
+    UINT cchSubsetTitle;
+#endif /* _WIN32_WINNT >= 0x0600 */
+} LVGROUP;
+
+[notCE] typedef struct tagLVGROUPMETRICS {
+    UINT cbSize;
+    UINT mask;
+    UINT Left;
+    UINT Top;
+    UINT Right;
+    UINT Bottom;
+    COLORREF crLeft;
+    COLORREF crTop;
+    COLORREF crRight;
+    COLORREF crBottom;
+    COLORREF crHeader;
+    COLORREF crFooter;
+} LVGROUPMETRICS;
+
+# tree view
+ 
+typedef struct tagTVITEMW {
+    UINT mask;
+    HTREEITEM hItem;
+    UINT state;
+    UINT stateMask;
+    LPWSTR pszText;
+    int cchTextMax;
+    int iImage;
+    int iSelectedImage;
+    int cChildren;
+    [luaref] LPARAM lParam;
+} TVITEMW;
+
+typedef struct tagTVINSERTSTRUCTW {
+    HTREEITEM hParent;
+    HTREEITEM hInsertAfter;
+#if (_WIN32_IE >= 0x0400)
+#    union {
+#        TVITEMEXW itemex;
+#        TVITEMW   item;
+#    } DUMMYUNIONNAME;
+#else
+    TVITEMW item;
+#endif /* _WIN32_IE >= 0x0400 */
+} TVINSERTSTRUCTW;
+
+typedef struct tagNMTREEVIEWW {
+    NMHDR hdr;
+    UINT action;
+    TVITEMW itemOld;
+    TVITEMW itemNew;
+    POINT ptDrag;
+} NMTREEVIEWW;
+
+# command bar
+
+typedef struct tagTBBUTTONINFOW {
+    UINT cbSize;
+    DWORD dwMask;
+    int idCommand;
+    int iImage;
+    BYTE fsState;
+    BYTE fsStyle;
+    WORD cx;
+    DWORD_PTR lParam;
+    LPWSTR pszText;
+    int cchText;
+} TBBUTTONINFOW;
+
+# tab control
+
+typedef struct tagTCITEMHEADERW {
+    UINT mask;
+    UINT lpReserved1;
+    UINT lpReserved2;
+    LPWSTR pszText;
+    int cchTextMax;
+    int iImage;
+} TCITEMHEADERW;
+
+typedef struct tagTCITEMW {
+    UINT mask;
+    DWORD dwState;
+    DWORD dwStateMask;
+    LPWSTR pszText;
+    int cchTextMax;
+    int iImage;
+    LPARAM lParam;
+} TCITEMW;
+
+typedef struct tagTCHITTESTINFO {
+    POINT pt;
+    UINT flags;
+} TCHITTESTINFO;
+
+[notCE] typedef struct tagTCKEYDOWN {
+    NMHDR hdr;
+    WORD wVKey;
+    UINT flags;
+} NMTCKEYDOWN;
+
+#########################################################################
+# CommDlg
+
+# typedef UINT (APIENTRY *LPOFNHOOKPROC)(HWND, UINT, WPARAM, LPARAM);
+
+typedef struct tagOFNW {
+    DWORD lStructSize;
+    HWND hwndOwner;
+    HINSTANCE hInstance;
+    LPCWSTR lpstrFilter;
+    LPWSTR lpstrCustomFilter;
+    DWORD nMaxCustFilter;
+    DWORD nFilterIndex;
+    LPWSTR lpstrFile;
+    DWORD nMaxFile;
+    LPWSTR lpstrFileTitle;
+    DWORD nMaxFileTitle;
+    LPCWSTR lpstrInitialDir;
+    LPCWSTR lpstrTitle;
+    DWORD Flags;
+    WORD nFileOffset;
+    WORD nFileExtension;
+    LPCWSTR lpstrDefExt;
+    LPARAM lCustData;
+#    LPOFNHOOKPROC lpfnHook;
+    LPCWSTR lpTemplateName;
+#if (_WIN32_WINNT >= 0x0500)
+#   void *        pvReserved;
+#   DWORD        dwReserved;
+#   DWORD        FlagsEx;
+#endif // (_WIN32_WINNT >= 0x0500)
+} OPENFILENAMEW;
+
+
+#if(WINVER >= 0x0400)
+#typedef struct _OFNOTIFYW {
+#    NMHDR hdr;
+#    LPOPENFILENAMEW lpOFN;
+#    LPWSTR pszFile;
+#} OFNOTIFYW;
+#endif
+
+# typedef UINT (APIENTRY *LPCCHOOKPROC)(HWND, UINT, WPARAM, LPARAM);
+
+typedef struct tagCHOOSECOLOR {
+    DWORD lStructSize;
+    HWND hwndOwner;
+    HINSTANCE hInstance;
+    COLORREF rgbResult;
+#    COLORREF *lpCustColors;
+    DWORD Flags;
+    LPARAM lCustData;
+#    LPCCHOOKPROC lpfnHook;
+    LPCTSTR lpTemplateName;
+} CHOOSECOLOR;
+
+
+# typedef UINT_PTR (CALLBACK *LPPRINTHOOKPROC) (HWND, UINT, WPARAM, LPARAM);
+# typedef UINT_PTR (CALLBACK *LPSETUPHOOKPROC) (HWND, UINT, WPARAM, LPARAM);
+
+[notCE] typedef struct tagPDW {
+   DWORD            lStructSize;
+   HWND             hwndOwner;
+   HGLOBAL          hDevMode;
+   HGLOBAL          hDevNames;
+   HDC              hDC;
+   DWORD            Flags;
+   WORD             nFromPage;
+   WORD             nToPage;
+   WORD             nMinPage;
+   WORD             nMaxPage;
+   WORD             nCopies;
+   HINSTANCE        hInstance;
+   LPARAM           lCustData;
+#   LPPRINTHOOKPROC  lpfnPrintHook;
+#   LPSETUPHOOKPROC  lpfnSetupHook;
+   LPCWSTR          lpPrintTemplateName;
+   LPCWSTR          lpSetupTemplateName;
+   HGLOBAL          hPrintTemplate;
+   HGLOBAL          hSetupTemplate;
+} PRINTDLGW;
+
+#########################################################################
+# CoreDll
+
+#
+# Power Broadcast -- this is a variable length structure.
+#
+[onlyCE] typedef struct _POWER_BROADCAST {
+    DWORD       Message;
+    DWORD       Flags;
+    DWORD       Length;
+#    WCHAR       SystemPowerState[1];
+} POWER_BROADCAST;
+
+[onlyCE] typedef struct MSGQUEUEOPTIONS_OS {
+    DWORD dwSize;
+    DWORD dwFlags;
+    DWORD dwMaxMessages;
+    DWORD cbMaxMessage;
+    BOOL  bReadAccess;
+} MSGQUEUEOPTIONS;
+
+[onlyCE] typedef struct MSGQUEUEINFO {
+    DWORD dwSize;
+    DWORD dwFlags;
+    DWORD dwMaxMessages;
+    DWORD cbMaxMessage;
+    DWORD dwCurrentMessages;
+    DWORD dwMaxQueueMessages;
+    WORD  wNumReaders;
+    WORD  wNumWriters;
+} MSGQUEUEINFO;
+
+#########################################################################
+# AYGShell
+
+[AYGShell] typedef struct tagSHINITDLGINFO {
+    DWORD dwMask;
+    HWND hDlg;
+    DWORD dwFlags;
+} SHINITDLGINFO;
+
+[AYGShell] typedef struct tagSHMENUBARINFO {
+    DWORD cbSize;
+    HWND hwndParent;
+    DWORD dwFlags;
+    HANDLE_OR_UINT nToolBarId;
+    HINSTANCE hInstRes;
+    int nBmpId;
+    int cBmpImages;
+    HWND hwndMB;
+    COLORREF clrBk;
+} SHMENUBARINFO;
+
+[AYGShell] typedef struct tagSHACTIVATEINFO {
+    DWORD cbSize;
+    HWND hwndLastFocus;
+#    UINT fSipUp:1;
+#    UINT fSipOnDeactivation:1;
+#    UINT fActive:1;
+#    UINT fReserved:29;
+} SHACTIVATEINFO;
+
+#########################################################################
+# commctrl - PocketPC
+
+[CommandBar] typedef struct tagCOMMANDBANDSRESTOREINFO {
+    UINT cbSize;
+    UINT wID;
+    UINT fStyle;
+    UINT cxRestored;
+    BOOL fMaximized;
+} COMMANDBANDSRESTOREINFO;
+
+#######################################################################
+# ConnMgr - PocketPC specific
+
+[onlyCE] typedef struct _CONNMGR_CONNECTIONINFO {
+    DWORD cbSize;
+    DWORD dwParams;
+    DWORD dwFlags;
+    DWORD dwPriority;
+    BOOL bExclusive;
+    BOOL bDisabled;
+    GUID guidDestNet;
+    HWND hWnd;
+    UINT uMsg;
+    LPARAM lParam;
+    ULONG ulMaxCost;
+    ULONG ulMinRcvBw;
+    ULONG ulMaxConnLatency;
+} CONNMGR_CONNECTIONINFO;
