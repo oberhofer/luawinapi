@@ -23,6 +23,16 @@ dependencies = {
   "luacwrap >= 1.0.1, < 1.1.0"
 }
 
+external_dependencies = {
+   platforms = {
+      win32 = {
+         LUACWRAP = {
+            library = "luacwrap.lib"
+         }
+      }
+   }
+}
+
 build = {
     type = "builtin",
     copy_directories = { "doc", "samples" },
@@ -43,9 +53,9 @@ build = {
                     defines = { "WIN32", "NDEBUG", "_WINDOWS", "_USRDLL",
                                 "LUAWINAPI_API=__declspec(dllexport)" },
                     libraries = { "luacwrap", 
-                                  "kernel32", "user32", "gdi32", "comctl32", "comdlg32", "Msimg32", "WinInet" },
+                                  "kernel32", "user32", "gdi32", "comctl32", "comdlg32", "Msimg32" },
                     incdirs = { "$(LUA_INCDIR)" },
-                    libdirs = { "$(LUA_LIBDIR)" },
+                    libdirs = { "$(LUACWRAP_LIBDIR)" },
                 }
             },
             install= {
@@ -56,7 +66,7 @@ build = {
                     ["winapi.init"]   = "src/init.lua",
                     ["winapi.loader"] = "src/winapi-loader.lua",
                 }
-            }            
+            }
         }
     }
 }
