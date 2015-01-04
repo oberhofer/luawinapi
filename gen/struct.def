@@ -362,20 +362,20 @@ typedef struct tagLVKEYDOWN {
     UINT state;
     UINT uAlign;
 #if (_WIN32_WINNT >= 0x0600)
-    LPWSTR pszSubtitle;
-    UINT cchSubtitle;
-    LPWSTR pszTask;
-    UINT cchTask;
-    LPWSTR pszDescriptionTop;
-    UINT cchDescriptionTop;
-    LPWSTR pszDescriptionBottom;
-    UINT cchDescriptionBottom;
-    int iTitleImage;
-    int iExtendedImage;
-    int iFirstItem;
-    UINT cItems;
-    LPWSTR pszSubsetTitle;
-    UINT cchSubsetTitle;
+#    LPWSTR pszSubtitle;
+#    UINT cchSubtitle;
+#    LPWSTR pszTask;
+#    UINT cchTask;
+#    LPWSTR pszDescriptionTop;
+#    UINT cchDescriptionTop;
+#    LPWSTR pszDescriptionBottom;
+#    UINT cchDescriptionBottom;
+#    int iTitleImage;
+#    int iExtendedImage;
+#    int iFirstItem;
+#    UINT cItems;
+#    LPWSTR pszSubsetTitle;
+#    UINT cchSubsetTitle;
 #endif /* _WIN32_WINNT >= 0x0600 */
 } LVGROUP;
 
@@ -429,6 +429,13 @@ typedef struct tagNMTREEVIEWW {
     TVITEMW itemNew;
     POINT ptDrag;
 } NMTREEVIEWW;
+
+typedef struct tagTVHITTESTINFO {
+    POINT pt;
+    UINT flags;
+    HTREEITEM hItem;
+} TVHITTESTINFO;
+
 
 # command bar
 
