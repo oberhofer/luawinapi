@@ -81,6 +81,15 @@ int lua_tolwparam( lua_State *L, int idx )
       v = lua_tointeger(L, idx);
     }
     break;
+    case LUA_TNONE:
+    case LUA_TNIL:
+      // accept none and nil
+    break;
+    default:
+    {
+      luaL_typerror(L, idx, "LPARAM or WPARAM");
+    } 
+    break;
   }
   return v;
 } 
@@ -101,6 +110,15 @@ int lua_tohandle( lua_State *L, int idx )
       v = lua_tointeger(L, idx);
     }
     break;
+    case LUA_TNONE:
+    case LUA_TNIL:
+      // accept none and nil
+    break;
+    default:
+    {
+      luaL_typerror(L, idx, "HANDLE (number or userdata)");
+    } 
+    break;
   }
   return v;
 } 
@@ -119,6 +137,15 @@ int lua_toresourceref( lua_State *L, int idx )
     {
       v = lua_tointeger(L, idx);
     }
+    break;
+    case LUA_TNONE:
+    case LUA_TNIL:
+      // accept none and nil
+    break;
+    default:
+    {
+      luaL_typerror(L, idx, "RESOURCEREF (number or string)");
+    } 
     break;
   }
   return v;
