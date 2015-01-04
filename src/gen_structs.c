@@ -313,6 +313,16 @@ static luacwrap_RecordMember s_memberOSVERSIONINFOW[] =
 
 LUACWRAP_DEFINESTRUCT(winapi, OSVERSIONINFOW);
 
+static luacwrap_RecordMember s_memberTVHITTESTINFO[] =
+{
+  { "pt", offsetof(TVHITTESTINFO, pt), "POINT"},
+  { "flags", offsetof(TVHITTESTINFO, flags), "$u32"},
+  { "hItem", offsetof(TVHITTESTINFO, hItem), "$ptr"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(winapi, TVHITTESTINFO);
+
 static luacwrap_RecordMember s_memberOPENFILENAMEW[] =
 {
   { "lStructSize", offsetof(OPENFILENAMEW, lStructSize), "$u32"},
@@ -339,18 +349,19 @@ static luacwrap_RecordMember s_memberOPENFILENAMEW[] =
 
 LUACWRAP_DEFINESTRUCT(winapi, OPENFILENAMEW);
 
-static luacwrap_RecordMember s_memberTCITEMHEADERW[] =
+#if (defined(USE_COMMANDBAR))
+static luacwrap_RecordMember s_memberCOMMANDBANDSRESTOREINFO[] =
 {
-  { "mask", offsetof(TCITEMHEADERW, mask), "$u32"},
-  { "lpReserved1", offsetof(TCITEMHEADERW, lpReserved1), "$u32"},
-  { "lpReserved2", offsetof(TCITEMHEADERW, lpReserved2), "$u32"},
-  { "pszText", offsetof(TCITEMHEADERW, pszText), "$ptr"},
-  { "cchTextMax", offsetof(TCITEMHEADERW, cchTextMax), "$i32"},
-  { "iImage", offsetof(TCITEMHEADERW, iImage), "$i32"},
+  { "cbSize", offsetof(COMMANDBANDSRESTOREINFO, cbSize), "$u32"},
+  { "wID", offsetof(COMMANDBANDSRESTOREINFO, wID), "$u32"},
+  { "fStyle", offsetof(COMMANDBANDSRESTOREINFO, fStyle), "$u32"},
+  { "cxRestored", offsetof(COMMANDBANDSRESTOREINFO, cxRestored), "$u32"},
+  { "fMaximized", offsetof(COMMANDBANDSRESTOREINFO, fMaximized), "$i32"},
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, TCITEMHEADERW);
+LUACWRAP_DEFINESTRUCT(winapi, COMMANDBANDSRESTOREINFO);
+#endif
 
 static luacwrap_RecordMember s_memberMENUITEMINFOW[] =
 {
@@ -384,20 +395,6 @@ static luacwrap_RecordMember s_memberCHOOSECOLOR[] =
 
 LUACWRAP_DEFINESTRUCT(winapi, CHOOSECOLOR);
 
-#if (defined(USE_COMMANDBAR))
-static luacwrap_RecordMember s_memberCOMMANDBANDSRESTOREINFO[] =
-{
-  { "cbSize", offsetof(COMMANDBANDSRESTOREINFO, cbSize), "$u32"},
-  { "wID", offsetof(COMMANDBANDSRESTOREINFO, wID), "$u32"},
-  { "fStyle", offsetof(COMMANDBANDSRESTOREINFO, fStyle), "$u32"},
-  { "cxRestored", offsetof(COMMANDBANDSRESTOREINFO, cxRestored), "$u32"},
-  { "fMaximized", offsetof(COMMANDBANDSRESTOREINFO, fMaximized), "$i32"},
-  { NULL, 0 }
-};
-
-LUACWRAP_DEFINESTRUCT(winapi, COMMANDBANDSRESTOREINFO);
-#endif
-
 #if (defined(USE_AYGSHELL))
 static luacwrap_RecordMember s_memberSHACTIVATEINFO[] =
 {
@@ -422,16 +419,6 @@ static luacwrap_RecordMember s_memberMSGQUEUEOPTIONS[] =
 
 LUACWRAP_DEFINESTRUCT(winapi, MSGQUEUEOPTIONS);
 #endif
-
-static luacwrap_RecordMember s_memberNMHDR[] =
-{
-  { "hwndFrom", offsetof(NMHDR, hwndFrom), "$ptr"},
-  { "idFrom", offsetof(NMHDR, idFrom), "$ptr"},
-  { "code", offsetof(NMHDR, code), "$u32"},
-  { NULL, 0 }
-};
-
-LUACWRAP_DEFINESTRUCT(winapi, NMHDR);
 
 #if (!defined(UNDER_CE))
 static luacwrap_RecordMember s_memberPRINTDLGW[] =
@@ -459,6 +446,16 @@ static luacwrap_RecordMember s_memberPRINTDLGW[] =
 LUACWRAP_DEFINESTRUCT(winapi, PRINTDLGW);
 #endif
 
+static luacwrap_RecordMember s_memberNMHDR[] =
+{
+  { "hwndFrom", offsetof(NMHDR, hwndFrom), "$ptr"},
+  { "idFrom", offsetof(NMHDR, idFrom), "$ptr"},
+  { "code", offsetof(NMHDR, code), "$u32"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(winapi, NMHDR);
+
 static luacwrap_RecordMember s_memberTCHITTESTINFO[] =
 {
   { "pt", offsetof(TCHITTESTINFO, pt), "POINT"},
@@ -467,6 +464,27 @@ static luacwrap_RecordMember s_memberTCHITTESTINFO[] =
 };
 
 LUACWRAP_DEFINESTRUCT(winapi, TCHITTESTINFO);
+
+#if (!defined(UNDER_CE))
+static luacwrap_RecordMember s_memberWNDCLASSEXW[] =
+{
+  { "cbSize", offsetof(WNDCLASSEXW, cbSize), "$u32"},
+  { "style", offsetof(WNDCLASSEXW, style), "$u32"},
+  { "lpfnWndProc", offsetof(WNDCLASSEXW, lpfnWndProc), "$ptr"},
+  { "cbClsExtra", offsetof(WNDCLASSEXW, cbClsExtra), "$i32"},
+  { "cbWndExtra", offsetof(WNDCLASSEXW, cbWndExtra), "$i32"},
+  { "hInstance", offsetof(WNDCLASSEXW, hInstance), "$ptr"},
+  { "hIcon", offsetof(WNDCLASSEXW, hIcon), "$ptr"},
+  { "hCursor", offsetof(WNDCLASSEXW, hCursor), "$ptr"},
+  { "hbrBackground", offsetof(WNDCLASSEXW, hbrBackground), "$ptr"},
+  { "lpszMenuName", offsetof(WNDCLASSEXW, lpszMenuName), "$ptr"},
+  { "lpszClassName", offsetof(WNDCLASSEXW, lpszClassName), "$ptr"},
+  { "hIconSm", offsetof(WNDCLASSEXW, hIconSm), "$ptr"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(winapi, WNDCLASSEXW);
+#endif
 
 #if (!defined(UNDER_CE))
 static luacwrap_RecordMember s_memberNMITEMACTIVATE[] =
@@ -513,26 +531,18 @@ static luacwrap_RecordMember s_memberTBBUTTONINFOW[] =
 
 LUACWRAP_DEFINESTRUCT(winapi, TBBUTTONINFOW);
 
-#if (!defined(UNDER_CE))
-static luacwrap_RecordMember s_memberWNDCLASSEXW[] =
+static luacwrap_RecordMember s_memberTCITEMHEADERW[] =
 {
-  { "cbSize", offsetof(WNDCLASSEXW, cbSize), "$u32"},
-  { "style", offsetof(WNDCLASSEXW, style), "$u32"},
-  { "lpfnWndProc", offsetof(WNDCLASSEXW, lpfnWndProc), "$ptr"},
-  { "cbClsExtra", offsetof(WNDCLASSEXW, cbClsExtra), "$i32"},
-  { "cbWndExtra", offsetof(WNDCLASSEXW, cbWndExtra), "$i32"},
-  { "hInstance", offsetof(WNDCLASSEXW, hInstance), "$ptr"},
-  { "hIcon", offsetof(WNDCLASSEXW, hIcon), "$ptr"},
-  { "hCursor", offsetof(WNDCLASSEXW, hCursor), "$ptr"},
-  { "hbrBackground", offsetof(WNDCLASSEXW, hbrBackground), "$ptr"},
-  { "lpszMenuName", offsetof(WNDCLASSEXW, lpszMenuName), "$ptr"},
-  { "lpszClassName", offsetof(WNDCLASSEXW, lpszClassName), "$ptr"},
-  { "hIconSm", offsetof(WNDCLASSEXW, hIconSm), "$ptr"},
+  { "mask", offsetof(TCITEMHEADERW, mask), "$u32"},
+  { "lpReserved1", offsetof(TCITEMHEADERW, lpReserved1), "$u32"},
+  { "lpReserved2", offsetof(TCITEMHEADERW, lpReserved2), "$u32"},
+  { "pszText", offsetof(TCITEMHEADERW, pszText), "$ptr"},
+  { "cchTextMax", offsetof(TCITEMHEADERW, cchTextMax), "$i32"},
+  { "iImage", offsetof(TCITEMHEADERW, iImage), "$i32"},
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, WNDCLASSEXW);
-#endif
+LUACWRAP_DEFINESTRUCT(winapi, TCITEMHEADERW);
 
 static luacwrap_RecordMember s_memberACCEL[] =
 {
@@ -662,20 +672,6 @@ static luacwrap_RecordMember s_memberLVGROUP[] =
   { "stateMask", offsetof(LVGROUP, stateMask), "$u32"},
   { "state", offsetof(LVGROUP, state), "$u32"},
   { "uAlign", offsetof(LVGROUP, uAlign), "$u32"},
-  { "pszSubtitle", offsetof(LVGROUP, pszSubtitle), "$ptr"},
-  { "cchSubtitle", offsetof(LVGROUP, cchSubtitle), "$u32"},
-  { "pszTask", offsetof(LVGROUP, pszTask), "$ptr"},
-  { "cchTask", offsetof(LVGROUP, cchTask), "$u32"},
-  { "pszDescriptionTop", offsetof(LVGROUP, pszDescriptionTop), "$ptr"},
-  { "cchDescriptionTop", offsetof(LVGROUP, cchDescriptionTop), "$u32"},
-  { "pszDescriptionBottom", offsetof(LVGROUP, pszDescriptionBottom), "$ptr"},
-  { "cchDescriptionBottom", offsetof(LVGROUP, cchDescriptionBottom), "$u32"},
-  { "iTitleImage", offsetof(LVGROUP, iTitleImage), "$i32"},
-  { "iExtendedImage", offsetof(LVGROUP, iExtendedImage), "$i32"},
-  { "iFirstItem", offsetof(LVGROUP, iFirstItem), "$i32"},
-  { "cItems", offsetof(LVGROUP, cItems), "$u32"},
-  { "pszSubsetTitle", offsetof(LVGROUP, pszSubsetTitle), "$ptr"},
-  { "cchSubsetTitle", offsetof(LVGROUP, cchSubsetTitle), "$u32"},
   { NULL, 0 }
 };
 
@@ -862,9 +858,49 @@ int lua_tolwparam( lua_State *L, int idx )
       v = lua_tointeger(L, idx);
     }
     break;
+    case LUA_TNONE:
+    case LUA_TNIL:
+      // accept none and nil
+    break;
+    default:
+    {
+      luaL_typerror(L, idx, "LPARAM or WPARAM");
+    } 
+    break;
   }
   return v;
 } 
+
+LPCWSTR lua_tostring_or_atom( lua_State *L, int idx )
+{
+  LPCWSTR v = 0;
+  switch (lua_type(L, idx))
+  {
+    // case LUA_TLIGHTUSERDATA:
+    // case LUA_TUSERDATA:
+    // {
+    //   v = (LPCWSTR)lua_touserdata(L, idx);
+    // }
+    // break;
+    case LUA_TSTRING:
+    {
+      v = (LPCWSTR)lua_tostring(L, idx);
+    }
+    break;
+    case LUA_TNUMBER:
+    {
+      v = (LPCWSTR)lua_tointeger(L, idx);
+    }
+    break;
+    default:
+    {
+      luaL_typerror(L, idx, "LPCWSTR or ATOM");
+    } 
+    break;
+  }
+  return v;
+} 
+
 
 int lua_tohandle( lua_State *L, int idx )
 {
@@ -881,6 +917,15 @@ int lua_tohandle( lua_State *L, int idx )
     {
       v = lua_tointeger(L, idx);
     }
+    break;
+    case LUA_TNONE:
+    case LUA_TNIL:
+      // accept none and nil
+    break;
+    default:
+    {
+      luaL_typerror(L, idx, "HANDLE (number or userdata)");
+    } 
     break;
   }
   return v;
@@ -900,6 +945,15 @@ int lua_toresourceref( lua_State *L, int idx )
     {
       v = lua_tointeger(L, idx);
     }
+    break;
+    case LUA_TNONE:
+    case LUA_TNIL:
+      // accept none and nil
+    break;
+    default:
+    {
+      luaL_typerror(L, idx, "RESOURCEREF (number or string)");
+    } 
     break;
   }
   return v;
@@ -1542,7 +1596,7 @@ int winapi_CreateWindowExW( lua_State *L )
   PVOID p12;
 
   p1 = (DWORD)lua_tonumber(L, 1);
-  p2 = (LPCWSTR)lua_tostring(L, 2);
+  p2 = (LPCWSTR)lua_tostring_or_atom(L, 2);
   p3 = (LPCWSTR)lua_tostring(L, 3);
   p4 = (DWORD)lua_tonumber(L, 4);
   p5 = lua_tointeger(L, 5);
@@ -2223,7 +2277,7 @@ int winapi_TrackPopupMenu( lua_State *L )
   int p4;
   int p5;
   HWND p6;
-  RECT* p7;
+  RECT* p7 = 0;
 
   p1 = (HMENU)lua_tohandle(L, 1);
   p2 = (UINT)lua_tonumber(L, 2);
@@ -2231,7 +2285,10 @@ int winapi_TrackPopupMenu( lua_State *L )
   p4 = lua_tointeger(L, 4);
   p5 = lua_tointeger(L, 5);
   p6 = lua_toWindow(L, 6);
-  p7 = (RECT*)luacwrap_checktype(L, 7, &regType_RECT.hdr);
+  if (!lua_isnil(L, 7))
+  {
+    p7 = (RECT*)luacwrap_checktype(L, 7, &regType_RECT.hdr);
+  }
 
   retval = 
     TrackPopupMenu(
@@ -2259,14 +2316,17 @@ int winapi_TrackPopupMenuEx( lua_State *L )
   int p3;
   int p4;
   HWND p5;
-  TPMPARAMS* p6;
+  TPMPARAMS* p6 = 0;
 
   p1 = (HMENU)lua_tohandle(L, 1);
   p2 = (UINT)lua_tonumber(L, 2);
   p3 = lua_tointeger(L, 3);
   p4 = lua_tointeger(L, 4);
   p5 = lua_toWindow(L, 5);
-  p6 = (TPMPARAMS*)luacwrap_checktype(L, 6, &regType_TPMPARAMS.hdr);
+  if (!lua_isnil(L, 6))
+  {
+    p6 = (TPMPARAMS*)luacwrap_checktype(L, 6, &regType_TPMPARAMS.hdr);
+  }
 
   retval = 
     TrackPopupMenuEx(
@@ -2700,6 +2760,92 @@ int winapi_GetFocus( lua_State *L )
 
   // marshal retval  
   numret += lua_pushWindow(L, retval);
+
+  return numret;
+}
+
+int winapi_SwapMouseButton( lua_State *L )
+{
+  int numret = 0;
+  BOOL retval;
+  BOOL p1;
+
+  p1 = lua_tointeger(L, 1);
+
+  retval = 
+    SwapMouseButton(
+      p1
+    );
+
+  // marshal retval  
+  lua_pushinteger(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_GetMessagePos( lua_State *L )
+{
+  int numret = 0;
+  DWORD retval;
+
+
+  retval = 
+    GetMessagePos(
+    );
+
+  // marshal retval  
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_GetMessageTime( lua_State *L )
+{
+  int numret = 0;
+  LONG retval;
+
+
+  retval = 
+    GetMessageTime(
+    );
+
+  // marshal retval  
+  lua_pushinteger(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_GetMessageExtraInfo( lua_State *L )
+{
+  int numret = 0;
+  LPARAM retval;
+
+
+  retval = 
+    GetMessageExtraInfo(
+    );
+
+  // marshal retval  
+  lua_pushlightuserdata(L, (void*)retval); ++numret;
+
+  return numret;
+}
+
+int winapi_SetMessageExtraInfo( lua_State *L )
+{
+  int numret = 0;
+  LPARAM retval;
+  LPARAM p1;
+
+  p1 = (LPARAM)lua_tolwparam(L, 1);
+
+  retval = 
+    SetMessageExtraInfo(
+      p1
+    );
+
+  // marshal retval  
+  lua_pushlightuserdata(L, (void*)retval); ++numret;
 
   return numret;
 }
@@ -7972,6 +8118,11 @@ static const luaL_reg module_lib[ ] = {
   { "SetForegroundWindow",  winapi_SetForegroundWindow },
   { "SetFocus",  winapi_SetFocus },
   { "GetFocus",  winapi_GetFocus },
+  { "SwapMouseButton",  winapi_SwapMouseButton },
+  { "GetMessagePos",  winapi_GetMessagePos },
+  { "GetMessageTime",  winapi_GetMessageTime },
+  { "GetMessageExtraInfo",  winapi_GetMessageExtraInfo },
+  { "SetMessageExtraInfo",  winapi_SetMessageExtraInfo },
   { "GetMessageW",  winapi_GetMessageW },
   { "PostMessageW",  winapi_PostMessageW },
   { "PostThreadMessageW",  winapi_PostThreadMessageW },
@@ -8435,32 +8586,33 @@ int register_winapi(lua_State *L)
   luacwrap_registertype(L, M, &regType_SHMENUBARINFO.hdr);
 #endif
   luacwrap_registertype(L, M, &regType_OSVERSIONINFOW.hdr);
+  luacwrap_registertype(L, M, &regType_TVHITTESTINFO.hdr);
   luacwrap_registertype(L, M, &regType_OPENFILENAMEW.hdr);
-  luacwrap_registertype(L, M, &regType_TCITEMHEADERW.hdr);
-  luacwrap_registertype(L, M, &regType_MENUITEMINFOW.hdr);
-  luacwrap_registertype(L, M, &regType_CHOOSECOLOR.hdr);
 #if (defined(USE_COMMANDBAR))
   luacwrap_registertype(L, M, &regType_COMMANDBANDSRESTOREINFO.hdr);
 #endif
+  luacwrap_registertype(L, M, &regType_MENUITEMINFOW.hdr);
+  luacwrap_registertype(L, M, &regType_CHOOSECOLOR.hdr);
 #if (defined(USE_AYGSHELL))
   luacwrap_registertype(L, M, &regType_SHACTIVATEINFO.hdr);
 #endif
 #if (defined(UNDER_CE))
   luacwrap_registertype(L, M, &regType_MSGQUEUEOPTIONS.hdr);
 #endif
-  luacwrap_registertype(L, M, &regType_NMHDR.hdr);
 #if (!defined(UNDER_CE))
   luacwrap_registertype(L, M, &regType_PRINTDLGW.hdr);
 #endif
+  luacwrap_registertype(L, M, &regType_NMHDR.hdr);
   luacwrap_registertype(L, M, &regType_TCHITTESTINFO.hdr);
+#if (!defined(UNDER_CE))
+  luacwrap_registertype(L, M, &regType_WNDCLASSEXW.hdr);
+#endif
 #if (!defined(UNDER_CE))
   luacwrap_registertype(L, M, &regType_NMITEMACTIVATE.hdr);
 #endif
   luacwrap_registertype(L, M, &regType_COPYDATASTRUCT.hdr);
   luacwrap_registertype(L, M, &regType_TBBUTTONINFOW.hdr);
-#if (!defined(UNDER_CE))
-  luacwrap_registertype(L, M, &regType_WNDCLASSEXW.hdr);
-#endif
+  luacwrap_registertype(L, M, &regType_TCITEMHEADERW.hdr);
   luacwrap_registertype(L, M, &regType_ACCEL.hdr);
 #if (defined(UNDER_CE))
   luacwrap_registertype(L, M, &regType_CONNMGR_CONNECTIONINFO.hdr);
