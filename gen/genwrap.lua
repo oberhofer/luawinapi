@@ -5,7 +5,7 @@
   LICENSE file
 
   Generator for winapi bindings
-  
+
 --]==]
 
 require("templateengine")
@@ -199,6 +199,12 @@ marshall_fragments =
     ["in"]  = "$name = ($type)lua_tostring(L, $index);",
     ["out"] = "lua_pushwstring(L, $name); ++numret;"
   },
+  ["LPCWSTR_OR_ATOM"] = {
+
+    ["declare"] = "LPCWSTR $name$defval;",
+    ["in"]  = "$name = (LPCWSTR)lua_tostring_or_atom(L, $index);",
+    ["out"] = "-- LPCWSTR_OR_ATOM could not be used as out param --"
+  },
   ["LPWSTR"] = {
 
     ["in"]  = "$name = ($type)lua_tostring(L, $index);",
@@ -214,17 +220,17 @@ marshall_fragments =
 
     ["declare"] = "UINT_PTR $name$defval;",
     ["in"]  = "$name = (UINT_PTR)lua_tohandle(L, $index);",
-    ["out"] = "-- handle_or_int could not be used as out param --"
+    ["out"] = "-- HANDLE_OR_UINT could not be used as out param --"
   },
   ["WPARAM"] = {
 
     ["in"]  = "$name = ($type)lua_tolwparam(L, $index);",
-    ["out"] = "lua_pushwstring(L, $name); ++numret;"
+    ["out"] = "lua_pushlightuserdata(L, (void*)$name); ++numret;"
   },
   ["LPARAM"] = {
 
     ["in"]  = "$name = ($type)lua_tolwparam(L, $index);",
-    ["out"] = "lua_pushwstring(L, $name); ++numret;"
+    ["out"] = "lua_pushlightuserdata(L, (void*)$name); ++numret;"
   },
   -- special marshaller for wrapped structs
   ["struct"] = {

@@ -94,6 +94,37 @@ int lua_tolwparam( lua_State *L, int idx )
   return v;
 } 
 
+LPCWSTR lua_tostring_or_atom( lua_State *L, int idx )
+{
+  LPCWSTR v = 0;
+  switch (lua_type(L, idx))
+  {
+    // case LUA_TLIGHTUSERDATA:
+    // case LUA_TUSERDATA:
+    // {
+    //   v = (LPCWSTR)lua_touserdata(L, idx);
+    // }
+    // break;
+    case LUA_TSTRING:
+    {
+      v = (LPCWSTR)lua_tostring(L, idx);
+    }
+    break;
+    case LUA_TNUMBER:
+    {
+      v = (LPCWSTR)lua_tointeger(L, idx);
+    }
+    break;
+    default:
+    {
+      luaL_typerror(L, idx, "LPCWSTR or ATOM");
+    } 
+    break;
+  }
+  return v;
+} 
+
+
 int lua_tohandle( lua_State *L, int idx )
 {
   int v = 0;
