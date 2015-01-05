@@ -672,6 +672,20 @@ static luacwrap_RecordMember s_memberLVGROUP[] =
   { "stateMask", offsetof(LVGROUP, stateMask), "$u32"},
   { "state", offsetof(LVGROUP, state), "$u32"},
   { "uAlign", offsetof(LVGROUP, uAlign), "$u32"},
+  { "pszSubtitle", offsetof(LVGROUP, pszSubtitle), "$ptr"},
+  { "cchSubtitle", offsetof(LVGROUP, cchSubtitle), "$u32"},
+  { "pszTask", offsetof(LVGROUP, pszTask), "$ptr"},
+  { "cchTask", offsetof(LVGROUP, cchTask), "$u32"},
+  { "pszDescriptionTop", offsetof(LVGROUP, pszDescriptionTop), "$ptr"},
+  { "cchDescriptionTop", offsetof(LVGROUP, cchDescriptionTop), "$u32"},
+  { "pszDescriptionBottom", offsetof(LVGROUP, pszDescriptionBottom), "$ptr"},
+  { "cchDescriptionBottom", offsetof(LVGROUP, cchDescriptionBottom), "$u32"},
+  { "iTitleImage", offsetof(LVGROUP, iTitleImage), "$i32"},
+  { "iExtendedImage", offsetof(LVGROUP, iExtendedImage), "$i32"},
+  { "iFirstItem", offsetof(LVGROUP, iFirstItem), "$i32"},
+  { "cItems", offsetof(LVGROUP, cItems), "$u32"},
+  { "pszSubsetTitle", offsetof(LVGROUP, pszSubsetTitle), "$ptr"},
+  { "cchSubsetTitle", offsetof(LVGROUP, cchSubsetTitle), "$u32"},
   { NULL, 0 }
 };
 
