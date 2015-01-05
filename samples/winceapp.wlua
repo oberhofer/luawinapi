@@ -8,7 +8,7 @@
 
 --]==]
 
-winapi = require("winapi")
+winapi = require("luawinapi")
 
 -- should be set under WindowsCE
 if (not UNDER_CE) then

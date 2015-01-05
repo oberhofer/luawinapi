@@ -8,7 +8,7 @@
   
 --]==]
 
-winapi = require("winapi")
+winapi = require("luawinapi")
 
 
 -- start

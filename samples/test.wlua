@@ -7,7 +7,7 @@
   Simple test application for luawinapi
   
 --]==]
-winapi = require("winapi")
+winapi = require("luawinapi")
 
 
 -- control IDs

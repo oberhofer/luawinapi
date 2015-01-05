@@ -1,5 +1,5 @@
 
-local winapi = require("winapi")
+local winapi = require("luawinapi")
 
 
 print("UNDER_CE:", UNDER_CE)

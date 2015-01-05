@@ -8,7 +8,7 @@
 
 --]==]
 
-local winapi = require("winapi")
+local winapi = require("luawinapi")
 
 mainWndClass = _T("Notepad")
 

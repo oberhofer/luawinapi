@@ -1,4 +1,4 @@
-local winapi = require("winapi")
+local winapi = require("luawinapi")
 
 -- get system font
 local hsysfont = winapi.GetStockObject(SYSTEM_FONT)

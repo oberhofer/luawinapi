@@ -18,6 +18,10 @@
 #define LUAWINAPI_API __declspec(dllexport)
 #endif
 
+#ifndef LUAWINAPI_VERSION
+#define LUAWINAPI_VERSION "LuaWinAPI 1.0.4-1"
+#endif
+
 extern int register_winapi(lua_State *L);
 extern int register_EnumChildWindows(lua_State* L);
 
@@ -30,7 +34,7 @@ extern int register_EnumChildWindows(lua_State* L);
   @param[in]  L  pointer lua state
 
 */////////////////////////////////////////////////////////////////////////
-LUAWINAPI_API int luaopen_luawinapi(lua_State *L)
+LUAWINAPI_API int luaopen_luawinapi_core(lua_State *L)
 {
   LUASTACK_SET(L);
 
@@ -50,6 +54,11 @@ LUAWINAPI_API int luaopen_luawinapi(lua_State *L)
   // create module table
   lua_newtable(L);
 
+  // set version info
+  lua_pushstring(L, "_VERSION");
+  lua_pushstring(L, LUAWINAPI_VERSION);
+  lua_rawset(L, -3);
+  
   // register package functionality
   register_winapi(L);
 

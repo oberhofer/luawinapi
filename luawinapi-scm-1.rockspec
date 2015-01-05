@@ -16,57 +16,56 @@ description = {
     homepage = "https://github.com/oberhofer/luawinapi"
 }
 
-supported_platforms = { "linux", "windows" }
-
 dependencies = {
-  "lua == 5.1",
-  "luacwrap >= 1.0.1, < 1.1.0"
+  "lua == 5.1"
 }
 
-external_dependencies = {
-   platforms = {
-      win32 = {
-         LUACWRAP = {
-            library = "luacwrap.lib"
-         }
-      }
-   }
-}
+local function make_plat(plat)
+  local defines = {
+    win32 = {
+     "WIN32", "NDEBUG", "_WINDOWS", "_USRDLL", 
+	   "WINVER=0x0600", 
+     "_WIN32_WINNT=0x0600", 
+     "_WIN32_IE=0x0600",
+     [[LUAWINAPI_VERSION="LuaWinAPI 1.0.4-1"]]
+    },
+    mingw32 = {
+     "WIN32", "NDEBUG", "_WINDOWS", "_USRDLL", 
+	   "WINVER=0x0600", 
+     "_WIN32_WINNT=0x0600", 
+     "_WIN32_IE=0x0600",
+     [[LUAWINAPI_VERSION="LuaWinAPI 1.0.4-1"]]
+    }
+  }
+  local modules = {
+    ["luawinapi.core"] = {
+      sources = { "src/enumwindow.c",
+                  "src/gdihelpers.c",
+                  "src/gen_abstractions.c",
+                  "src/gen_structs.c",
+                  "src/luaaux.c",
+                  "src/stdcallthunk.c",
+                  "src/luawinapi.c",
+                  "src/wndproc.c"
+                },
+      defines = defines[plat],
+      libraries = { "luacwrap", 
+                    "kernel32", "user32", "gdi32", "comctl32", "comdlg32", "Msimg32" },
+      -- luacwrap.h should be there
+      incdirs = { "$(LUA_INCDIR)" },
+      -- luacwrap.lib/.a/.dll should be there
+      libdirs = { "$(LUA_LIBDIR)", "$(LUA_BINDIR)" },
+    },
+    luawinapi = "src/luawinapi.lua"
+  }
+  return { modules = modules }
+end
 
 build = {
-    type = "builtin",
-    copy_directories = { "doc", "samples" },
-    platforms = {
-        windows = {
-            modules = {
-                luawinapi = {
-                    sources = {
-                        "src/enumwindow.c",
-                        "src/gdihelpers.c",
-                        "src/gen_abstractions.c",
-                        "src/gen_structs.c",
-                        "src/luaaux.c",
-                        "src/stdcallthunk.c",
-                        "src/winapi.c",
-                        "src/wndproc.c"
-                    },
-                    defines = { "WIN32", "NDEBUG", "_WINDOWS", "_USRDLL",
-                                "LUAWINAPI_API=__declspec(dllexport)" },
-                    libraries = { "luacwrap", 
-                                  "kernel32", "user32", "gdi32", "comctl32", "comdlg32", "Msimg32" },
-                    incdirs = { "$(LUA_INCDIR)" },
-                    libdirs = { "$(LUACWRAP_LIBDIR)" },
-                }
-            },
-            install= {
-                lib = {
-                    "luawinapi.dll",
-                },
-                lua = {
-                    ["winapi.init"]   = "src/init.lua",
-                    ["winapi.loader"] = "src/winapi-loader.lua",
-                }
-            }
-        }
-    }
+   type = "builtin",
+   platforms = {
+     win32 = make_plat("win32"),
+     mingw32 = make_plat("mingw32")
+   },
+   copy_directories = { "doc", "samples" }
 }

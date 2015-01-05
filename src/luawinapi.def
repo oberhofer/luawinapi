@@ -1,2 +1,2 @@
 EXPORTS
-luaopen_luawinapi
+luaopen_luawinapi_core

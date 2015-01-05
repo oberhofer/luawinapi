@@ -8,7 +8,7 @@
   
 --]==]
 
-local winapi = require("winapi")
+local winapi = require("luawinapi")
 
 function getText(hwnd)
   local textLength = winapi.SendMessageW(hwnd, WM_GETTEXTLENGTH) + 1

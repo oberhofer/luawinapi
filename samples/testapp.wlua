@@ -8,7 +8,7 @@
 
 --]==]
 
-winapi = require("winapi")
+winapi = require("luawinapi")
 
 
 -- debugging: define assertion callback for internal window proc
