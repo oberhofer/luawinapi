@@ -6,3 +6,13 @@
 
 * added external_dependencies to luacwrap library to rockspeck
 
+1.0.2
+
+* accept none/nil as l/wparam, handle or recourceref
+* fixed wrapper for CreateWindowEx, TrackPopupMenu and TrackPopupMenuEx
+* added more functions and structs to generator
+* added possibility to specify error handler function when create a WNDPROC wrapper
+* renamed winapi -> luawinapi due to name clashes with winapi project
+* split definitions between luawinapi.lua and core.dll
+* added structure definitions missing in mingw headers in mingw_structs.h
+* wrapped more LVGROUP members
