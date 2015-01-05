@@ -236,6 +236,8 @@ static int winapi_WndProc_new(lua_State* L)
 
   if (lua_isfunction(L, 2))
   {
+    int errfuncspecified = !lua_isnoneornil(L, 3);
+  
     WndProcThunk* thunk = (WndProcThunk*)lua_newuserdata(L, sizeof(WndProcThunk));
     if (thunk)
     {
@@ -254,7 +256,7 @@ static int winapi_WndProc_new(lua_State* L)
 
       // register error function in registry
       thunk->errFuncRef   = LUA_REFNIL;
-      if (!lua_isnil(L, 3))
+      if (errfuncspecified)
       { 
         luaL_checktype(L, 3, LUA_TFUNCTION); 
         
