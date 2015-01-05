@@ -11,18 +11,18 @@ set LUAWINAPIROOT=%CD%
 @set LUALIB=%LUAROOT%/lib
 
 @set LUACWRAPROOT=%LUAWINAPIROOT%/../luacwrap
-@set LUACWRAPINCLUDE=%LUACWRAPROOT%/src
+@set LUACWRAPINCLUDE=%LUACWRAPROOT%/include
 @set LUACWRAPLIB=%LUACWRAPROOT%/src
 
-@set MYCOMPILE=cl /nologo /MD /O2 /W3 /c /D_CRT_SECURE_NO_DEPRECATE /DLUAWINAPI_API="" /I%LUAINCLUDE% /I%LUACWRAPINCLUDE%
+@set MYCOMPILE=cl /nologo /MD /O2 /W3 /c /GS- /D_CRT_SECURE_NO_DEPRECATE /DLUAWINAPI_API="" /I%LUAINCLUDE% /I%LUACWRAPINCLUDE%
 @set MYLINK=link /nologo /LIBPATH:%LUALIB% /LIBPATH:%LUACWRAPLIB%
 @set MYMT=mt /nologo
 
 cd src
 
 @rem create luawinapi.dll
-%MYCOMPILE% enumwindow.c gdihelpers.c gen_abstractions.c gen_structs.c luaaux.c stdcallthunk.c winapi.c wndproc.c 
-%MYLINK% /DLL /MACHINE:X86 /MANIFEST /MANIFESTFILE:"luawinapi.dll.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /out:luawinapi.dll /DEF:luawinapi.def enumwindow.obj gdihelpers.obj gen_abstractions.obj gen_structs.obj luaaux.obj stdcallthunk.obj winapi.obj wndproc.obj lua5.1.lib luacwrap.lib kernel32.lib user32.lib gdi32.lib comctl32.lib comdlg32.lib Msimg32.lib
+%MYCOMPILE% enumwindow.c gdihelpers.c gen_abstractions.c gen_structs.c stdcallthunk.c winapi.c wndproc.c luaaux.c
+%MYLINK% /DLL /MACHINE:X86 /MANIFEST /MANIFESTFILE:"luawinapi.dll.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /out:luawinapi.dll /DEF:luawinapi.def enumwindow.obj gdihelpers.obj gen_abstractions.obj gen_structs.obj stdcallthunk.obj winapi.obj wndproc.obj luaaux.obj lua5.1.lib luacwrap.lib kernel32.lib user32.lib gdi32.lib comctl32.lib comdlg32.lib Msimg32.lib
 if exist luawinapi.dll.manifest^
   %MYMT% -manifest luawinapi.dll.manifest -outputresource:luawinapi.dll;2
 
