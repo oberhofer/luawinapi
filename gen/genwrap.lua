@@ -235,12 +235,12 @@ marshall_fragments =
   -- special marshaller for wrapped structs
   ["struct"] = {
     ["declare"] = "$type* $name$defval;",
-    ["in"]      = "$name = ($type*)luacwrap_checktype(L, $index, &regType_$type.hdr);",
+    ["in"]      = "$name = ($type*)g_luacwrapiface->checktype(L, $index, &regType_$type.hdr);",
 --    ["out"] = "luawrap_push(L, $name); ++numret;"
   },
   ["LUAREF"] = {
-    ["in"]  = "$name = ($type)luacwrap_createreference(L, $index);",
-    ["out"] = "luacwrap_pushreference(L, (int)$name); ++numret;",
+    ["in"]  = "$name = ($type)g_luacwrapiface->createreference(L, $index);",
+    ["out"] = "g_luacwrapiface->pushreference(L, (int)$name); ++numret;",
   },
 }
 

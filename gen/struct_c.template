@@ -28,6 +28,9 @@
 #include "gen_structs.h"
 #include "gen_abstractions.h"
 
+// luacwrap c interface
+extern luacwrap_cinterface* g_luacwrapiface;
+
 // array type descriptors
 //#for name, arr in pairs(arraydefs) do
 //#  local basic_type = basic_types[result] or basic_alias
@@ -270,6 +273,7 @@ static const luaL_reg module_lib[ ] = {
   { NULL, NULL }
 };
 
+
 //////////////////////////////////////////////////////////////////////////
 /**
 
@@ -288,13 +292,13 @@ int register_$(libname)(lua_State *L)
 
   // register array types
 //#for name, arr in pairs(arraydefs) do
-  luacwrap_registertype(L, M, &regType_$(name).hdr);
+  g_luacwrapiface->registertype(L, M, &regType_$(name).hdr);
 //#end
   
   // register structure types
 //#for _, struct in pairs(structdefs) do
 //#     prerequisite_begin(struct, _put)
-  luacwrap_registertype(L, M, &regType_$(struct.name).hdr);
+  g_luacwrapiface->registertype(L, M, &regType_$(struct.name).hdr);
 //#     prerequisite_end(struct, _put)
 //#end
 

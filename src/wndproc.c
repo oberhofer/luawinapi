@@ -157,7 +157,7 @@ static BOOL WINAPI staticWndProc(WndProcThunk* thunk, HWND hwnd, UINT Msg, WPARA
         // push objectref
         lua_rawgeti(L, LUA_REGISTRYINDEX, thunk->objectRef);
 
-        // push precProc pointer
+        // push prevProc pointer
         lua_pushlightuserdata(L, thunk->prevProc);
      
         ret = lua_pcall(L, 6, 1, -8);
