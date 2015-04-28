@@ -20,6 +20,12 @@ dependencies = {
   "lua == 5.1"
 }
 
+external_dependencies = {
+    LUACWRAP = {
+       header = "luacwrap.h"
+    }
+ }
+
 local function make_plat(plat)
   local defines = {
     win32 = {
@@ -49,11 +55,10 @@ local function make_plat(plat)
                   "src/wndproc.c"
                 },
       defines = defines[plat],
-      libraries = { "luacwrap", 
-                    "kernel32", "user32", "gdi32", "comctl32", "comdlg32", "Msimg32" },
+      libraries = { "kernel32", "user32", "gdi32", "comctl32", "comdlg32", "Msimg32" },
       -- luacwrap.h should be there
-      incdirs = { "$(LUA_INCDIR)" },
-      -- luacwrap.lib/.a/.dll should be there
+      incdirs = { "$(LUACWRAP_INCDIR)" },
+      -- luaxx.lib/.a/.dll should be there
       libdirs = { "$(LUA_LIBDIR)", "$(LUA_BINDIR)" },
     },
     luawinapi = "src/luawinapi.lua"
