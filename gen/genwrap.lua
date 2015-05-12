@@ -35,6 +35,7 @@ basic_types = {
   ["HANDLE_OR_UINT"] = "$ptr",
 
   ["WNDPROC"]    = "$ptr",
+  ["DLGPROC"]    = "$ptr",
 
   ["WPARAM"]     = "$u32",
   ["LPARAM"]     = "$u32",
@@ -159,6 +160,11 @@ marshall_fragments =
     ["in"]  = "$name = ($type)lua_tonumber(L, $index);",
     ["out"] = "lua_pushnumber(L, $name); ++numret;"
   },
+  ["INT_PTR"] = {
+
+    ["in"]  = "$name = ($type)lua_tonumber(L, $index);",
+    ["out"] = "lua_pushnumber(L, $name); ++numret;"
+  },
   ["DOUBLE"] = {
 
     ["in"]  = "$name = lua_tonumber(L, $index);",
@@ -185,7 +191,11 @@ marshall_fragments =
   },
   ["WNDPROC"] = {
 
-    ["declare"] = "WNDPROC $name$defval;",
+    ["in"]  = "$name = ($type)lua_tohandle(L, $index);",
+    ["out"] = "lua_pushlightuserdata(L, $name); ++numret;"
+  },
+  ["DLGPROC"] = {
+
     ["in"]  = "$name = ($type)lua_tohandle(L, $index);",
     ["out"] = "lua_pushlightuserdata(L, $name); ++numret;"
   },
@@ -371,6 +381,13 @@ function marshal_param(param, dir, name, index)
       local res = expand(entry[dir], { ["type"] = typ, ["name"] = name, ["index"] = index  } )
       if (attribs.nullisvalid) then
         res = "if (!lua_isnil(L, " .. index .. "))\n  {\n    " .. res .."\n  }"
+      end
+      if (attribs.notnil) then
+        res = [[
+if (lua_isnil(L, ]] .. index .. [[))  {
+    luaL_error(L, "nil is not allowed for parameter #]] .. index .. [[");
+  }
+  ]] .. res
       end
       return res
     end

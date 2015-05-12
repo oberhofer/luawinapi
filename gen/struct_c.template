@@ -31,6 +31,10 @@
 // luacwrap c interface
 extern luacwrap_cinterface* g_luacwrapiface;
 
+// TODO: type descriptors for OS specific types (like INT_PTR, LRESULT) to enable
+// expressions like #winapi.LRESULT
+
+
 // array type descriptors
 //#for name, arr in pairs(arraydefs) do
 //#  local basic_type = basic_types[result] or basic_alias
@@ -185,14 +189,31 @@ int lua_toresourceref( lua_State *L, int idx )
   return v;
 } 
 
-#define LUA_WIN32GUI_LIBNAME "$(libname)"
-#define LUA_WIN32GUI_VERSION "$(libname) version $(libversion)"
+//////////////////////////////////////////////////////////////////////////
+/**
 
-int luawrap_version( lua_State *L )
+  helper functions to get pointer to DefDlgProc and DefWindowProc
+
+*/////////////////////////////////////////////////////////////////////////
+
+static int winapi_GetDefDlgProcW(lua_State* L)
 {
-  lua_pushstring( L, LUA_WIN32GUI_VERSION);
+  lua_pushlightuserdata(L,DefDlgProcW);
   return 1;
 }
+
+static int winapi_GetDefWindowProcW(lua_State* L)
+{
+  lua_pushlightuserdata(L,DefWindowProcW);
+  return 1;
+}
+
+//////////////////////////////////////////////////////////////////////////
+/**
+
+  helper functions to process messages (msg loop implementation)
+
+*/////////////////////////////////////////////////////////////////////////
 
 int winapi_ProcessMessages( lua_State *L )
 {
@@ -206,6 +227,13 @@ int winapi_ProcessMessages( lua_State *L )
   lua_pushnumber(L, msg.wParam);
   return 1;
 }
+
+//////////////////////////////////////////////////////////////////////////
+/**
+
+  generated wrappers
+
+*/////////////////////////////////////////////////////////////////////////
 
 //#  for _, func in ipairs(funcdefs) do
 //#     prerequisite_begin(func, _put)
@@ -241,13 +269,13 @@ int winapi_$(func.name)( lua_State *L )
     );
 //# if (func.rettype ~= "VOID") then
 
-  // marshal retval  
+  // marshal retval
   $(marshal_param(func.rettype, "out", "retval", nil))
 //# end
 //# for _, param in ipairs(func.params) do
-//#   if (param.out) then
+//#   if (param.attribs and param.attribs.out) then
 
-  // marshal $(param.typ)
+  // TODO: marshal $(param.typ)
 //# end
 //# end
 
@@ -258,10 +286,8 @@ int winapi_$(func.name)( lua_State *L )
 //#  end
 
 static const luaL_reg module_lib[ ] = {
-  { "version"           , luawrap_version },
-//  { "unittestPrepare"   , luawrap_unittestPrepare },
-//  { "unittestPrintStructA"   , luawrap_unittestPrintStructA },
-
+  { "GetDefDlgProcW"    , winapi_GetDefDlgProcW  },
+  { "GetDefWindowProcW" , winapi_GetDefWindowProcW },
   { "ProcessMessages"   , winapi_ProcessMessages },
 
 //#  for _, func in ipairs(funcdefs) do

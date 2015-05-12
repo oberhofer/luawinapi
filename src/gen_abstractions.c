@@ -540,6 +540,20 @@ static const struct luaL_reg Window_Methods[ ] = {
 #if (!defined(UNDER_CE))
   { "DrawAnimatedRects",  winapi_DrawAnimatedRects },
 #endif
+  { "EndDialog",  winapi_EndDialog },
+  { "GetDlgItem",  winapi_GetDlgItem },
+  { "SetDlgItemInt",  winapi_SetDlgItemInt },
+  { "GetDlgItemInt",  winapi_GetDlgItemInt },
+  { "SetDlgItemTextW",  winapi_SetDlgItemTextW },
+  { "GetDlgItemTextW",  winapi_GetDlgItemTextW },
+  { "CheckDlgButton",  winapi_CheckDlgButton },
+  { "CheckRadioButton",  winapi_CheckRadioButton },
+  { "IsDlgButtonChecked",  winapi_IsDlgButtonChecked },
+  { "SendDlgItemMessageW",  winapi_SendDlgItemMessageW },
+  { "GetNextDlgGroupItem",  winapi_GetNextDlgGroupItem },
+  { "GetNextDlgTabItem",  winapi_GetNextDlgTabItem },
+  { "GetDlgCtrlID",  winapi_GetDlgCtrlID },
+  { "DefDlgProcW",  winapi_DefDlgProcW },
 #if (defined(USE_AYGSHELL))
   { "SHFindMenuBar",  winapi_SHFindMenuBar },
 #endif

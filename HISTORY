@@ -16,3 +16,12 @@
 * split definitions between luawinapi.lua and core.dll
 * added structure definitions missing in mingw headers in mingw_structs.h
 * wrapped more LVGROUP members
+
+1.1.0
+
+* depends on luacwrap version 1.1.0-1
+* added GetDefDlgProcW helper function
+* wrapped dialog functions and structs
+* wrapped header control structs and constants
+* wrapped tooltip control structs and constants
+

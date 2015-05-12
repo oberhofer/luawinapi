@@ -189,26 +189,6 @@ typedef struct tagPAINTSTRUCT {
     BYTE rgbReserved[32];
 } PAINTSTRUCT;
 
-typedef struct {
-    DWORD style;
-    DWORD dwExtendedStyle;
-    WORD cdit;
-    short x;
-    short y;
-    short cx;
-    short cy;
-} DLGTEMPLATE;
-
-typedef struct {
-    DWORD style;
-    DWORD dwExtendedStyle;
-    short x;
-    short y;
-    short cx;
-    short cy;
-    WORD id;
-} DLGITEMTEMPLATE;
-
 typedef struct tagCOPYDATASTRUCT {
     ULONG_PTR dwData;
     DWORD cbData;
@@ -262,6 +242,28 @@ typedef struct tagACCEL {
 #    [onlyCE] WORD pad;
 } ACCEL;
 
+## dialog structs
+
+typedef struct tagDLGTEMPLATE {
+    DWORD style;
+    DWORD dwExtendedStyle;
+    WORD cdit;
+    short x;
+    short y;
+    short cx;
+    short cy;
+} DLGTEMPLATE;
+
+typedef struct tagDLGITEMTEMPLATE {
+    DWORD style;
+    DWORD dwExtendedStyle;
+    short x;
+    short y;
+    short cx;
+    short cy;
+    WORD id;
+} DLGITEMTEMPLATE;
+
 
 #########################################################################
 # GDI
@@ -291,6 +293,58 @@ typedef struct tagLOGFONTW {
 
 #########################################################################
 # CommCtl32
+
+# init
+
+typedef struct tagINITCOMMONCONTROLSEX {
+    DWORD dwSize;
+    DWORD dwICC;
+} INITCOMMONCONTROLSEX;
+
+
+# header control
+
+typedef struct _HD_ITEMW {
+    UINT mask;
+    int cxy;
+    LPWSTR pszText;
+    HBITMAP hbm;
+    int cchTextMax;
+    int fmt;
+    LPARAM lParam;
+#if (_WIN32_IE >= 0x0300)
+    int iImage;
+    int iOrder;
+#endif /* _WIN32_IE >= 0x0300 */
+} HDITEMW;
+
+#typedef struct _HD_LAYOUT {
+#    PRECT      prc;
+#    PWINDOWPOS pwpos;
+#} HDLAYOUT;
+
+typedef struct _HD_HITTESTINFO {
+    POINT pt;
+    UINT flags;
+    int iItem;
+} HDHITTESTINFO;
+
+typedef struct tagNMHEADERW {
+    NMHDR hdr;
+    int iItem;
+    int iButton;
+#    HDITEMW *pitem;
+} NMHEADERW;
+
+typedef struct tagNMHDDISPINFOW {
+    NMHDR hdr;
+    int iItem;
+    UINT mask;
+    LPWSTR pszText;
+    int cchTextMax;
+    int iImage;
+    LPARAM lParam;
+} NMHDDISPINFOW;
 
 # list view
 
@@ -483,6 +537,41 @@ typedef struct tagTCHITTESTINFO {
     WORD wVKey;
     UINT flags;
 } NMTCKEYDOWN;
+
+
+# tooltip control
+
+typedef struct tagTOOLINFOW {
+    UINT cbSize;
+    UINT uFlags;
+    HWND hwnd;
+    HANDLE_OR_UINT uId;
+    RECT rect;
+    HINSTANCE hinst;
+    LPWSTR lpszText;
+#if (_WIN32_IE >= 0x0300)
+    LPARAM lParam;
+#endif
+} TTTOOLINFOW;
+
+typedef struct _TT_HITTESTINFOW {
+    HWND hwnd;
+    POINT pt;
+    TTTOOLINFOW ti;
+} TTHITTESTINFOW;
+
+typedef struct tagNMTTDISPINFOW {
+    NMHDR hdr;
+    LPWSTR lpszText;
+    WCHAR szText[80];
+    HINSTANCE hinst;
+    UINT uFlags;
+#if (_WIN32_IE >= 0x0300)
+    LPARAM lParam;
+#endif
+} NMTTDISPINFOW;
+
+
 
 #########################################################################
 # CommDlg

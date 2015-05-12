@@ -209,6 +209,25 @@ int winapi_InvertRect( lua_State *L );
 int winapi_LoadImageW( lua_State *L );
 int winapi_LoadCursorW( lua_State *L );
 int winapi_SetCursor( lua_State *L );
+int winapi_CreateDialogParamW( lua_State *L );
+int winapi_CreateDialogIndirectParamW( lua_State *L );
+int winapi_DialogBoxParamW( lua_State *L );
+int winapi_DialogBoxIndirectParamW( lua_State *L );
+int winapi_EndDialog( lua_State *L );
+int winapi_GetDlgItem( lua_State *L );
+int winapi_SetDlgItemInt( lua_State *L );
+int winapi_GetDlgItemInt( lua_State *L );
+int winapi_SetDlgItemTextW( lua_State *L );
+int winapi_GetDlgItemTextW( lua_State *L );
+int winapi_CheckDlgButton( lua_State *L );
+int winapi_CheckRadioButton( lua_State *L );
+int winapi_IsDlgButtonChecked( lua_State *L );
+int winapi_SendDlgItemMessageW( lua_State *L );
+int winapi_GetNextDlgGroupItem( lua_State *L );
+int winapi_GetNextDlgTabItem( lua_State *L );
+int winapi_GetDlgCtrlID( lua_State *L );
+int winapi_GetDialogBaseUnits( lua_State *L );
+int winapi_DefDlgProcW( lua_State *L );
 int winapi_DeleteObject( lua_State *L );
 int winapi_GetObjectW( lua_State *L );
 int winapi_GetObjectType( lua_State *L );
@@ -414,6 +433,7 @@ int winapi_wglRealizeLayerPalette( lua_State *L );
 int winapi_wglSwapLayerBuffers( lua_State *L );
 #endif
 int winapi_InitCommonControls( lua_State *L );
+int winapi_InitCommonControlsEx( lua_State *L );
 #if (!defined(UNDER_CE))
 int winapi_ImageList_LoadImageW( lua_State *L );
 #endif

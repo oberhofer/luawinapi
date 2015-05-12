@@ -66,7 +66,7 @@ LUAWINAPI_API int luaopen_luawinapi_core(lua_State *L)
   lua_pushstring(L, "Klaus Oberhofer");
   lua_setfield(L, -2, "_AUTHOR");
 
-  lua_pushstring(L, "1.0.5-1");
+  lua_pushstring(L, "1.1.0-1");
   lua_setfield(L, -2, "_VERSION");
 
   lua_pushstring(L, "MIT license: See LICENSE for details.");
