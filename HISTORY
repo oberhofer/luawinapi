@@ -25,3 +25,8 @@
 * wrapped header control structs and constants
 * wrapped tooltip control structs and constants
 
+1.2.0
+
+* depends on luacwrap version 1.2.0-1
+* changed dependency from bit to bit32
+* tested on Lua 5.1, 5.2 and 5.3

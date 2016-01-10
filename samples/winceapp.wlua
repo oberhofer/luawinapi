@@ -1,7 +1,7 @@
 --[==[
 
   luawinapi - winapi wrapper for Lua
-  Copyright (C) 2011 Klaus Oberhofer. See copyright notice in
+  Copyright (C) 2011-2016 Klaus Oberhofer. See copyright notice in
   LICENSE file
 
   Simple test application for luawinapi under WindowsCE

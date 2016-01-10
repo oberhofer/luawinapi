@@ -42,13 +42,13 @@ static int winapi_WndProc_gc(lua_State* L);
 static int winapi_WndProc_index(lua_State* L);
 
 
-static const luaL_reg g_mtWndProc[] = {
+static const luaL_Reg g_mtWndProc[] = {
   { "__gc",    winapi_WndProc_gc },
   { "__index", winapi_WndProc_index },
   { NULL, NULL }
 };
 
-static const luaL_reg g_WndProc_methods[ ] = {
+static const luaL_Reg g_WndProc_methods[ ] = {
   { "new",      winapi_WndProc_new },
   { "subclass", winapi_WndProc_subclass },
   { NULL, NULL }
@@ -172,7 +172,7 @@ static BOOL WINAPI staticWndProc(WndProcThunk* thunk, HWND hwnd, UINT Msg, WPARA
             default:
             {
               char szError[1024];
-              wsprintf(szError, "WndProc: got unsupported value type '%s'\n", luaL_typename(L, -1));
+              sprintf(szError, "WndProc: got unsupported value type '%s'\n", luaL_typename(L, -1));
               raiseMsgProcError(thunk, szError
                                  , hwnd, Msg, wParam, lParam);
               callPrevProc = 1;
@@ -274,7 +274,8 @@ static int winapi_WndProc_new(lua_State* L)
   }
   else
   {
-    luaL_typerror(L, 2, lua_typename(L, LUA_TFUNCTION));
+    const char *msg = lua_pushfstring(L, "function expected but got %s", luaL_typename(L, 2));
+    luaL_argerror(L, 2, msg);
   }
 
   LUASTACK_CLEAN(L, 0);
@@ -299,7 +300,8 @@ static int winapi_WndProc_subclass(lua_State* L)
     hwnd = lua_toWindow(L, 1);
     if (!IsWindow(hwnd))
     {
-      luaL_typerror(L, 1, "Window (handle)");
+      const char *msg = lua_pushfstring(L, "Window (handle) expected but got %s", luaL_typename(L, 1));
+      luaL_argerror(L, 1, msg);
     }
 
     thunk = (WndProcThunk*)lua_newuserdata(L, sizeof(WndProcThunk));
@@ -339,7 +341,8 @@ static int winapi_WndProc_subclass(lua_State* L)
   }
   else
   {
-    luaL_typerror(L, 3, lua_typename(L, LUA_TFUNCTION));
+    const char *msg = lua_pushfstring(L, "function expected but got %s", luaL_typename(L, 3));
+    luaL_argerror(L, 3, msg);
   }
 
   LUASTACK_CLEAN(L, 0);
@@ -434,12 +437,20 @@ int winapi_RegisterWndProc(lua_State* L)
 
   // create metatable for WndProc objects and store it in registry
   luaL_newmetatable(L, WndProc_Typename);
-  luaL_register(L, NULL, g_mtWndProc);
+#if (LUA_VERSION_NUM > 501)
+  luaL_setfuncs(L, g_mtWndProc, 0);
+#else
+  luaL_openlib(L, NULL, g_mtWndProc, 0);
+#endif
   lua_pop(L, 1);
 
   // create method table
   lua_newtable(L);
-  luaL_register(L, NULL, g_WndProc_methods);
+#if (LUA_VERSION_NUM > 501)
+  luaL_setfuncs(L, g_WndProc_methods, 0);
+#else
+  luaL_openlib(L, NULL, g_WndProc_methods, 0);
+#endif
 
   // store
   lua_setfield(L, -2, WndProc_Typename);

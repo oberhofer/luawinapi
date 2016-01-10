@@ -10,11 +10,11 @@
 
 local winapi = require("luawinapi")
 
-mainWndClass = _T("Notepad")
+mainWndClass = _T("Notepad2")
 
 result = {}
 
-winapi.MessageBoxW(nil, _T"Please start notepad.exe and push it to the back", _T"Info", MB_OK)
+winapi.MessageBoxW(nil, _T"Please start notepad2.exe and push it to the back", _T"Info", MB_OK)
 
 local hwnd = winapi.FindWindowW(mainWndClass)
 if (hwnd) then
@@ -34,5 +34,5 @@ if (hwnd) then
     end
   )
 else
-  winapi.MessageBoxW(nil, _T"Notepad not found ! Forget to start ?", _T"Error", MB_OK)
+  winapi.MessageBoxW(nil, _T"Notepad2 not found ! Forget to start ?", _T"Error", MB_OK)
 end

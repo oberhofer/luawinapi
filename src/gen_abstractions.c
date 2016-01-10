@@ -96,7 +96,8 @@ HDC lua_toDC( lua_State *L, int idx )
       break;
     default:
       {
-        luaL_typerror(L, idx, "DC (handle)");
+        const char *msg = lua_pushfstring(L, "DC (handle) expected but got %s", luaL_typename(L, idx));
+        luaL_argerror(L, idx, msg);
       }
       break;
   }
@@ -157,7 +158,7 @@ static int DC_wrap(lua_State *L)
 }
 
 
-static const struct luaL_reg DC_Methods[ ] = {
+static const struct luaL_Reg DC_Methods[ ] = {
   { "__index", DC_index},
   { "wrap", DC_wrap },
   { "DrawFocusRect",  winapi_DrawFocusRect },
@@ -330,7 +331,7 @@ static const struct luaL_reg DC_Methods[ ] = {
   { NULL, NULL }
 };
 
-static const struct luaL_reg DC_WrapMethods[ ] = {
+static const struct luaL_Reg DC_WrapMethods[ ] = {
   { "WrapDC", DC_wrap },
   { NULL, NULL }
 };
@@ -413,7 +414,8 @@ HWND lua_toWindow( lua_State *L, int idx )
       break;
     default:
       {
-        luaL_typerror(L, idx, "Window (handle)");
+        const char *msg = lua_pushfstring(L, "Window (handle) expected but got %s", luaL_typename(L, idx));
+        luaL_argerror(L, idx, msg);
       }
       break;
   }
@@ -474,7 +476,7 @@ static int Window_wrap(lua_State *L)
 }
 
 
-static const struct luaL_reg Window_Methods[ ] = {
+static const struct luaL_Reg Window_Methods[ ] = {
   { "__index", Window_index},
   { "wrap", Window_wrap },
   { "IsWindow",  winapi_IsWindow },
@@ -605,7 +607,7 @@ static const struct luaL_reg Window_Methods[ ] = {
   { NULL, NULL }
 };
 
-static const struct luaL_reg Window_WrapMethods[ ] = {
+static const struct luaL_Reg Window_WrapMethods[ ] = {
   { "WrapWindow", Window_wrap },
   { NULL, NULL }
 };
@@ -689,7 +691,8 @@ HMSGQUEUE lua_toMsgQueue( lua_State *L, int idx )
       break;
     default:
       {
-        luaL_typerror(L, idx, "MsgQueue (handle)");
+        const char *msg = lua_pushfstring(L, "MsgQueue (handle) expected but got %s", luaL_typename(L, idx));
+        luaL_argerror(L, idx, msg);
       }
       break;
   }
@@ -750,7 +753,7 @@ static int MsgQueue_wrap(lua_State *L)
 }
 
 
-static const struct luaL_reg MsgQueue_Methods[ ] = {
+static const struct luaL_Reg MsgQueue_Methods[ ] = {
   { "__index", MsgQueue_index},
   { "wrap", MsgQueue_wrap },
 #if (defined(USE_MSGQUEUE))
@@ -768,7 +771,7 @@ static const struct luaL_reg MsgQueue_Methods[ ] = {
   { NULL, NULL }
 };
 
-static const struct luaL_reg MsgQueue_WrapMethods[ ] = {
+static const struct luaL_Reg MsgQueue_WrapMethods[ ] = {
   { "WrapMsgQueue", MsgQueue_wrap },
   { NULL, NULL }
 };
@@ -852,7 +855,8 @@ HRGN lua_toRegion( lua_State *L, int idx )
       break;
     default:
       {
-        luaL_typerror(L, idx, "Region (handle)");
+        const char *msg = lua_pushfstring(L, "Region (handle) expected but got %s", luaL_typename(L, idx));
+        luaL_argerror(L, idx, msg);
       }
       break;
   }
@@ -913,7 +917,7 @@ static int Region_wrap(lua_State *L)
 }
 
 
-static const struct luaL_reg Region_Methods[ ] = {
+static const struct luaL_Reg Region_Methods[ ] = {
   { "__index", Region_index},
   { "wrap", Region_wrap },
   { "EqualRgn",  winapi_EqualRgn },
@@ -925,7 +929,7 @@ static const struct luaL_reg Region_Methods[ ] = {
   { NULL, NULL }
 };
 
-static const struct luaL_reg Region_WrapMethods[ ] = {
+static const struct luaL_Reg Region_WrapMethods[ ] = {
   { "WrapRegion", Region_wrap },
   { NULL, NULL }
 };
@@ -942,7 +946,11 @@ static const struct luaL_reg Region_WrapMethods[ ] = {
 void registerAbstractions(lua_State *L)
 {
   // register package functions
-  luaL_register( L, NULL, DC_WrapMethods );
+#if (LUA_VERSION_NUM > 501)
+  luaL_setfuncs(L, DC_WrapMethods, 0);
+#else
+  luaL_openlib(L, NULL, DC_WrapMethods, 0);
+#endif
 
   luaL_newmetatable(L, DC_Typename);
   lua_pushstring(L, "$Handles");
@@ -950,11 +958,19 @@ void registerAbstractions(lua_State *L)
   lua_rawset(L, -3);
 //  lua_pushstring(L, "__index");
 //  lua_newtable(L);
-  luaL_register(L, NULL, DC_Methods);
+#if (LUA_VERSION_NUM > 501)
+  luaL_setfuncs(L, DC_Methods, 0);
+#else
+  luaL_openlib(L, NULL, DC_Methods, 0);
+#endif
 //  lua_rawset(L, -3);
   lua_pop(L, 1);
 
-  luaL_register( L, NULL, Window_WrapMethods );
+#if (LUA_VERSION_NUM > 501)
+  luaL_setfuncs(L, Window_WrapMethods, 0);
+#else
+  luaL_openlib(L, NULL, Window_WrapMethods, 0);
+#endif
 
   luaL_newmetatable(L, Window_Typename);
   lua_pushstring(L, "$Handles");
@@ -962,12 +978,20 @@ void registerAbstractions(lua_State *L)
   lua_rawset(L, -3);
 //  lua_pushstring(L, "__index");
 //  lua_newtable(L);
-  luaL_register(L, NULL, Window_Methods);
+#if (LUA_VERSION_NUM > 501)
+  luaL_setfuncs(L, Window_Methods, 0);
+#else
+  luaL_openlib(L, NULL, Window_Methods, 0);
+#endif
 //  lua_rawset(L, -3);
   lua_pop(L, 1);
 
 #if (defined(USE_MSGQUEUE))
-  luaL_register( L, NULL, MsgQueue_WrapMethods );
+#if (LUA_VERSION_NUM > 501)
+  luaL_setfuncs(L, MsgQueue_WrapMethods, 0);
+#else
+  luaL_openlib(L, NULL, MsgQueue_WrapMethods, 0);
+#endif
 
   luaL_newmetatable(L, MsgQueue_Typename);
   lua_pushstring(L, "$Handles");
@@ -975,12 +999,20 @@ void registerAbstractions(lua_State *L)
   lua_rawset(L, -3);
 //  lua_pushstring(L, "__index");
 //  lua_newtable(L);
-  luaL_register(L, NULL, MsgQueue_Methods);
+#if (LUA_VERSION_NUM > 501)
+  luaL_setfuncs(L, MsgQueue_Methods, 0);
+#else
+  luaL_openlib(L, NULL, MsgQueue_Methods, 0);
+#endif
 //  lua_rawset(L, -3);
   lua_pop(L, 1);
 
 #endif
-  luaL_register( L, NULL, Region_WrapMethods );
+#if (LUA_VERSION_NUM > 501)
+  luaL_setfuncs(L, Region_WrapMethods, 0);
+#else
+  luaL_openlib(L, NULL, Region_WrapMethods, 0);
+#endif
 
   luaL_newmetatable(L, Region_Typename);
   lua_pushstring(L, "$Handles");
@@ -988,7 +1020,11 @@ void registerAbstractions(lua_State *L)
   lua_rawset(L, -3);
 //  lua_pushstring(L, "__index");
 //  lua_newtable(L);
-  luaL_register(L, NULL, Region_Methods);
+#if (LUA_VERSION_NUM > 501)
+  luaL_setfuncs(L, Region_Methods, 0);
+#else
+  luaL_openlib(L, NULL, Region_Methods, 0);
+#endif
 //  lua_rawset(L, -3);
   lua_pop(L, 1);
 

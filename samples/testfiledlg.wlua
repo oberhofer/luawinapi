@@ -1,7 +1,7 @@
 --[==[
 
   luawinapi - winapi wrapper for Lua
-  Copyright (C) 2011 Klaus Oberhofer. See copyright notice in
+  Copyright (C) 2011-2016 Klaus Oberhofer. See copyright notice in
   LICENSE file
 
   Test file dialog
@@ -9,7 +9,7 @@
 --]==]
 
 local winapi = require("luawinapi")
-local bit = require("bit")
+local bit = require("bit32")
 
 local bor = bit.bor
 

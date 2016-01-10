@@ -991,7 +991,8 @@ int lua_tolwparam( lua_State *L, int idx )
     break;
     default:
     {
-      luaL_typerror(L, idx, "LPARAM or WPARAM");
+      const char *msg = lua_pushfstring(L, "LPARAM or WPARAM expected but got %s", luaL_typename(L, idx));
+      luaL_argerror(L, idx, msg);
     } 
     break;
   }
@@ -1021,7 +1022,8 @@ LPCWSTR lua_tostring_or_atom( lua_State *L, int idx )
     break;
     default:
     {
-      luaL_typerror(L, idx, "LPCWSTR or ATOM");
+      const char *msg = lua_pushfstring(L, "LPCWSTR or ATOM expected but got %s", luaL_typename(L, idx));
+      luaL_argerror(L, idx, msg);
     } 
     break;
   }
@@ -1051,7 +1053,8 @@ int lua_tohandle( lua_State *L, int idx )
     break;
     default:
     {
-      luaL_typerror(L, idx, "HANDLE (number or userdata)");
+      const char *msg = lua_pushfstring(L, "HANDLE (number or userdata) expected but got %s", luaL_typename(L, idx));
+      luaL_argerror(L, idx, msg);
     } 
     break;
   }
@@ -1079,7 +1082,8 @@ int lua_toresourceref( lua_State *L, int idx )
     break;
     default:
     {
-      luaL_typerror(L, idx, "RESOURCEREF (number or string)");
+      const char *msg = lua_pushfstring(L, "RESOURCEREF (number or string) expected but got %s", luaL_typename(L, idx));
+      luaL_argerror(L, idx, msg);
     } 
     break;
   }
@@ -8703,7 +8707,7 @@ int winapi_ConnMgrApiReadyEvent( lua_State *L )
 
 #endif
 
-static const luaL_reg module_lib[ ] = {
+static const luaL_Reg module_lib[ ] = {
   { "GetDefDlgProcW"    , winapi_GetDefDlgProcW  },
   { "GetDefWindowProcW" , winapi_GetDefWindowProcW },
   { "ProcessMessages"   , winapi_ProcessMessages },
@@ -9260,7 +9264,11 @@ int register_winapi(lua_State *L)
   int M = lua_gettop(L);
 
   // register package functions
-  luaL_register( L, NULL, module_lib );
+#if (LUA_VERSION_NUM > 501)
+  luaL_setfuncs(L, module_lib, 0);
+#else
+  luaL_openlib(L, NULL, module_lib, 0);
+#endif
 
   // register array types
   g_luacwrapiface->registertype(L, M, &regType_UINT8_8.hdr);

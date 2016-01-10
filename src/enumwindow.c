@@ -110,7 +110,8 @@ int winapi_EnumChildWindows(lua_State* L)
   }
   else
   {
-    luaL_typerror(L, 2, lua_typename(L, LUA_TFUNCTION));
+    const char *msg = lua_pushfstring(L, "function expected but got %s", luaL_typename(L, 2));
+    luaL_argerror(L, 2, msg);
   }
 
   LUASTACK_CLEAN(L, 0);
@@ -132,7 +133,8 @@ int winapi_EnumThreadWindows(lua_State* L)
   }
   else
   {
-    luaL_typerror(L, 2, lua_typename(L, LUA_TFUNCTION));
+    const char *msg = lua_pushfstring(L, "function expected but got %s", luaL_typename(L, 2));
+    luaL_argerror(L, 2, msg);
   }
 
   LUASTACK_CLEAN(L, 0);
@@ -149,7 +151,8 @@ int winapi_EnumWindows(lua_State* L)
   }
   else
   {
-    luaL_typerror(L, 2, lua_typename(L, LUA_TFUNCTION));
+    const char *msg = lua_pushfstring(L, "function expected but got %s", luaL_typename(L, 2));
+    luaL_argerror(L, 2, msg);
   }
 
   LUASTACK_CLEAN(L, 0);
@@ -196,7 +199,7 @@ int winapi_GetClassNameW(lua_State* L)
   return 0;
 }
 
-static const luaL_reg methods[ ] = {
+static const luaL_Reg methods[ ] = {
   { "GetClassNameW",       winapi_GetClassNameW},
   { "EnumWindows",         winapi_EnumWindows },
   { "EnumChildWindows",    winapi_EnumChildWindows },
@@ -210,8 +213,12 @@ int register_EnumChildWindows(lua_State* L)
 {
   LUASTACK_SET(L);
 
-  // create metatable
-  luaL_register(L, NULL, methods);
+  // create method table
+#if (LUA_VERSION_NUM > 501)
+  luaL_setfuncs(L, methods, 0);
+#else
+  luaL_openlib(L, NULL, methods, 0);
+#endif
 
   LUASTACK_CLEAN(L, 0);
   return 0;

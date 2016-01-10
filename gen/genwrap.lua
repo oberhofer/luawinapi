@@ -12,8 +12,6 @@ require("templateengine")
 
 dofile("parse.lua")
 
-libname     = "winapi"
-libversion  = "1.0"
 
 -- basic type IDs
 basic_types = {

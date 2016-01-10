@@ -5,7 +5,7 @@
   LICENSE file
 
   Simple test application for luawinapi
-  
+
 --]==]
 winapi = require("luawinapi")
 
@@ -48,6 +48,16 @@ handlers =
     winapi.EndPaint(hwnd, ps);
       return 0;
   end,
+  [WM_NCHITTEST] = function(hwnd, wParam, lParam)
+
+	print("WM_NCHITTEST")
+
+    local hit = winapi.DefWindowProcW(hwnd, WM_NCHITTEST, wParam, lParam);
+    if (hit == HTCLIENT) then
+      hit = HTCAPTION;
+    end
+    return hit
+  end,
   [WM_DESTROY] = function(hwnd, wParam, lParam)
     winapi.PostQuitMessage(0)
     return 0
@@ -56,7 +66,7 @@ handlers =
 
 
 function WndProc(hwnd, msg, wParam, lParam)
-  -- print(hwnd, msg, wParam, lParam)
+  print(hwnd, MSG_CONSTANTS[msg] or msg, wParam, lParam)
   local handler = handlers[msg]
   if (handler) then
     return handler(hwnd, wParam, lParam)

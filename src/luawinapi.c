@@ -50,14 +50,20 @@ LUAWINAPI_API int luaopen_luawinapi_core(lua_State *L)
   lua_getfield(L, -1, LUACWARP_CINTERFACE_NAME);
   g_luacwrapiface = (luacwrap_cinterface*)lua_touserdata(L, -1);
   
+  // check for C interface
+  if (NULL == g_luacwrapiface)
+  {
+    luaL_error(L, "Could not load luacwrap: No C interface available.");
+  }
+
   // check interface version
   if (LUACWARP_CINTERFACE_VERSION != g_luacwrapiface->version)
   {
-    luaL_error(L, "Could not load luacwrap. Incompatiple C interface version. Expected %i got %i.", LUACWARP_CINTERFACE_VERSION, g_luacwrapiface->version);
+    luaL_error(L, "Could not load luacwrap: Incompatiple C interface version. Expected %i got %i.", LUACWARP_CINTERFACE_VERSION, g_luacwrapiface->version);
   }
   
-  // drop package table
-  lua_pop(L, 1);
+  // drop C interface and drop package table
+  lua_pop(L, 2);
 
   // create module table
   lua_newtable(L);
@@ -66,7 +72,7 @@ LUAWINAPI_API int luaopen_luawinapi_core(lua_State *L)
   lua_pushstring(L, "Klaus Oberhofer");
   lua_setfield(L, -2, "_AUTHOR");
 
-  lua_pushstring(L, "1.1.0-1");
+  lua_pushstring(L, "1.2.0-1");
   lua_setfield(L, -2, "_VERSION");
 
   lua_pushstring(L, "MIT license: See LICENSE for details.");
