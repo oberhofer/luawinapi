@@ -28,6 +28,8 @@
 #include "gen_structs.h"
 #include "gen_abstractions.h"
 
+#include "mingw_structs.h"
+
 // luacwrap c interface
 extern luacwrap_cinterface* g_luacwrapiface;
 
@@ -312,7 +314,7 @@ static const luaL_Reg module_lib[ ] = {
   @param[in]  L  pointer lua state
 
 */////////////////////////////////////////////////////////////////////////
-int register_$(libname)(lua_State *L)
+int register_luawinapi(lua_State *L)
 {
   // index of module table
   int M = lua_gettop(L);

@@ -27,4 +27,4 @@ int winapi_$(func.name)( lua_State *L );
 //#     prerequisite_end(func, _put)
 //#  end
 
-LUA_API int luaopen_$(libname)(lua_State *L);
+LUA_API int luaopen_luawinapi(lua_State *L);

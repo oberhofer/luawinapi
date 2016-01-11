@@ -555,4 +555,4 @@ int winapi_ConnMgrMapURL( lua_State *L );
 int winapi_ConnMgrApiReadyEvent( lua_State *L );
 #endif
 
-LUA_API int luaopen_winapi(lua_State *L);
+LUA_API int luaopen_luawinapi(lua_State *L);

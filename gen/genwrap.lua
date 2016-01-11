@@ -12,6 +12,7 @@ require("templateengine")
 
 dofile("parse.lua")
 
+libname = "luawinapi"
 
 -- basic type IDs
 basic_types = {

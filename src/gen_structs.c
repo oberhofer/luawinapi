@@ -28,6 +28,8 @@
 #include "gen_structs.h"
 #include "gen_abstractions.h"
 
+#include "mingw_structs.h"
+
 // luacwrap c interface
 extern luacwrap_cinterface* g_luacwrapiface;
 
@@ -93,7 +95,7 @@ static luacwrap_RecordMember s_memberGUID[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, GUID);
+LUACWRAP_DEFINESTRUCT(luawinapi, GUID);
 
 #if (defined(UNDER_CE))
 static luacwrap_RecordMember s_memberMSGQUEUEINFO[] =
@@ -109,7 +111,7 @@ static luacwrap_RecordMember s_memberMSGQUEUEINFO[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, MSGQUEUEINFO);
+LUACWRAP_DEFINESTRUCT(luawinapi, MSGQUEUEINFO);
 #endif
 
 static luacwrap_RecordMember s_memberTVITEMW[] =
@@ -127,7 +129,7 @@ static luacwrap_RecordMember s_memberTVITEMW[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, TVITEMW);
+LUACWRAP_DEFINESTRUCT(luawinapi, TVITEMW);
 
 #if (!defined(UNDER_CE))
 static luacwrap_RecordMember s_memberLVGROUPMETRICS[] =
@@ -147,7 +149,7 @@ static luacwrap_RecordMember s_memberLVGROUPMETRICS[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, LVGROUPMETRICS);
+LUACWRAP_DEFINESTRUCT(luawinapi, LVGROUPMETRICS);
 #endif
 
 static luacwrap_RecordMember s_memberHDITEMW[] =
@@ -164,7 +166,7 @@ static luacwrap_RecordMember s_memberHDITEMW[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, HDITEMW);
+LUACWRAP_DEFINESTRUCT(luawinapi, HDITEMW);
 
 static luacwrap_RecordMember s_memberLVCOLUMNW[] =
 {
@@ -179,7 +181,7 @@ static luacwrap_RecordMember s_memberLVCOLUMNW[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, LVCOLUMNW);
+LUACWRAP_DEFINESTRUCT(luawinapi, LVCOLUMNW);
 
 #if (defined(USE_AYGSHELL))
 static luacwrap_RecordMember s_memberSHINITDLGINFO[] =
@@ -190,7 +192,7 @@ static luacwrap_RecordMember s_memberSHINITDLGINFO[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, SHINITDLGINFO);
+LUACWRAP_DEFINESTRUCT(luawinapi, SHINITDLGINFO);
 #endif
 
 static luacwrap_RecordMember s_memberNMLVKEYDOWN[] =
@@ -201,7 +203,7 @@ static luacwrap_RecordMember s_memberNMLVKEYDOWN[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, NMLVKEYDOWN);
+LUACWRAP_DEFINESTRUCT(luawinapi, NMLVKEYDOWN);
 
 static luacwrap_RecordMember s_memberLOGPEN[] =
 {
@@ -211,7 +213,7 @@ static luacwrap_RecordMember s_memberLOGPEN[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, LOGPEN);
+LUACWRAP_DEFINESTRUCT(luawinapi, LOGPEN);
 
 static luacwrap_RecordMember s_memberSECURITY_ATTRIBUTES[] =
 {
@@ -221,7 +223,7 @@ static luacwrap_RecordMember s_memberSECURITY_ATTRIBUTES[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, SECURITY_ATTRIBUTES);
+LUACWRAP_DEFINESTRUCT(luawinapi, SECURITY_ATTRIBUTES);
 
 #if (defined(USE_COMMANDBAR))
 static luacwrap_RecordMember s_memberCOMMANDBANDSRESTOREINFO[] =
@@ -234,7 +236,7 @@ static luacwrap_RecordMember s_memberCOMMANDBANDSRESTOREINFO[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, COMMANDBANDSRESTOREINFO);
+LUACWRAP_DEFINESTRUCT(luawinapi, COMMANDBANDSRESTOREINFO);
 #endif
 
 static luacwrap_RecordMember s_memberLOGFONTW[] =
@@ -256,7 +258,7 @@ static luacwrap_RecordMember s_memberLOGFONTW[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, LOGFONTW);
+LUACWRAP_DEFINESTRUCT(luawinapi, LOGFONTW);
 
 #if (defined(UNDER_CE))
 static luacwrap_RecordMember s_memberPOWER_BROADCAST[] =
@@ -267,7 +269,7 @@ static luacwrap_RecordMember s_memberPOWER_BROADCAST[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, POWER_BROADCAST);
+LUACWRAP_DEFINESTRUCT(luawinapi, POWER_BROADCAST);
 #endif
 
 #if (!defined(UNDER_CE))
@@ -279,7 +281,7 @@ static luacwrap_RecordMember s_memberNMTCKEYDOWN[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, NMTCKEYDOWN);
+LUACWRAP_DEFINESTRUCT(luawinapi, NMTCKEYDOWN);
 #endif
 
 static luacwrap_RecordMember s_memberSTARTUPINFOW[] =
@@ -305,7 +307,7 @@ static luacwrap_RecordMember s_memberSTARTUPINFOW[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, STARTUPINFOW);
+LUACWRAP_DEFINESTRUCT(luawinapi, STARTUPINFOW);
 
 static luacwrap_RecordMember s_memberPOINTS[] =
 {
@@ -314,7 +316,7 @@ static luacwrap_RecordMember s_memberPOINTS[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, POINTS);
+LUACWRAP_DEFINESTRUCT(luawinapi, POINTS);
 
 #if (defined(USE_AYGSHELL))
 static luacwrap_RecordMember s_memberSHACTIVATEINFO[] =
@@ -324,7 +326,7 @@ static luacwrap_RecordMember s_memberSHACTIVATEINFO[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, SHACTIVATEINFO);
+LUACWRAP_DEFINESTRUCT(luawinapi, SHACTIVATEINFO);
 #endif
 
 static luacwrap_RecordMember s_memberPROCESS_INFORMATION[] =
@@ -336,7 +338,7 @@ static luacwrap_RecordMember s_memberPROCESS_INFORMATION[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, PROCESS_INFORMATION);
+LUACWRAP_DEFINESTRUCT(luawinapi, PROCESS_INFORMATION);
 
 #if (defined(UNDER_CE))
 static luacwrap_RecordMember s_memberMSGQUEUEOPTIONS[] =
@@ -349,7 +351,7 @@ static luacwrap_RecordMember s_memberMSGQUEUEOPTIONS[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, MSGQUEUEOPTIONS);
+LUACWRAP_DEFINESTRUCT(luawinapi, MSGQUEUEOPTIONS);
 #endif
 
 static luacwrap_RecordMember s_memberRECT[] =
@@ -361,7 +363,7 @@ static luacwrap_RecordMember s_memberRECT[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, RECT);
+LUACWRAP_DEFINESTRUCT(luawinapi, RECT);
 
 #if (!defined(UNDER_CE))
 static luacwrap_RecordMember s_memberPRINTDLGW[] =
@@ -386,7 +388,7 @@ static luacwrap_RecordMember s_memberPRINTDLGW[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, PRINTDLGW);
+LUACWRAP_DEFINESTRUCT(luawinapi, PRINTDLGW);
 #endif
 
 #if (!defined(UNDER_CE))
@@ -407,7 +409,7 @@ static luacwrap_RecordMember s_memberWNDCLASSEXW[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, WNDCLASSEXW);
+LUACWRAP_DEFINESTRUCT(luawinapi, WNDCLASSEXW);
 #endif
 
 #if (defined(USE_AYGSHELL))
@@ -425,7 +427,7 @@ static luacwrap_RecordMember s_memberSHMENUBARINFO[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, SHMENUBARINFO);
+LUACWRAP_DEFINESTRUCT(luawinapi, SHMENUBARINFO);
 #endif
 
 static luacwrap_RecordMember s_memberOSVERSIONINFOW[] =
@@ -439,7 +441,7 @@ static luacwrap_RecordMember s_memberOSVERSIONINFOW[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, OSVERSIONINFOW);
+LUACWRAP_DEFINESTRUCT(luawinapi, OSVERSIONINFOW);
 
 static luacwrap_RecordMember s_memberSIZE[] =
 {
@@ -448,7 +450,7 @@ static luacwrap_RecordMember s_memberSIZE[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, SIZE);
+LUACWRAP_DEFINESTRUCT(luawinapi, SIZE);
 
 static luacwrap_RecordMember s_memberTTHITTESTINFOW[] =
 {
@@ -458,7 +460,7 @@ static luacwrap_RecordMember s_memberTTHITTESTINFOW[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, TTHITTESTINFOW);
+LUACWRAP_DEFINESTRUCT(luawinapi, TTHITTESTINFOW);
 
 static luacwrap_RecordMember s_memberOPENFILENAMEW[] =
 {
@@ -484,7 +486,7 @@ static luacwrap_RecordMember s_memberOPENFILENAMEW[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, OPENFILENAMEW);
+LUACWRAP_DEFINESTRUCT(luawinapi, OPENFILENAMEW);
 
 static luacwrap_RecordMember s_memberTCHITTESTINFO[] =
 {
@@ -493,7 +495,7 @@ static luacwrap_RecordMember s_memberTCHITTESTINFO[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, TCHITTESTINFO);
+LUACWRAP_DEFINESTRUCT(luawinapi, TCHITTESTINFO);
 
 static luacwrap_RecordMember s_memberMENUITEMINFOW[] =
 {
@@ -511,7 +513,7 @@ static luacwrap_RecordMember s_memberMENUITEMINFOW[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, MENUITEMINFOW);
+LUACWRAP_DEFINESTRUCT(luawinapi, MENUITEMINFOW);
 
 static luacwrap_RecordMember s_memberCHOOSECOLOR[] =
 {
@@ -525,7 +527,7 @@ static luacwrap_RecordMember s_memberCHOOSECOLOR[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, CHOOSECOLOR);
+LUACWRAP_DEFINESTRUCT(luawinapi, CHOOSECOLOR);
 
 static luacwrap_RecordMember s_memberTCITEMHEADERW[] =
 {
@@ -538,7 +540,7 @@ static luacwrap_RecordMember s_memberTCITEMHEADERW[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, TCITEMHEADERW);
+LUACWRAP_DEFINESTRUCT(luawinapi, TCITEMHEADERW);
 
 static luacwrap_RecordMember s_memberTVINSERTSTRUCTW[] =
 {
@@ -548,7 +550,7 @@ static luacwrap_RecordMember s_memberTVINSERTSTRUCTW[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, TVINSERTSTRUCTW);
+LUACWRAP_DEFINESTRUCT(luawinapi, TVINSERTSTRUCTW);
 
 static luacwrap_RecordMember s_memberTVHITTESTINFO[] =
 {
@@ -558,7 +560,7 @@ static luacwrap_RecordMember s_memberTVHITTESTINFO[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, TVHITTESTINFO);
+LUACWRAP_DEFINESTRUCT(luawinapi, TVHITTESTINFO);
 
 static luacwrap_RecordMember s_memberNMHDR[] =
 {
@@ -568,7 +570,7 @@ static luacwrap_RecordMember s_memberNMHDR[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, NMHDR);
+LUACWRAP_DEFINESTRUCT(luawinapi, NMHDR);
 
 static luacwrap_RecordMember s_memberCREATESTRUCTW[] =
 {
@@ -587,7 +589,7 @@ static luacwrap_RecordMember s_memberCREATESTRUCTW[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, CREATESTRUCTW);
+LUACWRAP_DEFINESTRUCT(luawinapi, CREATESTRUCTW);
 
 static luacwrap_RecordMember s_memberHDHITTESTINFO[] =
 {
@@ -597,7 +599,7 @@ static luacwrap_RecordMember s_memberHDHITTESTINFO[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, HDHITTESTINFO);
+LUACWRAP_DEFINESTRUCT(luawinapi, HDHITTESTINFO);
 
 #if (!defined(UNDER_CE))
 static luacwrap_RecordMember s_memberNMITEMACTIVATE[] =
@@ -614,7 +616,7 @@ static luacwrap_RecordMember s_memberNMITEMACTIVATE[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, NMITEMACTIVATE);
+LUACWRAP_DEFINESTRUCT(luawinapi, NMITEMACTIVATE);
 #endif
 
 static luacwrap_RecordMember s_memberCOPYDATASTRUCT[] =
@@ -625,7 +627,7 @@ static luacwrap_RecordMember s_memberCOPYDATASTRUCT[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, COPYDATASTRUCT);
+LUACWRAP_DEFINESTRUCT(luawinapi, COPYDATASTRUCT);
 
 static luacwrap_RecordMember s_memberTBBUTTONINFOW[] =
 {
@@ -642,7 +644,7 @@ static luacwrap_RecordMember s_memberTBBUTTONINFOW[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, TBBUTTONINFOW);
+LUACWRAP_DEFINESTRUCT(luawinapi, TBBUTTONINFOW);
 
 #if (!defined(UNDER_CE))
 static luacwrap_RecordMember s_memberLVGROUP[] =
@@ -674,7 +676,7 @@ static luacwrap_RecordMember s_memberLVGROUP[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, LVGROUP);
+LUACWRAP_DEFINESTRUCT(luawinapi, LVGROUP);
 #endif
 
 static luacwrap_RecordMember s_memberACCEL[] =
@@ -685,7 +687,7 @@ static luacwrap_RecordMember s_memberACCEL[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, ACCEL);
+LUACWRAP_DEFINESTRUCT(luawinapi, ACCEL);
 
 #if (defined(UNDER_CE))
 static luacwrap_RecordMember s_memberCONNMGR_CONNECTIONINFO[] =
@@ -706,7 +708,7 @@ static luacwrap_RecordMember s_memberCONNMGR_CONNECTIONINFO[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, CONNMGR_CONNECTIONINFO);
+LUACWRAP_DEFINESTRUCT(luawinapi, CONNMGR_CONNECTIONINFO);
 #endif
 
 static luacwrap_RecordMember s_memberPOINT[] =
@@ -716,7 +718,7 @@ static luacwrap_RecordMember s_memberPOINT[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, POINT);
+LUACWRAP_DEFINESTRUCT(luawinapi, POINT);
 
 static luacwrap_RecordMember s_memberNMLISTVIEW[] =
 {
@@ -731,7 +733,7 @@ static luacwrap_RecordMember s_memberNMLISTVIEW[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, NMLISTVIEW);
+LUACWRAP_DEFINESTRUCT(luawinapi, NMLISTVIEW);
 
 static luacwrap_RecordMember s_memberNMLVDISPINFOW[] =
 {
@@ -740,7 +742,7 @@ static luacwrap_RecordMember s_memberNMLVDISPINFOW[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, NMLVDISPINFOW);
+LUACWRAP_DEFINESTRUCT(luawinapi, NMLVDISPINFOW);
 
 static luacwrap_RecordMember s_memberDLGTEMPLATE[] =
 {
@@ -754,7 +756,7 @@ static luacwrap_RecordMember s_memberDLGTEMPLATE[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, DLGTEMPLATE);
+LUACWRAP_DEFINESTRUCT(luawinapi, DLGTEMPLATE);
 
 static luacwrap_RecordMember s_memberPAINTSTRUCT[] =
 {
@@ -767,7 +769,7 @@ static luacwrap_RecordMember s_memberPAINTSTRUCT[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, PAINTSTRUCT);
+LUACWRAP_DEFINESTRUCT(luawinapi, PAINTSTRUCT);
 
 static luacwrap_RecordMember s_memberTPMPARAMS[] =
 {
@@ -776,7 +778,7 @@ static luacwrap_RecordMember s_memberTPMPARAMS[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, TPMPARAMS);
+LUACWRAP_DEFINESTRUCT(luawinapi, TPMPARAMS);
 
 static luacwrap_RecordMember s_memberLVITEMW[] =
 {
@@ -796,7 +798,7 @@ static luacwrap_RecordMember s_memberLVITEMW[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, LVITEMW);
+LUACWRAP_DEFINESTRUCT(luawinapi, LVITEMW);
 
 static luacwrap_RecordMember s_memberNMTTDISPINFOW[] =
 {
@@ -809,7 +811,7 @@ static luacwrap_RecordMember s_memberNMTTDISPINFOW[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, NMTTDISPINFOW);
+LUACWRAP_DEFINESTRUCT(luawinapi, NMTTDISPINFOW);
 
 static luacwrap_RecordMember s_memberNMHDDISPINFOW[] =
 {
@@ -823,7 +825,7 @@ static luacwrap_RecordMember s_memberNMHDDISPINFOW[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, NMHDDISPINFOW);
+LUACWRAP_DEFINESTRUCT(luawinapi, NMHDDISPINFOW);
 
 static luacwrap_RecordMember s_memberNMHEADERW[] =
 {
@@ -833,7 +835,7 @@ static luacwrap_RecordMember s_memberNMHEADERW[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, NMHEADERW);
+LUACWRAP_DEFINESTRUCT(luawinapi, NMHEADERW);
 
 static luacwrap_RecordMember s_memberDLGITEMTEMPLATE[] =
 {
@@ -847,7 +849,7 @@ static luacwrap_RecordMember s_memberDLGITEMTEMPLATE[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, DLGITEMTEMPLATE);
+LUACWRAP_DEFINESTRUCT(luawinapi, DLGITEMTEMPLATE);
 
 static luacwrap_RecordMember s_memberNMTREEVIEWW[] =
 {
@@ -859,7 +861,7 @@ static luacwrap_RecordMember s_memberNMTREEVIEWW[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, NMTREEVIEWW);
+LUACWRAP_DEFINESTRUCT(luawinapi, NMTREEVIEWW);
 
 #if (!defined(UNDER_CE))
 static luacwrap_RecordMember s_memberWINDOWPLACEMENT[] =
@@ -873,7 +875,7 @@ static luacwrap_RecordMember s_memberWINDOWPLACEMENT[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, WINDOWPLACEMENT);
+LUACWRAP_DEFINESTRUCT(luawinapi, WINDOWPLACEMENT);
 #endif
 
 static luacwrap_RecordMember s_memberTTTOOLINFOW[] =
@@ -889,7 +891,7 @@ static luacwrap_RecordMember s_memberTTTOOLINFOW[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, TTTOOLINFOW);
+LUACWRAP_DEFINESTRUCT(luawinapi, TTTOOLINFOW);
 
 static luacwrap_RecordMember s_memberMSG[] =
 {
@@ -902,7 +904,7 @@ static luacwrap_RecordMember s_memberMSG[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, MSG);
+LUACWRAP_DEFINESTRUCT(luawinapi, MSG);
 
 static luacwrap_RecordMember s_memberTCITEMW[] =
 {
@@ -916,7 +918,7 @@ static luacwrap_RecordMember s_memberTCITEMW[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, TCITEMW);
+LUACWRAP_DEFINESTRUCT(luawinapi, TCITEMW);
 
 static luacwrap_RecordMember s_memberINITCOMMONCONTROLSEX[] =
 {
@@ -925,7 +927,7 @@ static luacwrap_RecordMember s_memberINITCOMMONCONTROLSEX[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, INITCOMMONCONTROLSEX);
+LUACWRAP_DEFINESTRUCT(luawinapi, INITCOMMONCONTROLSEX);
 
 static luacwrap_RecordMember s_memberWNDCLASSW[] =
 {
@@ -942,7 +944,7 @@ static luacwrap_RecordMember s_memberWNDCLASSW[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, WNDCLASSW);
+LUACWRAP_DEFINESTRUCT(luawinapi, WNDCLASSW);
 
 #if (!defined(UNDER_CE))
 static luacwrap_RecordMember s_memberOSVERSIONINFOEXW[] =
@@ -961,7 +963,7 @@ static luacwrap_RecordMember s_memberOSVERSIONINFOEXW[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(winapi, OSVERSIONINFOEXW);
+LUACWRAP_DEFINESTRUCT(luawinapi, OSVERSIONINFOEXW);
 #endif
 
 int lua_tolwparam( lua_State *L, int idx )
@@ -9258,7 +9260,7 @@ static const luaL_Reg module_lib[ ] = {
   @param[in]  L  pointer lua state
 
 */////////////////////////////////////////////////////////////////////////
-int register_winapi(lua_State *L)
+int register_luawinapi(lua_State *L)
 {
   // index of module table
   int M = lua_gettop(L);
