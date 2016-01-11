@@ -330,10 +330,10 @@ static int winapi_WndProc_subclass(lua_State* L)
 
       thunk->L            = L;
       thunk->pThunk       = stdcallthunk_create(&staticWndProc, thunk);
-      thunk->prevProc     = (WNDPROC)GetWindowLong(hwnd, GWL_WNDPROC);
+      thunk->prevProc     = (WNDPROC)GetWindowLongPtr(hwnd, GWLP_WNDPROC);
       
       // subclass
-      SetWindowLong(hwnd, GWL_WNDPROC, (LONG)thunk->pThunk);
+      SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LPARAM)thunk->pThunk);
 
       LUASTACK_CLEAN(L, 1);
       return 1;
