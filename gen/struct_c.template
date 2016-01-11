@@ -65,29 +65,29 @@ static luacwrap_RecordMember s_member$(struct.name)[] =
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT($(libname), $(struct.name));
+LUACWRAP_DEFINESTRUCT($(struct.name));
 //#     prerequisite_end(struct, _put)
 //#end
 
-int lua_tolwparam( lua_State *L, int idx )
+UINT_PTR lua_tolwparam( lua_State *L, int idx )
 {
-  int v = 0;
+  UINT_PTR v = 0;
   switch (lua_type(L, idx))
   {
     case LUA_TLIGHTUSERDATA:
     case LUA_TUSERDATA:
     {
-      v = (int)lua_touserdata(L, idx);
+      v = (UINT_PTR)lua_touserdata(L, idx);
     }
     break;
     case LUA_TSTRING:
     {
-      v = (int)lua_tostring(L, idx);
+      v = (UINT_PTR)lua_tostring(L, idx);
     }
     break;
     case LUA_TNUMBER:
     {
-      v = lua_tointeger(L, idx);
+      v = (UINT_PTR)lua_tointeger(L, idx);
     }
     break;
     case LUA_TNONE:
@@ -136,20 +136,20 @@ LPCWSTR lua_tostring_or_atom( lua_State *L, int idx )
 } 
 
 
-int lua_tohandle( lua_State *L, int idx )
+HANDLE lua_tohandle( lua_State *L, int idx )
 {
-  int v = 0;
+  HANDLE v = 0;
   switch (lua_type(L, idx))
   {
     case LUA_TLIGHTUSERDATA:
     case LUA_TUSERDATA:
     {
-      v = (int)lua_touserdata(L, idx);
+      v = (HANDLE)lua_touserdata(L, idx);
     }
     break;
     case LUA_TNUMBER:
     {
-      v = lua_tointeger(L, idx);
+      v = (HANDLE)lua_tointeger(L, idx);
     }
     break;
     case LUA_TNONE:
@@ -166,19 +166,19 @@ int lua_tohandle( lua_State *L, int idx )
   return v;
 } 
 
-int lua_toresourceref( lua_State *L, int idx )
+LPCWSTR lua_toresourceref( lua_State *L, int idx )
 {
-  int v = 0;
+  LPCWSTR v = 0;
   switch (lua_type(L, idx))
   {
     case LUA_TSTRING:
     {
-      v = (int)lua_tostring(L, idx);
+      v = (LPCWSTR)lua_tostring(L, idx);
     }
     break;
     case LUA_TNUMBER:
     {
-      v = lua_tointeger(L, idx);
+      v = (LPCWSTR)lua_tointeger(L, idx);
     }
     break;
     case LUA_TNONE:
@@ -278,11 +278,12 @@ int winapi_$(func.name)( lua_State *L )
   // marshal retval
   $(marshal_param(func.rettype, "out", "retval", nil))
 //# end
-//# for _, param in ipairs(func.params) do
+//# -- marshal out params
+//# for i, param in ipairs(func.params) do
 //#   if (param.attribs and param.attribs.out) then
 
-  // TODO: marshal $(param.typ)
-//# end
+  $(marshal_param(param, "out", "p"..i, i))
+//#   end
 //# end
 
   return numret;
