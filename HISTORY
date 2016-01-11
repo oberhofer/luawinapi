@@ -30,3 +30,10 @@
 * depends on luacwrap version 1.2.0-1
 * changed dependency from bit to bit32
 * tested on Lua 5.1, 5.2 and 5.3
+
+1.3.0
+
+* depends on luacwrap version 1.3.0-1
+* fixed 64 bit thunk
+* adjustments for 64bit platforms (platform specific types)
+* added marshalling of out params
