@@ -112,9 +112,9 @@ BOOL StdCallThunk_Init(PSTDCALLTHUNK pThunk, PVOID proc, void* pContext)
                               0x48, 0xB9, 0x0D, 0xF0, 0xAD, 0x0B, 
                               0x0D, 0xF0, 0xAD, 0x0B,             //   1C:   mov         rcx,0BADF00D0BADF00Dh
                               0xFF, 0xD0,                         //   26:   call        rax
-                              0x48, 0x83, 0xC4 38                 //   28:   add         rsp,38h
+                              0x48, 0x83, 0xC4, 0x38,             //   28:   add         rsp,38h
                               0xC3,                               //   2C:   ret
-                              0x66, 0x66, 0x90                    //   2D:   xchg        ax,ax
+                              0x66, 0x66, 0x90,                   //   2D:   xchg        ax,ax
                                                                   //         ALIGN 8
                               0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
                               0x00, 0x00                          //   30:   dq   0000000000000000H     ; pointer to next thunk
