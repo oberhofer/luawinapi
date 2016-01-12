@@ -96,26 +96,29 @@ handlers =
         winapi.SendMessageW(hEdit.handle, WM_SETTEXT, 0, _T(content))
       end
     elseif (wParam == CMD_SAVEFILE) then
+    
+      local buffer = string.rep("\0\0", 270)
+      
       --
       print("Save file")
       local ofn = winapi.OPENFILENAMEW:new()
       ofn.lStructSize = #ofn
-      ofn.hwndOwner = hwnd
+      ofn.hwndOwner = hwnd.handle
       -- ofn.hInstance;
       ofn.lpstrFilter = _T("Text Files (*.txt)\0*.txt\0All Files (*.*)\0*.*\0");
       -- ofn.lpstrCustomFilter
       -- ofn.nMaxCustFilter;
       -- ofn.nFilterIndex;
-      -- ofn.lpstrFile;
-      -- ofn.nMaxFile;
-      -- ofn.lpstrFileTitle;
-      -- ofn.nMaxFileTitle;
+      ofn.lpstrFile = buffer
+      ofn.nMaxFile = 260
+      ofn.lpstrFileTitle = _T("FileTitle");
+      ofn.nMaxFileTitle = 9;
       -- ofn.lpstrInitialDir;
-      -- ofn.lpstrTitle;
-      -- ofn.Flags = bor(OFN_EXPLORER, OFN_HIDEREADONLY);
+      ofn.lpstrTitle = _T("Title");
+      ofn.Flags = bor(OFN_SHOWHELP, OFN_OVERWRITEPROMPT);
       -- ofn.nFileOffset;
       -- ofn.nFileExtension;
-      ofn.lpstrDefExt = _T("txt");
+      -- ofn.lpstrDefExt = _T("txt");
       -- ofn.lCustData;
       local result = winapi.GetSaveFileNameW(ofn)
       winapi.Assert(result);
