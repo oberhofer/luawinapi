@@ -18,7 +18,7 @@ description = {
 
 dependencies = {
   "lua >= 5.1",
-  "luacwrap ~> 1.2",
+  "luacwrap ~> 1.3",
   "bit32"
 }
 
@@ -27,13 +27,13 @@ local function make_plat(plat)
   local defines = {
     win32 = {
      "WIN32", "NDEBUG", "_WINDOWS", "_USRDLL", 
-	 "WINVER=0x0600", 
+     "WINVER=0x0600", 
      "_WIN32_WINNT=0x0600", 
      "_WIN32_IE=0x0600"
     },
     mingw32 = {
      "WIN32", "NDEBUG", "_WINDOWS", "_USRDLL", 
-	 "WINVER=0x0600", 
+     "WINVER=0x0600", 
      "_WIN32_WINNT=0x0600", 
      "_WIN32_IE=0x0600"
     }
