@@ -527,6 +527,9 @@ static const struct luaL_Reg Window_Methods[ ] = {
   { "ScreenToClient",  winapi_ScreenToClient },
   { "MapWindowPoints",  winapi_MapWindowPoints },
   { "SetCapture",  winapi_SetCapture },
+  { "CreateCaret",  winapi_CreateCaret },
+  { "HideCaret",  winapi_HideCaret },
+  { "ShowCaret",  winapi_ShowCaret },
 #if (!defined(UNDER_CE))
   { "GetTopWindow",  winapi_GetTopWindow },
 #endif
@@ -556,6 +559,9 @@ static const struct luaL_Reg Window_Methods[ ] = {
   { "GetNextDlgTabItem",  winapi_GetNextDlgTabItem },
   { "GetDlgCtrlID",  winapi_GetDlgCtrlID },
   { "DefDlgProcW",  winapi_DefDlgProcW },
+  { "OpenClipboard",  winapi_OpenClipboard },
+  { "SetClipboardViewer",  winapi_SetClipboardViewer },
+  { "ChangeClipboardChain",  winapi_ChangeClipboardChain },
 #if (defined(USE_AYGSHELL))
   { "SHFindMenuBar",  winapi_SHFindMenuBar },
 #endif

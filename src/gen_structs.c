@@ -2118,6 +2118,179 @@ int winapi_GetAsyncKeyState( lua_State *L )
   return numret;
 }
 
+int winapi_GetKeyboardState( lua_State *L )
+{
+  int numret = 0;
+  BOOL retval;
+  BYTE p1;
+
+  p1 = lua_tointeger(L, 1);
+
+  retval = 
+    GetKeyboardState(
+      &p1
+    );
+
+  // marshal retval
+  lua_pushinteger(L, retval); ++numret;
+
+  lua_pushinteger(L, p1); ++numret;
+
+  return numret;
+}
+
+int winapi_SetKeyboardState( lua_State *L )
+{
+  int numret = 0;
+  BOOL retval;
+  BYTE p1;
+
+  p1 = lua_tointeger(L, 1);
+
+  retval = 
+    SetKeyboardState(
+      &p1
+    );
+
+  // marshal retval
+  lua_pushinteger(L, retval); ++numret;
+
+  lua_pushinteger(L, p1); ++numret;
+
+  return numret;
+}
+
+int winapi_GetKeyNameTextW( lua_State *L )
+{
+  int numret = 0;
+  int retval;
+  LONG p1;
+  LPWSTR p2;
+  int p3;
+
+  p1 = lua_tointeger(L, 1);
+  p2 = (LPWSTR)lua_tostring(L, 2);
+  p3 = lua_tointeger(L, 3);
+
+  retval = 
+    GetKeyNameTextW(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushinteger(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_GetKeyboardType( lua_State *L )
+{
+  int numret = 0;
+  int retval;
+  int p1;
+
+  p1 = lua_tointeger(L, 1);
+
+  retval = 
+    GetKeyboardType(
+      p1
+    );
+
+  // marshal retval
+  lua_pushinteger(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_OemKeyScan( lua_State *L )
+{
+  int numret = 0;
+  DWORD retval;
+  WORD p1;
+
+  p1 = lua_tointeger(L, 1);
+
+  retval = 
+    OemKeyScan(
+      p1
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_VkKeyScanW( lua_State *L )
+{
+  int numret = 0;
+  SHORT retval;
+  WCHAR p1;
+
+  p1 = lua_tointeger(L, 1);
+
+  retval = 
+    VkKeyScanW(
+      p1
+    );
+
+  // marshal retval
+  lua_pushinteger(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_keybd_event( lua_State *L )
+{
+  int numret = 0;
+  BYTE p1;
+  BYTE p2;
+  DWORD p3;
+  ULONG_PTR p4;
+
+  p1 = lua_tointeger(L, 1);
+  p2 = lua_tointeger(L, 2);
+  p3 = (DWORD)lua_tonumber(L, 3);
+  p4 = (ULONG_PTR)lua_touserdata(L, 4);
+
+    keybd_event(
+      p1,
+      p2,
+      p3,
+      p4
+    );
+
+  return numret;
+}
+
+int winapi_mouse_event( lua_State *L )
+{
+  int numret = 0;
+  DWORD p1;
+  DWORD p2;
+  DWORD p3;
+  DWORD p4;
+  ULONG_PTR p5;
+
+  p1 = (DWORD)lua_tonumber(L, 1);
+  p2 = (DWORD)lua_tonumber(L, 2);
+  p3 = (DWORD)lua_tonumber(L, 3);
+  p4 = (DWORD)lua_tonumber(L, 4);
+  p5 = (ULONG_PTR)lua_touserdata(L, 5);
+
+    mouse_event(
+      p1,
+      p2,
+      p3,
+      p4,
+      p5
+    );
+
+  return numret;
+}
+
 int winapi_DrawMenuBar( lua_State *L )
 {
   int numret = 0;
@@ -3942,6 +4115,164 @@ int winapi_Beep( lua_State *L )
 }
 
 #endif
+int winapi_CreateCaret( lua_State *L )
+{
+  int numret = 0;
+  BOOL retval;
+  HWND p1;
+  HBITMAP p2;
+  int p3;
+  int p4;
+
+  p1 = lua_toWindow(L, 1);
+  p2 = (HBITMAP)lua_tohandle(L, 2);
+  p3 = lua_tointeger(L, 3);
+  p4 = lua_tointeger(L, 4);
+
+  retval = 
+    CreateCaret(
+      p1,
+      p2,
+      p3,
+      p4
+    );
+
+  // marshal retval
+  lua_pushinteger(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_DestroyCaret( lua_State *L )
+{
+  int numret = 0;
+  BOOL retval;
+
+
+  retval = 
+    DestroyCaret(
+    );
+
+  // marshal retval
+  lua_pushinteger(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_HideCaret( lua_State *L )
+{
+  int numret = 0;
+  BOOL retval;
+  HWND p1;
+
+  p1 = lua_toWindow(L, 1);
+
+  retval = 
+    HideCaret(
+      p1
+    );
+
+  // marshal retval
+  lua_pushinteger(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_ShowCaret( lua_State *L )
+{
+  int numret = 0;
+  BOOL retval;
+  HWND p1;
+
+  p1 = lua_toWindow(L, 1);
+
+  retval = 
+    ShowCaret(
+      p1
+    );
+
+  // marshal retval
+  lua_pushinteger(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_SetCaretPos( lua_State *L )
+{
+  int numret = 0;
+  BOOL retval;
+  int p1;
+  int p2;
+
+  p1 = lua_tointeger(L, 1);
+  p2 = lua_tointeger(L, 2);
+
+  retval = 
+    SetCaretPos(
+      p1,
+      p2
+    );
+
+  // marshal retval
+  lua_pushinteger(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_GetCaretPos( lua_State *L )
+{
+  int numret = 0;
+  BOOL retval;
+  POINT* p1;
+
+  p1 = (POINT*)g_luacwrapiface->checktype(L, 1, &regType_POINT.hdr);
+
+  retval = 
+    GetCaretPos(
+      p1
+    );
+
+  // marshal retval
+  lua_pushinteger(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_SetCaretBlinkTime( lua_State *L )
+{
+  int numret = 0;
+  BOOL retval;
+  UINT p1;
+
+  p1 = (UINT)lua_tonumber(L, 1);
+
+  retval = 
+    SetCaretBlinkTime(
+      p1
+    );
+
+  // marshal retval
+  lua_pushinteger(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_GetCaretBlinkTime( lua_State *L )
+{
+  int numret = 0;
+  UINT retval;
+
+
+  retval = 
+    GetCaretBlinkTime(
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
 #if (!defined(UNDER_CE))
 int winapi_GetTopWindow( lua_State *L )
 {
@@ -4923,6 +5254,398 @@ int winapi_DefDlgProcW( lua_State *L )
       p2,
       p3,
       p4
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_OpenClipboard( lua_State *L )
+{
+  int numret = 0;
+  BOOL retval;
+  HWND p1;
+
+  p1 = lua_toWindow(L, 1);
+
+  retval = 
+    OpenClipboard(
+      p1
+    );
+
+  // marshal retval
+  lua_pushinteger(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_CloseClipboard( lua_State *L )
+{
+  int numret = 0;
+  BOOL retval;
+
+
+  retval = 
+    CloseClipboard(
+    );
+
+  // marshal retval
+  lua_pushinteger(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_GetClipboardSequenceNumber( lua_State *L )
+{
+  int numret = 0;
+  DWORD retval;
+
+
+  retval = 
+    GetClipboardSequenceNumber(
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_GetClipboardOwner( lua_State *L )
+{
+  int numret = 0;
+  HWND retval;
+
+
+  retval = 
+    GetClipboardOwner(
+    );
+
+  // marshal retval
+  numret += lua_pushWindow(L, retval);
+
+  return numret;
+}
+
+int winapi_SetClipboardViewer( lua_State *L )
+{
+  int numret = 0;
+  HWND retval;
+  HWND p1;
+
+  p1 = lua_toWindow(L, 1);
+
+  retval = 
+    SetClipboardViewer(
+      p1
+    );
+
+  // marshal retval
+  numret += lua_pushWindow(L, retval);
+
+  return numret;
+}
+
+int winapi_GetClipboardViewer( lua_State *L )
+{
+  int numret = 0;
+  HWND retval;
+
+
+  retval = 
+    GetClipboardViewer(
+    );
+
+  // marshal retval
+  numret += lua_pushWindow(L, retval);
+
+  return numret;
+}
+
+int winapi_ChangeClipboardChain( lua_State *L )
+{
+  int numret = 0;
+  BOOL retval;
+  HWND p1;
+  HWND p2;
+
+  p1 = lua_toWindow(L, 1);
+  p2 = lua_toWindow(L, 2);
+
+  retval = 
+    ChangeClipboardChain(
+      p1,
+      p2
+    );
+
+  // marshal retval
+  lua_pushinteger(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_SetClipboardData( lua_State *L )
+{
+  int numret = 0;
+  HANDLE retval;
+  UINT p1;
+  HANDLE p2;
+
+  p1 = (UINT)lua_tonumber(L, 1);
+  p2 = (HANDLE)lua_tohandle(L, 2);
+
+  retval = 
+    SetClipboardData(
+      p1,
+      p2
+    );
+
+  // marshal retval
+  lua_pushlightuserdata(L, (PVOID)retval); ++numret;
+
+  return numret;
+}
+
+int winapi_GetClipboardData( lua_State *L )
+{
+  int numret = 0;
+  HANDLE retval;
+  UINT p1;
+
+  p1 = (UINT)lua_tonumber(L, 1);
+
+  retval = 
+    GetClipboardData(
+      p1
+    );
+
+  // marshal retval
+  lua_pushlightuserdata(L, (PVOID)retval); ++numret;
+
+  return numret;
+}
+
+int winapi_RegisterClipboardFormatW( lua_State *L )
+{
+  int numret = 0;
+  UINT retval;
+  LPCWSTR p1;
+
+  p1 = (LPCWSTR)lua_tostring(L, 1);
+
+  retval = 
+    RegisterClipboardFormatW(
+      p1
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_CountClipboardFormats( lua_State *L )
+{
+  int numret = 0;
+  int retval;
+
+
+  retval = 
+    CountClipboardFormats(
+    );
+
+  // marshal retval
+  lua_pushinteger(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_EnumClipboardFormats( lua_State *L )
+{
+  int numret = 0;
+  UINT retval;
+  UINT p1;
+
+  p1 = (UINT)lua_tonumber(L, 1);
+
+  retval = 
+    EnumClipboardFormats(
+      p1
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_GetClipboardFormatNameW( lua_State *L )
+{
+  int numret = 0;
+  int retval;
+  UINT p1;
+  LPWSTR p2;
+  int p3;
+
+  p1 = (UINT)lua_tonumber(L, 1);
+  p2 = (LPWSTR)lua_tostring(L, 2);
+  p3 = lua_tointeger(L, 3);
+
+  retval = 
+    GetClipboardFormatNameW(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushinteger(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_EmptyClipboard( lua_State *L )
+{
+  int numret = 0;
+  BOOL retval;
+
+
+  retval = 
+    EmptyClipboard(
+    );
+
+  // marshal retval
+  lua_pushinteger(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_IsClipboardFormatAvailable( lua_State *L )
+{
+  int numret = 0;
+  BOOL retval;
+  UINT p1;
+
+  p1 = (UINT)lua_tonumber(L, 1);
+
+  retval = 
+    IsClipboardFormatAvailable(
+      p1
+    );
+
+  // marshal retval
+  lua_pushinteger(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_GetPriorityClipboardFormat( lua_State *L )
+{
+  int numret = 0;
+  int retval;
+  UINT p1;
+  int p2;
+
+  p1 = (UINT)lua_tonumber(L, 1);
+  p2 = lua_tointeger(L, 2);
+
+  retval = 
+    GetPriorityClipboardFormat(
+      &p1,
+      p2
+    );
+
+  // marshal retval
+  lua_pushinteger(L, retval); ++numret;
+
+  lua_pushnumber(L, p1); ++numret;
+
+  return numret;
+}
+
+int winapi_GetOpenClipboardWindow( lua_State *L )
+{
+  int numret = 0;
+  HWND retval;
+
+
+  retval = 
+    GetOpenClipboardWindow(
+    );
+
+  // marshal retval
+  numret += lua_pushWindow(L, retval);
+
+  return numret;
+}
+
+int winapi_GetKBCodePage( lua_State *L )
+{
+  int numret = 0;
+  UINT retval;
+
+
+  retval = 
+    GetKBCodePage(
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_MapVirtualKeyW( lua_State *L )
+{
+  int numret = 0;
+  UINT retval;
+  UINT p1;
+  UINT p2;
+
+  p1 = (UINT)lua_tonumber(L, 1);
+  p2 = (UINT)lua_tonumber(L, 2);
+
+  retval = 
+    MapVirtualKeyW(
+      p1,
+      p2
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_GetInputState( lua_State *L )
+{
+  int numret = 0;
+  BOOL retval;
+
+
+  retval = 
+    GetInputState(
+    );
+
+  // marshal retval
+  lua_pushinteger(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_GetQueueStatus( lua_State *L )
+{
+  int numret = 0;
+  DWORD retval;
+  UINT p1;
+
+  p1 = (UINT)lua_tonumber(L, 1);
+
+  retval = 
+    GetQueueStatus(
+      p1
     );
 
   // marshal retval
@@ -8747,6 +9470,14 @@ static const luaL_Reg module_lib[ ] = {
   { "GetActiveWindow",  winapi_GetActiveWindow },
   { "GetKeyState",  winapi_GetKeyState },
   { "GetAsyncKeyState",  winapi_GetAsyncKeyState },
+  { "GetKeyboardState",  winapi_GetKeyboardState },
+  { "SetKeyboardState",  winapi_SetKeyboardState },
+  { "GetKeyNameTextW",  winapi_GetKeyNameTextW },
+  { "GetKeyboardType",  winapi_GetKeyboardType },
+  { "OemKeyScan",  winapi_OemKeyScan },
+  { "VkKeyScanW",  winapi_VkKeyScanW },
+  { "keybd_event",  winapi_keybd_event },
+  { "mouse_event",  winapi_mouse_event },
   { "DrawMenuBar",  winapi_DrawMenuBar },
   { "CreateMenu",  winapi_CreateMenu },
   { "CreatePopupMenu",  winapi_CreatePopupMenu },
@@ -8854,6 +9585,14 @@ static const luaL_Reg module_lib[ ] = {
 #if (!defined(UNDER_CE))
   { "Beep",  winapi_Beep },
 #endif
+  { "CreateCaret",  winapi_CreateCaret },
+  { "DestroyCaret",  winapi_DestroyCaret },
+  { "HideCaret",  winapi_HideCaret },
+  { "ShowCaret",  winapi_ShowCaret },
+  { "SetCaretPos",  winapi_SetCaretPos },
+  { "GetCaretPos",  winapi_GetCaretPos },
+  { "SetCaretBlinkTime",  winapi_SetCaretBlinkTime },
+  { "GetCaretBlinkTime",  winapi_GetCaretBlinkTime },
 #if (!defined(UNDER_CE))
   { "GetTopWindow",  winapi_GetTopWindow },
 #endif
@@ -8905,6 +9644,27 @@ static const luaL_Reg module_lib[ ] = {
   { "GetDlgCtrlID",  winapi_GetDlgCtrlID },
   { "GetDialogBaseUnits",  winapi_GetDialogBaseUnits },
   { "DefDlgProcW",  winapi_DefDlgProcW },
+  { "OpenClipboard",  winapi_OpenClipboard },
+  { "CloseClipboard",  winapi_CloseClipboard },
+  { "GetClipboardSequenceNumber",  winapi_GetClipboardSequenceNumber },
+  { "GetClipboardOwner",  winapi_GetClipboardOwner },
+  { "SetClipboardViewer",  winapi_SetClipboardViewer },
+  { "GetClipboardViewer",  winapi_GetClipboardViewer },
+  { "ChangeClipboardChain",  winapi_ChangeClipboardChain },
+  { "SetClipboardData",  winapi_SetClipboardData },
+  { "GetClipboardData",  winapi_GetClipboardData },
+  { "RegisterClipboardFormatW",  winapi_RegisterClipboardFormatW },
+  { "CountClipboardFormats",  winapi_CountClipboardFormats },
+  { "EnumClipboardFormats",  winapi_EnumClipboardFormats },
+  { "GetClipboardFormatNameW",  winapi_GetClipboardFormatNameW },
+  { "EmptyClipboard",  winapi_EmptyClipboard },
+  { "IsClipboardFormatAvailable",  winapi_IsClipboardFormatAvailable },
+  { "GetPriorityClipboardFormat",  winapi_GetPriorityClipboardFormat },
+  { "GetOpenClipboardWindow",  winapi_GetOpenClipboardWindow },
+  { "GetKBCodePage",  winapi_GetKBCodePage },
+  { "MapVirtualKeyW",  winapi_MapVirtualKeyW },
+  { "GetInputState",  winapi_GetInputState },
+  { "GetQueueStatus",  winapi_GetQueueStatus },
   { "DeleteObject",  winapi_DeleteObject },
   { "GetObjectW",  winapi_GetObjectW },
   { "GetObjectType",  winapi_GetObjectType },
