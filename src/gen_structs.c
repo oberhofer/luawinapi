@@ -47,20 +47,56 @@ static struct luacwrap_ArrayType regType_UINT16_64 =
   "$u16"
 };
 
-static struct luacwrap_ArrayType regType_UINT8_32 =
-{
-  LUACWRAP_TC_ARRAY,
-  "UINT8_32",
-  32,
-  sizeof(UINT8),
-  "$u8"
-};
-
 static struct luacwrap_ArrayType regType_UINT8_8 =
 {
   LUACWRAP_TC_ARRAY,
   "UINT8_8",
   8,
+  sizeof(UINT8),
+  "$u8"
+};
+
+static struct luacwrap_ArrayType regType_UINT16_80 =
+{
+  LUACWRAP_TC_ARRAY,
+  "UINT16_80",
+  80,
+  sizeof(UINT16),
+  "$u16"
+};
+
+static struct luacwrap_ArrayType regType_UINT16_MAXPNAMELEN =
+{
+  LUACWRAP_TC_ARRAY,
+  "UINT16_MAXPNAMELEN",
+  MAXPNAMELEN,
+  sizeof(UINT16),
+  "$u16"
+};
+
+static struct luacwrap_ArrayType regType_UINT32_1 =
+{
+  LUACWRAP_TC_ARRAY,
+  "UINT32_1",
+  1,
+  sizeof(UINT32),
+  "$u32"
+};
+
+static struct luacwrap_ArrayType regType_UINT32_8 =
+{
+  LUACWRAP_TC_ARRAY,
+  "UINT32_8",
+  8,
+  sizeof(UINT32),
+  "$u32"
+};
+
+static struct luacwrap_ArrayType regType_UINT8_32 =
+{
+  LUACWRAP_TC_ARRAY,
+  "UINT8_32",
+  32,
   sizeof(UINT8),
   "$u8"
 };
@@ -74,11 +110,11 @@ static struct luacwrap_ArrayType regType_UINT16_256 =
   "$u16"
 };
 
-static struct luacwrap_ArrayType regType_UINT16_80 =
+static struct luacwrap_ArrayType regType_UINT16_MIXER_LONG_NAME_CHARS =
 {
   LUACWRAP_TC_ARRAY,
-  "UINT16_80",
-  80,
+  "UINT16_MIXER_LONG_NAME_CHARS",
+  MIXER_LONG_NAME_CHARS,
   sizeof(UINT16),
   "$u16"
 };
@@ -101,6 +137,15 @@ static struct luacwrap_ArrayType regType_UINT16_32 =
   "$u16"
 };
 
+static struct luacwrap_ArrayType regType_UINT16_MIXER_SHORT_NAME_CHARS =
+{
+  LUACWRAP_TC_ARRAY,
+  "UINT16_MIXER_SHORT_NAME_CHARS",
+  MIXER_SHORT_NAME_CHARS,
+  sizeof(UINT16),
+  "$u16"
+};
+
 
 // member descriptors
 
@@ -116,6 +161,21 @@ static luacwrap_RecordMember s_memberAPPBARDATA[] =
 };
 
 LUACWRAP_DEFINESTRUCT(APPBARDATA);
+
+static luacwrap_RecordMember s_memberWAVEOUTCAPSW[] =
+{
+  { "wMid", offsetof(WAVEOUTCAPSW, wMid), "$u16"},
+  { "wPid", offsetof(WAVEOUTCAPSW, wPid), "$u16"},
+  { "vDriverVersion", offsetof(WAVEOUTCAPSW, vDriverVersion), "$uint"},
+  { "szPname", offsetof(WAVEOUTCAPSW, szPname), "UINT16_MAXPNAMELEN"},
+  { "dwFormats", offsetof(WAVEOUTCAPSW, dwFormats), "$u32"},
+  { "wChannels", offsetof(WAVEOUTCAPSW, wChannels), "$u16"},
+  { "wReserved1", offsetof(WAVEOUTCAPSW, wReserved1), "$u16"},
+  { "dwSupport", offsetof(WAVEOUTCAPSW, dwSupport), "$u32"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(WAVEOUTCAPSW);
 
 #if (!defined(UNDER_CE))
 static luacwrap_RecordMember s_memberLVGROUPMETRICS[] =
@@ -235,6 +295,15 @@ static luacwrap_RecordMember s_memberNMTCKEYDOWN[] =
 LUACWRAP_DEFINESTRUCT(NMTCKEYDOWN);
 #endif
 
+static luacwrap_RecordMember s_memberTIMECAPS[] =
+{
+  { "wPeriodMin", offsetof(TIMECAPS, wPeriodMin), "$uint"},
+  { "wPeriodMax", offsetof(TIMECAPS, wPeriodMax), "$uint"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(TIMECAPS);
+
 static luacwrap_RecordMember s_memberPOINTS[] =
 {
   { "x", offsetof(POINTS, x), "$i16"},
@@ -254,6 +323,23 @@ static luacwrap_RecordMember s_memberRECT[] =
 };
 
 LUACWRAP_DEFINESTRUCT(RECT);
+
+static luacwrap_RecordMember s_memberAUXCAPS2W[] =
+{
+  { "wMid", offsetof(AUXCAPS2W, wMid), "$u16"},
+  { "wPid", offsetof(AUXCAPS2W, wPid), "$u16"},
+  { "vDriverVersion", offsetof(AUXCAPS2W, vDriverVersion), "$uint"},
+  { "szPname", offsetof(AUXCAPS2W, szPname), "UINT16_MAXPNAMELEN"},
+  { "wTechnology", offsetof(AUXCAPS2W, wTechnology), "$u16"},
+  { "wReserved1", offsetof(AUXCAPS2W, wReserved1), "$u16"},
+  { "dwSupport", offsetof(AUXCAPS2W, dwSupport), "$u32"},
+  { "ManufacturerGuid", offsetof(AUXCAPS2W, ManufacturerGuid), "GUID"},
+  { "ProductGuid", offsetof(AUXCAPS2W, ProductGuid), "GUID"},
+  { "NameGuid", offsetof(AUXCAPS2W, NameGuid), "GUID"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(AUXCAPS2W);
 
 #if (defined(USE_AYGSHELL))
 static luacwrap_RecordMember s_memberSHMENUBARINFO[] =
@@ -322,6 +408,37 @@ static luacwrap_RecordMember s_memberNMLISTVIEW[] =
 
 LUACWRAP_DEFINESTRUCT(NMLISTVIEW);
 
+static luacwrap_RecordMember s_memberMIDIOUTCAPSW[] =
+{
+  { "wMid", offsetof(MIDIOUTCAPSW, wMid), "$u16"},
+  { "wPid", offsetof(MIDIOUTCAPSW, wPid), "$u16"},
+  { "vDriverVersion", offsetof(MIDIOUTCAPSW, vDriverVersion), "$uint"},
+  { "szPname", offsetof(MIDIOUTCAPSW, szPname), "UINT16_MAXPNAMELEN"},
+  { "wTechnology", offsetof(MIDIOUTCAPSW, wTechnology), "$u16"},
+  { "wVoices", offsetof(MIDIOUTCAPSW, wVoices), "$u16"},
+  { "wNotes", offsetof(MIDIOUTCAPSW, wNotes), "$u16"},
+  { "wChannelMask", offsetof(MIDIOUTCAPSW, wChannelMask), "$u16"},
+  { "dwSupport", offsetof(MIDIOUTCAPSW, dwSupport), "$u32"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(MIDIOUTCAPSW);
+
+static luacwrap_RecordMember s_memberMIDIINCAPS2W[] =
+{
+  { "wMid", offsetof(MIDIINCAPS2W, wMid), "$u16"},
+  { "wPid", offsetof(MIDIINCAPS2W, wPid), "$u16"},
+  { "vDriverVersion", offsetof(MIDIINCAPS2W, vDriverVersion), "$uint"},
+  { "szPname", offsetof(MIDIINCAPS2W, szPname), "UINT16_MAXPNAMELEN"},
+  { "dwSupport", offsetof(MIDIINCAPS2W, dwSupport), "$u32"},
+  { "ManufacturerGuid", offsetof(MIDIINCAPS2W, ManufacturerGuid), "GUID"},
+  { "ProductGuid", offsetof(MIDIINCAPS2W, ProductGuid), "GUID"},
+  { "NameGuid", offsetof(MIDIINCAPS2W, NameGuid), "GUID"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(MIDIINCAPS2W);
+
 #if (defined(UNDER_CE))
 static luacwrap_RecordMember s_memberCONNMGR_CONNECTIONINFO[] =
 {
@@ -343,6 +460,32 @@ static luacwrap_RecordMember s_memberCONNMGR_CONNECTIONINFO[] =
 
 LUACWRAP_DEFINESTRUCT(CONNMGR_CONNECTIONINFO);
 #endif
+
+static luacwrap_RecordMember s_memberWAVEFORMAT[] =
+{
+  { "wFormatTag", offsetof(WAVEFORMAT, wFormatTag), "$u16"},
+  { "nChannels", offsetof(WAVEFORMAT, nChannels), "$u16"},
+  { "nSamplesPerSec", offsetof(WAVEFORMAT, nSamplesPerSec), "$u32"},
+  { "nAvgBytesPerSec", offsetof(WAVEFORMAT, nAvgBytesPerSec), "$u32"},
+  { "nBlockAlign", offsetof(WAVEFORMAT, nBlockAlign), "$u16"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(WAVEFORMAT);
+
+static luacwrap_RecordMember s_memberWAVEFORMATEX[] =
+{
+  { "wFormatTag", offsetof(WAVEFORMATEX, wFormatTag), "$u16"},
+  { "nChannels", offsetof(WAVEFORMATEX, nChannels), "$u16"},
+  { "nSamplesPerSec", offsetof(WAVEFORMATEX, nSamplesPerSec), "$u32"},
+  { "nAvgBytesPerSec", offsetof(WAVEFORMATEX, nAvgBytesPerSec), "$u32"},
+  { "nBlockAlign", offsetof(WAVEFORMATEX, nBlockAlign), "$u16"},
+  { "wBitsPerSample", offsetof(WAVEFORMATEX, wBitsPerSample), "$u16"},
+  { "cbSize", offsetof(WAVEFORMATEX, cbSize), "$u16"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(WAVEFORMATEX);
 
 static luacwrap_RecordMember s_memberDLGTEMPLATE[] =
 {
@@ -366,6 +509,21 @@ static luacwrap_RecordMember s_memberTPMPARAMS[] =
 };
 
 LUACWRAP_DEFINESTRUCT(TPMPARAMS);
+
+static luacwrap_RecordMember s_memberMIDIHDR[] =
+{
+  { "lpData", offsetof(MIDIHDR, lpData), "LPSTR"},
+  { "dwBufferLength", offsetof(MIDIHDR, dwBufferLength), "$u32"},
+  { "dwBytesRecorded", offsetof(MIDIHDR, dwBytesRecorded), "$u32"},
+  { "dwUser", offsetof(MIDIHDR, dwUser), "$u32"},
+  { "dwFlags", offsetof(MIDIHDR, dwFlags), "$u32"},
+  { "reserved", offsetof(MIDIHDR, reserved), "$u32"},
+  { "dwOffset", offsetof(MIDIHDR, dwOffset), "$u32"},
+  { "dwReserved", offsetof(MIDIHDR, dwReserved), "UINT32_8"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(MIDIHDR);
 
 static luacwrap_RecordMember s_memberNMTTDISPINFOW[] =
 {
@@ -409,6 +567,14 @@ static luacwrap_RecordMember s_memberWINDOWPLACEMENT[] =
 LUACWRAP_DEFINESTRUCT(WINDOWPLACEMENT);
 #endif
 
+static luacwrap_RecordMember s_memberMIXERCONTROLDETAILS_UNSIGNED[] =
+{
+  { "dwValue", offsetof(MIXERCONTROLDETAILS_UNSIGNED, dwValue), "$u32"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(MIXERCONTROLDETAILS_UNSIGNED);
+
 static luacwrap_RecordMember s_memberMSG[] =
 {
   { "hwnd", offsetof(MSG, hwnd), "$ptr"},
@@ -446,6 +612,22 @@ static luacwrap_RecordMember s_memberLARGE_INTEGER[] =
 
 LUACWRAP_DEFINESTRUCT(LARGE_INTEGER);
 
+static luacwrap_RecordMember s_memberMIXERCONTROLDETAILS_SIGNED[] =
+{
+  { "lValue", offsetof(MIXERCONTROLDETAILS_SIGNED, lValue), "$i32"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(MIXERCONTROLDETAILS_SIGNED);
+
+static luacwrap_RecordMember s_memberMIXERCONTROLDETAILS_BOOLEAN[] =
+{
+  { "fValue", offsetof(MIXERCONTROLDETAILS_BOOLEAN, fValue), "$i32"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(MIXERCONTROLDETAILS_BOOLEAN);
+
 static luacwrap_RecordMember s_memberSYSTEMTIME[] =
 {
   { "wYear", offsetof(SYSTEMTIME, wYear), "$u16"},
@@ -478,6 +660,30 @@ static luacwrap_RecordMember s_memberMSGQUEUEINFO[] =
 LUACWRAP_DEFINESTRUCT(MSGQUEUEINFO);
 #endif
 
+static luacwrap_RecordMember s_memberAUXCAPSW[] =
+{
+  { "wMid", offsetof(AUXCAPSW, wMid), "$u16"},
+  { "wPid", offsetof(AUXCAPSW, wPid), "$u16"},
+  { "vDriverVersion", offsetof(AUXCAPSW, vDriverVersion), "$uint"},
+  { "szPname", offsetof(AUXCAPSW, szPname), "UINT16_MAXPNAMELEN"},
+  { "wTechnology", offsetof(AUXCAPSW, wTechnology), "$u16"},
+  { "wReserved1", offsetof(AUXCAPSW, wReserved1), "$u16"},
+  { "dwSupport", offsetof(AUXCAPSW, dwSupport), "$u32"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(AUXCAPSW);
+
+static luacwrap_RecordMember s_memberMIXERCONTROLDETAILS_LISTTEXTW[] =
+{
+  { "dwParam1", offsetof(MIXERCONTROLDETAILS_LISTTEXTW, dwParam1), "$u32"},
+  { "dwParam2", offsetof(MIXERCONTROLDETAILS_LISTTEXTW, dwParam2), "$u32"},
+  { "szName", offsetof(MIXERCONTROLDETAILS_LISTTEXTW, szName), "UINT16_MIXER_LONG_NAME_CHARS"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(MIXERCONTROLDETAILS_LISTTEXTW);
+
 static luacwrap_RecordMember s_memberTVITEMW[] =
 {
   { "mask", offsetof(TVITEMW, mask), "$uint"},
@@ -495,6 +701,15 @@ static luacwrap_RecordMember s_memberTVITEMW[] =
 
 LUACWRAP_DEFINESTRUCT(TVITEMW);
 
+static luacwrap_RecordMember s_memberNMLVDISPINFOW[] =
+{
+  { "hdr", offsetof(NMLVDISPINFOW, hdr), "NMHDR"},
+  { "item", offsetof(NMLVDISPINFOW, item), "LVITEMW"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(NMLVDISPINFOW);
+
 static luacwrap_RecordMember s_memberPROCESS_INFORMATION[] =
 {
   { "hProcess", offsetof(PROCESS_INFORMATION, hProcess), "$ptr"},
@@ -505,6 +720,69 @@ static luacwrap_RecordMember s_memberPROCESS_INFORMATION[] =
 };
 
 LUACWRAP_DEFINESTRUCT(PROCESS_INFORMATION);
+
+static luacwrap_RecordMember s_memberMIDIOUTCAPS2W[] =
+{
+  { "wMid", offsetof(MIDIOUTCAPS2W, wMid), "$u16"},
+  { "wPid", offsetof(MIDIOUTCAPS2W, wPid), "$u16"},
+  { "vDriverVersion", offsetof(MIDIOUTCAPS2W, vDriverVersion), "$uint"},
+  { "szPname", offsetof(MIDIOUTCAPS2W, szPname), "UINT16_MAXPNAMELEN"},
+  { "wTechnology", offsetof(MIDIOUTCAPS2W, wTechnology), "$u16"},
+  { "wVoices", offsetof(MIDIOUTCAPS2W, wVoices), "$u16"},
+  { "wNotes", offsetof(MIDIOUTCAPS2W, wNotes), "$u16"},
+  { "wChannelMask", offsetof(MIDIOUTCAPS2W, wChannelMask), "$u16"},
+  { "dwSupport", offsetof(MIDIOUTCAPS2W, dwSupport), "$u32"},
+  { "ManufacturerGuid", offsetof(MIDIOUTCAPS2W, ManufacturerGuid), "GUID"},
+  { "ProductGuid", offsetof(MIDIOUTCAPS2W, ProductGuid), "GUID"},
+  { "NameGuid", offsetof(MIDIOUTCAPS2W, NameGuid), "GUID"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(MIDIOUTCAPS2W);
+
+static luacwrap_RecordMember s_memberWAVEINCAPSW[] =
+{
+  { "wMid", offsetof(WAVEINCAPSW, wMid), "$u16"},
+  { "wPid", offsetof(WAVEINCAPSW, wPid), "$u16"},
+  { "vDriverVersion", offsetof(WAVEINCAPSW, vDriverVersion), "$uint"},
+  { "szPname", offsetof(WAVEINCAPSW, szPname), "UINT16_MAXPNAMELEN"},
+  { "dwFormats", offsetof(WAVEINCAPSW, dwFormats), "$u32"},
+  { "wChannels", offsetof(WAVEINCAPSW, wChannels), "$u16"},
+  { "wReserved1", offsetof(WAVEINCAPSW, wReserved1), "$u16"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(WAVEINCAPSW);
+
+static luacwrap_RecordMember s_memberMIXERLINECONTROLSW[] =
+{
+  { "cbStruct", offsetof(MIXERLINECONTROLSW, cbStruct), "$u32"},
+  { "dwLineID", offsetof(MIXERLINECONTROLSW, dwLineID), "$u32"},
+  { "dwControlID", offsetof(MIXERLINECONTROLSW, dwControlID), "$u32"},
+  { "dwControlType", offsetof(MIXERLINECONTROLSW, dwControlType), "$u32"},
+  { "cControls", offsetof(MIXERLINECONTROLSW, cControls), "$u32"},
+  { "cbmxctrl", offsetof(MIXERLINECONTROLSW, cbmxctrl), "$u32"},
+  { "pamxctrl", offsetof(MIXERLINECONTROLSW, pamxctrl), "LPMIXERCONTROLW"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(MIXERLINECONTROLSW);
+
+static luacwrap_RecordMember s_memberMIXERCONTROLW[] =
+{
+  { "cbStruct", offsetof(MIXERCONTROLW, cbStruct), "$u32"},
+  { "dwControlID", offsetof(MIXERCONTROLW, dwControlID), "$u32"},
+  { "dwControlType", offsetof(MIXERCONTROLW, dwControlType), "$u32"},
+  { "fdwControl", offsetof(MIXERCONTROLW, fdwControl), "$u32"},
+  { "cMultipleItems", offsetof(MIXERCONTROLW, cMultipleItems), "$u32"},
+  { "szShortName", offsetof(MIXERCONTROLW, szShortName), "UINT16_MIXER_SHORT_NAME_CHARS"},
+  { "szName", offsetof(MIXERCONTROLW, szName), "UINT16_MIXER_LONG_NAME_CHARS"},
+  { "Bounds", offsetof(MIXERCONTROLW, Bounds), "MIXERCONTROLW_Bounds"},
+  { "Metrics", offsetof(MIXERCONTROLW, Metrics), "MIXERCONTROLW_Metrics"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(MIXERCONTROLW);
 
 static luacwrap_RecordMember s_memberWNDCLASSW[] =
 {
@@ -543,6 +821,17 @@ static luacwrap_RecordMember s_memberLVITEMW[] =
 
 LUACWRAP_DEFINESTRUCT(LVITEMW);
 
+static luacwrap_RecordMember s_memberDRVCONFIGINFOEX[] =
+{
+  { "dwDCISize", offsetof(DRVCONFIGINFOEX, dwDCISize), "$u32"},
+  { "lpszDCISectionName", offsetof(DRVCONFIGINFOEX, lpszDCISectionName), "$ptr"},
+  { "lpszDCIAliasName", offsetof(DRVCONFIGINFOEX, lpszDCIAliasName), "$ptr"},
+  { "dnDevNode", offsetof(DRVCONFIGINFOEX, dnDevNode), "$u32"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(DRVCONFIGINFOEX);
+
 static luacwrap_RecordMember s_memberLOGFONTW[] =
 {
   { "lfHeight", offsetof(LOGFONTW, lfHeight), "$i32"},
@@ -563,6 +852,15 @@ static luacwrap_RecordMember s_memberLOGFONTW[] =
 };
 
 LUACWRAP_DEFINESTRUCT(LOGFONTW);
+
+static luacwrap_RecordMember s_memberTCHITTESTINFO[] =
+{
+  { "pt", offsetof(TCHITTESTINFO, pt), "POINT"},
+  { "flags", offsetof(TCHITTESTINFO, flags), "$uint"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(TCHITTESTINFO);
 
 static luacwrap_RecordMember s_memberFILETIME[] =
 {
@@ -598,6 +896,104 @@ static luacwrap_RecordMember s_memberSTARTUPINFOW[] =
 
 LUACWRAP_DEFINESTRUCT(STARTUPINFOW);
 
+static luacwrap_RecordMember s_memberMIXERCAPS2W[] =
+{
+  { "wMid", offsetof(MIXERCAPS2W, wMid), "$u16"},
+  { "wPid", offsetof(MIXERCAPS2W, wPid), "$u16"},
+  { "vDriverVersion", offsetof(MIXERCAPS2W, vDriverVersion), "$uint"},
+  { "szPname", offsetof(MIXERCAPS2W, szPname), "UINT16_MAXPNAMELEN"},
+  { "fdwSupport", offsetof(MIXERCAPS2W, fdwSupport), "$u32"},
+  { "cDestinations", offsetof(MIXERCAPS2W, cDestinations), "$u32"},
+  { "ManufacturerGuid", offsetof(MIXERCAPS2W, ManufacturerGuid), "GUID"},
+  { "ProductGuid", offsetof(MIXERCAPS2W, ProductGuid), "GUID"},
+  { "NameGuid", offsetof(MIXERCAPS2W, NameGuid), "GUID"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(MIXERCAPS2W);
+
+static luacwrap_RecordMember s_memberMIXERCAPSW[] =
+{
+  { "wMid", offsetof(MIXERCAPSW, wMid), "$u16"},
+  { "wPid", offsetof(MIXERCAPSW, wPid), "$u16"},
+  { "vDriverVersion", offsetof(MIXERCAPSW, vDriverVersion), "$uint"},
+  { "szPname", offsetof(MIXERCAPSW, szPname), "UINT16_MAXPNAMELEN"},
+  { "fdwSupport", offsetof(MIXERCAPSW, fdwSupport), "$u32"},
+  { "cDestinations", offsetof(MIXERCAPSW, cDestinations), "$u32"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(MIXERCAPSW);
+
+static luacwrap_RecordMember s_memberMIDIPROPTEMPO[] =
+{
+  { "cbStruct", offsetof(MIDIPROPTEMPO, cbStruct), "$u32"},
+  { "dwTempo", offsetof(MIDIPROPTEMPO, dwTempo), "$u32"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(MIDIPROPTEMPO);
+
+static luacwrap_RecordMember s_memberMIDIPROPTIMEDIV[] =
+{
+  { "cbStruct", offsetof(MIDIPROPTIMEDIV, cbStruct), "$u32"},
+  { "dwTimeDiv", offsetof(MIDIPROPTIMEDIV, dwTimeDiv), "$u32"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(MIDIPROPTIMEDIV);
+
+static luacwrap_RecordMember s_memberSECURITY_ATTRIBUTES[] =
+{
+  { "nLength", offsetof(SECURITY_ATTRIBUTES, nLength), "$u32"},
+  { "lpSecurityDescriptor", offsetof(SECURITY_ATTRIBUTES, lpSecurityDescriptor), "$ptr"},
+  { "bInheritHandle", offsetof(SECURITY_ATTRIBUTES, bInheritHandle), "$i32"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(SECURITY_ATTRIBUTES);
+
+static luacwrap_RecordMember s_memberMIXERLINEW[] =
+{
+  { "cbStruct", offsetof(MIXERLINEW, cbStruct), "$u32"},
+  { "dwDestination", offsetof(MIXERLINEW, dwDestination), "$u32"},
+  { "dwSource", offsetof(MIXERLINEW, dwSource), "$u32"},
+  { "dwLineID", offsetof(MIXERLINEW, dwLineID), "$u32"},
+  { "fdwLine", offsetof(MIXERLINEW, fdwLine), "$u32"},
+  { "dwUser", offsetof(MIXERLINEW, dwUser), "$u32"},
+  { "dwComponentType", offsetof(MIXERLINEW, dwComponentType), "$u32"},
+  { "cChannels", offsetof(MIXERLINEW, cChannels), "$u32"},
+  { "cConnections", offsetof(MIXERLINEW, cConnections), "$u32"},
+  { "cControls", offsetof(MIXERLINEW, cControls), "$u32"},
+  { "szShortName", offsetof(MIXERLINEW, szShortName), "UINT16_MIXER_SHORT_NAME_CHARS"},
+  { "szName", offsetof(MIXERLINEW, szName), "UINT16_MIXER_LONG_NAME_CHARS"},
+  { "Target", offsetof(MIXERLINEW, Target), "MIXERLINEW_Target"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(MIXERLINEW);
+
+static luacwrap_RecordMember s_memberMIDIINCAPSW[] =
+{
+  { "wMid", offsetof(MIDIINCAPSW, wMid), "$u16"},
+  { "wPid", offsetof(MIDIINCAPSW, wPid), "$u16"},
+  { "vDriverVersion", offsetof(MIDIINCAPSW, vDriverVersion), "$uint"},
+  { "szPname", offsetof(MIDIINCAPSW, szPname), "UINT16_MAXPNAMELEN"},
+  { "dwSupport", offsetof(MIDIINCAPSW, dwSupport), "$u32"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(MIDIINCAPSW);
+
+static luacwrap_RecordMember s_memberPCMWAVEFORMAT[] =
+{
+  { "wf", offsetof(PCMWAVEFORMAT, wf), "WAVEFORMAT"},
+  { "wBitsPerSample", offsetof(PCMWAVEFORMAT, wBitsPerSample), "$u16"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(PCMWAVEFORMAT);
+
 #if (!defined(UNDER_CE))
 static luacwrap_RecordMember s_memberLVGROUP[] =
 {
@@ -630,6 +1026,41 @@ static luacwrap_RecordMember s_memberLVGROUP[] =
 
 LUACWRAP_DEFINESTRUCT(LVGROUP);
 #endif
+
+static luacwrap_RecordMember s_memberWAVEINCAPS2W[] =
+{
+  { "wMid", offsetof(WAVEINCAPS2W, wMid), "$u16"},
+  { "wPid", offsetof(WAVEINCAPS2W, wPid), "$u16"},
+  { "vDriverVersion", offsetof(WAVEINCAPS2W, vDriverVersion), "$uint"},
+  { "szPname", offsetof(WAVEINCAPS2W, szPname), "UINT16_MAXPNAMELEN"},
+  { "dwFormats", offsetof(WAVEINCAPS2W, dwFormats), "$u32"},
+  { "wChannels", offsetof(WAVEINCAPS2W, wChannels), "$u16"},
+  { "wReserved1", offsetof(WAVEINCAPS2W, wReserved1), "$u16"},
+  { "ManufacturerGuid", offsetof(WAVEINCAPS2W, ManufacturerGuid), "GUID"},
+  { "ProductGuid", offsetof(WAVEINCAPS2W, ProductGuid), "GUID"},
+  { "NameGuid", offsetof(WAVEINCAPS2W, NameGuid), "GUID"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(WAVEINCAPS2W);
+
+static luacwrap_RecordMember s_memberWAVEOUTCAPS2W[] =
+{
+  { "wMid", offsetof(WAVEOUTCAPS2W, wMid), "$u16"},
+  { "wPid", offsetof(WAVEOUTCAPS2W, wPid), "$u16"},
+  { "vDriverVersion", offsetof(WAVEOUTCAPS2W, vDriverVersion), "$uint"},
+  { "szPname", offsetof(WAVEOUTCAPS2W, szPname), "UINT16_MAXPNAMELEN"},
+  { "dwFormats", offsetof(WAVEOUTCAPS2W, dwFormats), "$u32"},
+  { "wChannels", offsetof(WAVEOUTCAPS2W, wChannels), "$u16"},
+  { "wReserved1", offsetof(WAVEOUTCAPS2W, wReserved1), "$u16"},
+  { "dwSupport", offsetof(WAVEOUTCAPS2W, dwSupport), "$u32"},
+  { "ManufacturerGuid", offsetof(WAVEOUTCAPS2W, ManufacturerGuid), "GUID"},
+  { "ProductGuid", offsetof(WAVEOUTCAPS2W, ProductGuid), "GUID"},
+  { "NameGuid", offsetof(WAVEOUTCAPS2W, NameGuid), "GUID"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(WAVEOUTCAPS2W);
 
 static luacwrap_RecordMember s_memberOPENFILENAMEW[] =
 {
@@ -684,6 +1115,44 @@ static luacwrap_RecordMember s_memberMENUITEMINFOW[] =
 };
 
 LUACWRAP_DEFINESTRUCT(MENUITEMINFOW);
+
+static luacwrap_RecordMember s_memberWAVEHDR[] =
+{
+  { "lpData", offsetof(WAVEHDR, lpData), "LPSTR"},
+  { "dwBufferLength", offsetof(WAVEHDR, dwBufferLength), "$u32"},
+  { "dwBytesRecorded", offsetof(WAVEHDR, dwBytesRecorded), "$u32"},
+  { "dwUser", offsetof(WAVEHDR, dwUser), "$u32"},
+  { "dwFlags", offsetof(WAVEHDR, dwFlags), "$u32"},
+  { "dwLoops", offsetof(WAVEHDR, dwLoops), "$u32"},
+  { "reserved", offsetof(WAVEHDR, reserved), "$u32"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(WAVEHDR);
+
+static luacwrap_RecordMember s_memberTVHITTESTINFO[] =
+{
+  { "pt", offsetof(TVHITTESTINFO, pt), "POINT"},
+  { "flags", offsetof(TVHITTESTINFO, flags), "$uint"},
+  { "hItem", offsetof(TVHITTESTINFO, hItem), "$ptr"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(TVHITTESTINFO);
+
+#if (defined(USE_COMMANDBAR))
+static luacwrap_RecordMember s_memberCOMMANDBANDSRESTOREINFO[] =
+{
+  { "cbSize", offsetof(COMMANDBANDSRESTOREINFO, cbSize), "$uint"},
+  { "wID", offsetof(COMMANDBANDSRESTOREINFO, wID), "$uint"},
+  { "fStyle", offsetof(COMMANDBANDSRESTOREINFO, fStyle), "$uint"},
+  { "cxRestored", offsetof(COMMANDBANDSRESTOREINFO, cxRestored), "$uint"},
+  { "fMaximized", offsetof(COMMANDBANDSRESTOREINFO, fMaximized), "$i32"},
+  { NULL, 0 }
+};
+
+LUACWRAP_DEFINESTRUCT(COMMANDBANDSRESTOREINFO);
+#endif
 
 static luacwrap_RecordMember s_memberNOTIFYICONDATAW[] =
 {
@@ -774,7 +1243,7 @@ static luacwrap_RecordMember s_memberTBBUTTONINFOW[] =
   { "fsState", offsetof(TBBUTTONINFOW, fsState), "$u8"},
   { "fsStyle", offsetof(TBBUTTONINFOW, fsStyle), "$u8"},
   { "cx", offsetof(TBBUTTONINFOW, cx), "$u16"},
-  { "lParam", offsetof(TBBUTTONINFOW, lParam), "DWORD_PTR"},
+  { "lParam", offsetof(TBBUTTONINFOW, lParam), "$u32"},
   { "pszText", offsetof(TBBUTTONINFOW, pszText), "$ptr"},
   { "cchText", offsetof(TBBUTTONINFOW, cchText), "$i32"},
   { NULL, 0 }
@@ -782,19 +1251,14 @@ static luacwrap_RecordMember s_memberTBBUTTONINFOW[] =
 
 LUACWRAP_DEFINESTRUCT(TBBUTTONINFOW);
 
-#if (defined(USE_COMMANDBAR))
-static luacwrap_RecordMember s_memberCOMMANDBANDSRESTOREINFO[] =
+static luacwrap_RecordMember s_memberMMTIME[] =
 {
-  { "cbSize", offsetof(COMMANDBANDSRESTOREINFO, cbSize), "$uint"},
-  { "wID", offsetof(COMMANDBANDSRESTOREINFO, wID), "$uint"},
-  { "fStyle", offsetof(COMMANDBANDSRESTOREINFO, fStyle), "$uint"},
-  { "cxRestored", offsetof(COMMANDBANDSRESTOREINFO, cxRestored), "$uint"},
-  { "fMaximized", offsetof(COMMANDBANDSRESTOREINFO, fMaximized), "$i32"},
+  { "wType", offsetof(MMTIME, wType), "$uint"},
+  { "u", offsetof(MMTIME, u), "MMTIME_u"},
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(COMMANDBANDSRESTOREINFO);
-#endif
+LUACWRAP_DEFINESTRUCT(MMTIME);
 
 static luacwrap_RecordMember s_memberACCEL[] =
 {
@@ -839,15 +1303,15 @@ static luacwrap_RecordMember s_memberMSGQUEUEOPTIONS[] =
 LUACWRAP_DEFINESTRUCT(MSGQUEUEOPTIONS);
 #endif
 
-static luacwrap_RecordMember s_memberSECURITY_ATTRIBUTES[] =
+static luacwrap_RecordMember s_memberMIDISTRMBUFFVER[] =
 {
-  { "nLength", offsetof(SECURITY_ATTRIBUTES, nLength), "$u32"},
-  { "lpSecurityDescriptor", offsetof(SECURITY_ATTRIBUTES, lpSecurityDescriptor), "$ptr"},
-  { "bInheritHandle", offsetof(SECURITY_ATTRIBUTES, bInheritHandle), "$i32"},
+  { "dwVersion", offsetof(MIDISTRMBUFFVER, dwVersion), "$u32"},
+  { "dwMid", offsetof(MIDISTRMBUFFVER, dwMid), "$u32"},
+  { "dwOEMVersion", offsetof(MIDISTRMBUFFVER, dwOEMVersion), "$u32"},
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(SECURITY_ATTRIBUTES);
+LUACWRAP_DEFINESTRUCT(MIDISTRMBUFFVER);
 
 #if (!defined(UNDER_CE))
 static luacwrap_RecordMember s_memberPRINTDLGW[] =
@@ -956,14 +1420,16 @@ static luacwrap_RecordMember s_memberOSVERSIONINFOW[] =
 
 LUACWRAP_DEFINESTRUCT(OSVERSIONINFOW);
 
-static luacwrap_RecordMember s_memberTCHITTESTINFO[] =
+static luacwrap_RecordMember s_memberMIDIEVENT[] =
 {
-  { "pt", offsetof(TCHITTESTINFO, pt), "POINT"},
-  { "flags", offsetof(TCHITTESTINFO, flags), "$uint"},
+  { "dwDeltaTime", offsetof(MIDIEVENT, dwDeltaTime), "$u32"},
+  { "dwStreamID", offsetof(MIDIEVENT, dwStreamID), "$u32"},
+  { "dwEvent", offsetof(MIDIEVENT, dwEvent), "$u32"},
+  { "dwParms", offsetof(MIDIEVENT, dwParms), "UINT32_1"},
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(TCHITTESTINFO);
+LUACWRAP_DEFINESTRUCT(MIDIEVENT);
 
 static luacwrap_RecordMember s_memberNMTREEVIEWW[] =
 {
@@ -1002,15 +1468,15 @@ static luacwrap_RecordMember s_memberTTTOOLINFOW[] =
 
 LUACWRAP_DEFINESTRUCT(TTTOOLINFOW);
 
-static luacwrap_RecordMember s_memberTVHITTESTINFO[] =
+static luacwrap_RecordMember s_memberDRVCONFIGINFO[] =
 {
-  { "pt", offsetof(TVHITTESTINFO, pt), "POINT"},
-  { "flags", offsetof(TVHITTESTINFO, flags), "$uint"},
-  { "hItem", offsetof(TVHITTESTINFO, hItem), "$ptr"},
+  { "dwDCISize", offsetof(DRVCONFIGINFO, dwDCISize), "$u32"},
+  { "lpszDCISectionName", offsetof(DRVCONFIGINFO, lpszDCISectionName), "$ptr"},
+  { "lpszDCIAliasName", offsetof(DRVCONFIGINFO, lpszDCIAliasName), "$ptr"},
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(TVHITTESTINFO);
+LUACWRAP_DEFINESTRUCT(DRVCONFIGINFO);
 
 #if (defined(USE_AYGSHELL))
 static luacwrap_RecordMember s_memberSHACTIVATEINFO[] =
@@ -1041,14 +1507,19 @@ static luacwrap_RecordMember s_memberNMITEMACTIVATE[] =
 LUACWRAP_DEFINESTRUCT(NMITEMACTIVATE);
 #endif
 
-static luacwrap_RecordMember s_memberNMLVDISPINFOW[] =
+static luacwrap_RecordMember s_memberMIXERCONTROLDETAILS[] =
 {
-  { "hdr", offsetof(NMLVDISPINFOW, hdr), "NMHDR"},
-  { "item", offsetof(NMLVDISPINFOW, item), "LVITEMW"},
+  { "cbStruct", offsetof(MIXERCONTROLDETAILS, cbStruct), "$u32"},
+  { "dwControlID", offsetof(MIXERCONTROLDETAILS, dwControlID), "$u32"},
+  { "cChannels", offsetof(MIXERCONTROLDETAILS, cChannels), "$u32"},
+  { "hwndOwner", offsetof(MIXERCONTROLDETAILS, hwndOwner), "$ptr"},
+  { "cMultipleItems", offsetof(MIXERCONTROLDETAILS, cMultipleItems), "$u32"},
+  { "cbDetails", offsetof(MIXERCONTROLDETAILS, cbDetails), "$u32"},
+  { "paDetails", offsetof(MIXERCONTROLDETAILS, paDetails), "$ptr"},
   { NULL, 0 }
 };
 
-LUACWRAP_DEFINESTRUCT(NMLVDISPINFOW);
+LUACWRAP_DEFINESTRUCT(MIXERCONTROLDETAILS);
 
 static luacwrap_RecordMember s_memberNMHDDISPINFOW[] =
 {
@@ -1295,9 +1766,12 @@ int winapi_GetModuleHandleW( lua_State *L )
 {
   int numret = 0;
   HMODULE retval;
-  LPCWSTR p1;
+  LPCWSTR p1 = 0;
 
-  p1 = (LPCWSTR)lua_tostring(L, 1);
+  if (!lua_isnil(L, 1))
+  {
+    p1 = (LPCWSTR)lua_tostring(L, 1);
+  }
 
   retval = 
     GetModuleHandleW(
@@ -4948,6 +5422,47 @@ int winapi_InvertRect( lua_State *L )
     InvertRect(
       p1,
       p2
+    );
+
+  // marshal retval
+  lua_pushinteger(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_LoadIconW( lua_State *L )
+{
+  int numret = 0;
+  HICON retval;
+  HINSTANCE p1;
+  LPCWSTR p2;
+
+  p1 = (HINSTANCE)lua_tohandle(L, 1);
+  p2 = (LPCWSTR)lua_toresourceref(L, 2);
+
+  retval = 
+    LoadIconW(
+      p1,
+      p2
+    );
+
+  // marshal retval
+  numret += lua_pushIcon(L, retval);
+
+  return numret;
+}
+
+int winapi_DestroyIcon( lua_State *L )
+{
+  int numret = 0;
+  BOOL retval;
+  HICON p1;
+
+  p1 = lua_toIcon(L, 1);
+
+  retval = 
+    DestroyIcon(
+      p1
     );
 
   // marshal retval
@@ -9734,6 +10249,2258 @@ int winapi_SHAppBarMessage( lua_State *L )
   return numret;
 }
 
+int winapi_sndPlaySoundW( lua_State *L )
+{
+  int numret = 0;
+  BOOL retval;
+  LPCWSTR p1;
+  UINT p2;
+
+  p1 = (LPCWSTR)lua_tostring(L, 1);
+  p2 = (UINT)lua_tonumber(L, 2);
+
+  retval = 
+    sndPlaySoundW(
+      p1,
+      p2
+    );
+
+  // marshal retval
+  lua_pushinteger(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_PlaySoundW( lua_State *L )
+{
+  int numret = 0;
+  BOOL retval;
+  LPCWSTR p1;
+  HMODULE p2;
+  DWORD p3;
+
+  p1 = (LPCWSTR)lua_tostring(L, 1);
+  p2 = (HMODULE)lua_tohandle(L, 2);
+  p3 = (DWORD)lua_tonumber(L, 3);
+
+  retval = 
+    PlaySoundW(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushinteger(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_waveOutGetNumDevs( lua_State *L )
+{
+  int numret = 0;
+  UINT retval;
+
+
+  retval = 
+    waveOutGetNumDevs(
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_waveOutGetDevCapsW( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  UINT_PTR p1;
+  WAVEOUTCAPSW* p2;
+  UINT p3;
+
+  p1 = (UINT_PTR)lua_touserdata(L, 1);
+  p2 = (WAVEOUTCAPSW*)g_luacwrapiface->checktype(L, 2, &regType_WAVEOUTCAPSW.hdr);
+  p3 = (UINT)lua_tonumber(L, 3);
+
+  retval = 
+    waveOutGetDevCapsW(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_waveOutGetVolume( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HWAVEOUT p1;
+  DWORD p2;
+
+  p1 = lua_toWaveOut(L, 1);
+  p2 = (DWORD)lua_tonumber(L, 2);
+
+  retval = 
+    waveOutGetVolume(
+      p1,
+      &p2
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  lua_pushnumber(L, p2); ++numret;
+
+  return numret;
+}
+
+int winapi_waveOutSetVolume( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HWAVEOUT p1;
+  DWORD p2;
+
+  p1 = lua_toWaveOut(L, 1);
+  p2 = (DWORD)lua_tonumber(L, 2);
+
+  retval = 
+    waveOutSetVolume(
+      p1,
+      p2
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_waveOutGetErrorTextW( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  MMRESULT p1;
+  LPWSTR p2;
+  UINT p3;
+
+  p1 = (MMRESULT)lua_tonumber(L, 1);
+  p2 = (LPWSTR)lua_tostring(L, 2);
+  p3 = (UINT)lua_tonumber(L, 3);
+
+  retval = 
+    waveOutGetErrorTextW(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_waveOutOpen( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HWAVEOUT p1;
+  UINT p2;
+  WAVEFORMATEX* p3;
+  DWORD_PTR p4;
+  DWORD_PTR p5;
+  DWORD p6;
+
+  p1 = lua_toWaveOut(L, 1);
+  p2 = (UINT)lua_tonumber(L, 2);
+  p3 = (WAVEFORMATEX*)g_luacwrapiface->checktype(L, 3, &regType_WAVEFORMATEX.hdr);
+  p4 = (DWORD_PTR)lua_tonumber(L, 4);
+  p5 = (DWORD_PTR)lua_tonumber(L, 5);
+  p6 = (DWORD)lua_tonumber(L, 6);
+
+  retval = 
+    waveOutOpen(
+      &p1,
+      p2,
+      p3,
+      p4,
+      p5,
+      p6
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  numret += lua_pushWaveOut(L, p1);
+
+  return numret;
+}
+
+int winapi_waveOutClose( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HWAVEOUT p1;
+
+  p1 = lua_toWaveOut(L, 1);
+
+  retval = 
+    waveOutClose(
+      p1
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_waveOutPrepareHeader( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HWAVEOUT p1;
+  WAVEHDR* p2;
+  UINT p3;
+
+  p1 = lua_toWaveOut(L, 1);
+  p2 = (WAVEHDR*)g_luacwrapiface->checktype(L, 2, &regType_WAVEHDR.hdr);
+  p3 = (UINT)lua_tonumber(L, 3);
+
+  retval = 
+    waveOutPrepareHeader(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_waveOutUnprepareHeader( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HWAVEOUT p1;
+  WAVEHDR* p2;
+  UINT p3;
+
+  p1 = lua_toWaveOut(L, 1);
+  p2 = (WAVEHDR*)g_luacwrapiface->checktype(L, 2, &regType_WAVEHDR.hdr);
+  p3 = (UINT)lua_tonumber(L, 3);
+
+  retval = 
+    waveOutUnprepareHeader(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_waveOutWrite( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HWAVEOUT p1;
+  WAVEHDR* p2;
+  UINT p3;
+
+  p1 = lua_toWaveOut(L, 1);
+  p2 = (WAVEHDR*)g_luacwrapiface->checktype(L, 2, &regType_WAVEHDR.hdr);
+  p3 = (UINT)lua_tonumber(L, 3);
+
+  retval = 
+    waveOutWrite(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_waveOutPause( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HWAVEOUT p1;
+
+  p1 = lua_toWaveOut(L, 1);
+
+  retval = 
+    waveOutPause(
+      p1
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_waveOutRestart( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HWAVEOUT p1;
+
+  p1 = lua_toWaveOut(L, 1);
+
+  retval = 
+    waveOutRestart(
+      p1
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_waveOutReset( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HWAVEOUT p1;
+
+  p1 = lua_toWaveOut(L, 1);
+
+  retval = 
+    waveOutReset(
+      p1
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_waveOutBreakLoop( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HWAVEOUT p1;
+
+  p1 = lua_toWaveOut(L, 1);
+
+  retval = 
+    waveOutBreakLoop(
+      p1
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_waveOutGetPosition( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HWAVEOUT p1;
+  MMTIME* p2;
+  UINT p3;
+
+  p1 = lua_toWaveOut(L, 1);
+  p2 = (MMTIME*)g_luacwrapiface->checktype(L, 2, &regType_MMTIME.hdr);
+  p3 = (UINT)lua_tonumber(L, 3);
+
+  retval = 
+    waveOutGetPosition(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_waveOutGetPitch( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HWAVEOUT p1;
+  DWORD p2;
+
+  p1 = lua_toWaveOut(L, 1);
+  p2 = (DWORD)lua_tonumber(L, 2);
+
+  retval = 
+    waveOutGetPitch(
+      p1,
+      &p2
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  lua_pushnumber(L, p2); ++numret;
+
+  return numret;
+}
+
+int winapi_waveOutSetPitch( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HWAVEOUT p1;
+  DWORD p2;
+
+  p1 = lua_toWaveOut(L, 1);
+  p2 = (DWORD)lua_tonumber(L, 2);
+
+  retval = 
+    waveOutSetPitch(
+      p1,
+      p2
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_waveOutGetPlaybackRate( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HWAVEOUT p1;
+  DWORD p2;
+
+  p1 = lua_toWaveOut(L, 1);
+  p2 = (DWORD)lua_tonumber(L, 2);
+
+  retval = 
+    waveOutGetPlaybackRate(
+      p1,
+      &p2
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  lua_pushnumber(L, p2); ++numret;
+
+  return numret;
+}
+
+int winapi_waveOutSetPlaybackRate( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HWAVEOUT p1;
+  DWORD p2;
+
+  p1 = lua_toWaveOut(L, 1);
+  p2 = (DWORD)lua_tonumber(L, 2);
+
+  retval = 
+    waveOutSetPlaybackRate(
+      p1,
+      p2
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_waveOutGetID( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HWAVEOUT p1;
+  UINT p2;
+
+  p1 = lua_toWaveOut(L, 1);
+  p2 = (UINT)lua_tonumber(L, 2);
+
+  retval = 
+    waveOutGetID(
+      p1,
+      &p2
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  lua_pushnumber(L, p2); ++numret;
+
+  return numret;
+}
+
+int winapi_waveOutMessage( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HWAVEOUT p1;
+  UINT p2;
+  DWORD_PTR p3;
+  DWORD_PTR p4;
+
+  p1 = lua_toWaveOut(L, 1);
+  p2 = (UINT)lua_tonumber(L, 2);
+  p3 = (DWORD_PTR)lua_tonumber(L, 3);
+  p4 = (DWORD_PTR)lua_tonumber(L, 4);
+
+  retval = 
+    waveOutMessage(
+      p1,
+      p2,
+      p3,
+      p4
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_waveInGetNumDevs( lua_State *L )
+{
+  int numret = 0;
+  UINT retval;
+
+
+  retval = 
+    waveInGetNumDevs(
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_waveInGetDevCapsW( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  UINT_PTR p1;
+  WAVEINCAPSW* p2;
+  UINT p3;
+
+  p1 = (UINT_PTR)lua_touserdata(L, 1);
+  p2 = (WAVEINCAPSW*)g_luacwrapiface->checktype(L, 2, &regType_WAVEINCAPSW.hdr);
+  p3 = (UINT)lua_tonumber(L, 3);
+
+  retval = 
+    waveInGetDevCapsW(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_waveInGetErrorTextW( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  MMRESULT p1;
+  LPWSTR p2;
+  UINT p3;
+
+  p1 = (MMRESULT)lua_tonumber(L, 1);
+  p2 = (LPWSTR)lua_tostring(L, 2);
+  p3 = (UINT)lua_tonumber(L, 3);
+
+  retval = 
+    waveInGetErrorTextW(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_waveInOpen( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HWAVEIN p1;
+  UINT p2;
+  WAVEFORMATEX* p3;
+  DWORD_PTR p4;
+  DWORD_PTR p5;
+  DWORD p6;
+
+  p1 = lua_toWaveIn(L, 1);
+  p2 = (UINT)lua_tonumber(L, 2);
+  p3 = (WAVEFORMATEX*)g_luacwrapiface->checktype(L, 3, &regType_WAVEFORMATEX.hdr);
+  p4 = (DWORD_PTR)lua_tonumber(L, 4);
+  p5 = (DWORD_PTR)lua_tonumber(L, 5);
+  p6 = (DWORD)lua_tonumber(L, 6);
+
+  retval = 
+    waveInOpen(
+      &p1,
+      p2,
+      p3,
+      p4,
+      p5,
+      p6
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  numret += lua_pushWaveIn(L, p1);
+
+  return numret;
+}
+
+int winapi_waveInClose( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HWAVEIN p1;
+
+  p1 = lua_toWaveIn(L, 1);
+
+  retval = 
+    waveInClose(
+      p1
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_waveInPrepareHeader( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HWAVEIN p1;
+  WAVEHDR* p2;
+  UINT p3;
+
+  p1 = lua_toWaveIn(L, 1);
+  p2 = (WAVEHDR*)g_luacwrapiface->checktype(L, 2, &regType_WAVEHDR.hdr);
+  p3 = (UINT)lua_tonumber(L, 3);
+
+  retval = 
+    waveInPrepareHeader(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_waveInUnprepareHeader( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HWAVEIN p1;
+  WAVEHDR* p2;
+  UINT p3;
+
+  p1 = lua_toWaveIn(L, 1);
+  p2 = (WAVEHDR*)g_luacwrapiface->checktype(L, 2, &regType_WAVEHDR.hdr);
+  p3 = (UINT)lua_tonumber(L, 3);
+
+  retval = 
+    waveInUnprepareHeader(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_waveInAddBuffer( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HWAVEIN p1;
+  WAVEHDR* p2;
+  UINT p3;
+
+  p1 = lua_toWaveIn(L, 1);
+  p2 = (WAVEHDR*)g_luacwrapiface->checktype(L, 2, &regType_WAVEHDR.hdr);
+  p3 = (UINT)lua_tonumber(L, 3);
+
+  retval = 
+    waveInAddBuffer(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_waveInStart( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HWAVEIN p1;
+
+  p1 = lua_toWaveIn(L, 1);
+
+  retval = 
+    waveInStart(
+      p1
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_waveInStop( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HWAVEIN p1;
+
+  p1 = lua_toWaveIn(L, 1);
+
+  retval = 
+    waveInStop(
+      p1
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_waveInReset( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HWAVEIN p1;
+
+  p1 = lua_toWaveIn(L, 1);
+
+  retval = 
+    waveInReset(
+      p1
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_waveInGetPosition( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HWAVEIN p1;
+  MMTIME* p2;
+  UINT p3;
+
+  p1 = lua_toWaveIn(L, 1);
+  p2 = (MMTIME*)g_luacwrapiface->checktype(L, 2, &regType_MMTIME.hdr);
+  p3 = (UINT)lua_tonumber(L, 3);
+
+  retval = 
+    waveInGetPosition(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_waveInGetID( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HWAVEIN p1;
+  UINT p2;
+
+  p1 = lua_toWaveIn(L, 1);
+  p2 = (UINT)lua_tonumber(L, 2);
+
+  retval = 
+    waveInGetID(
+      p1,
+      &p2
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  lua_pushnumber(L, p2); ++numret;
+
+  return numret;
+}
+
+int winapi_waveInMessage( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HWAVEIN p1;
+  UINT p2;
+  DWORD_PTR p3;
+  DWORD_PTR p4;
+
+  p1 = lua_toWaveIn(L, 1);
+  p2 = (UINT)lua_tonumber(L, 2);
+  p3 = (DWORD_PTR)lua_tonumber(L, 3);
+  p4 = (DWORD_PTR)lua_tonumber(L, 4);
+
+  retval = 
+    waveInMessage(
+      p1,
+      p2,
+      p3,
+      p4
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_midiOutGetNumDevs( lua_State *L )
+{
+  int numret = 0;
+  UINT retval;
+
+
+  retval = 
+    midiOutGetNumDevs(
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_midiStreamOpen( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDISTRM p1;
+  UINT p2;
+  DWORD p3;
+  DWORD_PTR p4;
+  DWORD_PTR p5;
+  DWORD p6;
+
+  p1 = lua_toMidiStream(L, 1);
+  p2 = (UINT)lua_tonumber(L, 2);
+  p3 = (DWORD)lua_tonumber(L, 3);
+  p4 = (DWORD_PTR)lua_tonumber(L, 4);
+  p5 = (DWORD_PTR)lua_tonumber(L, 5);
+  p6 = (DWORD)lua_tonumber(L, 6);
+
+  retval = 
+    midiStreamOpen(
+      &p1,
+      &p2,
+      p3,
+      p4,
+      p5,
+      p6
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  numret += lua_pushMidiStream(L, p1);
+
+  lua_pushnumber(L, p2); ++numret;
+
+  return numret;
+}
+
+int winapi_midiStreamClose( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDISTRM p1;
+
+  p1 = lua_toMidiStream(L, 1);
+
+  retval = 
+    midiStreamClose(
+      p1
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_midiStreamProperty( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDISTRM p1;
+  BYTE p2;
+  DWORD p3;
+
+  p1 = lua_toMidiStream(L, 1);
+  p2 = lua_tointeger(L, 2);
+  p3 = (DWORD)lua_tonumber(L, 3);
+
+  retval = 
+    midiStreamProperty(
+      p1,
+      &p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  lua_pushinteger(L, p2); ++numret;
+
+  return numret;
+}
+
+int winapi_midiStreamPosition( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDISTRM p1;
+  MMTIME* p2;
+  UINT p3;
+
+  p1 = lua_toMidiStream(L, 1);
+  p2 = (MMTIME*)g_luacwrapiface->checktype(L, 2, &regType_MMTIME.hdr);
+  p3 = (UINT)lua_tonumber(L, 3);
+
+  retval = 
+    midiStreamPosition(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_midiStreamOut( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDISTRM p1;
+  MIDIHDR* p2;
+  UINT p3;
+
+  p1 = lua_toMidiStream(L, 1);
+  p2 = (MIDIHDR*)g_luacwrapiface->checktype(L, 2, &regType_MIDIHDR.hdr);
+  p3 = (UINT)lua_tonumber(L, 3);
+
+  retval = 
+    midiStreamOut(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_midiStreamPause( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDISTRM p1;
+
+  p1 = lua_toMidiStream(L, 1);
+
+  retval = 
+    midiStreamPause(
+      p1
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_midiStreamRestart( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDISTRM p1;
+
+  p1 = lua_toMidiStream(L, 1);
+
+  retval = 
+    midiStreamRestart(
+      p1
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_midiStreamStop( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDISTRM p1;
+
+  p1 = lua_toMidiStream(L, 1);
+
+  retval = 
+    midiStreamStop(
+      p1
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_midiConnect( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDI p1;
+  HMIDIOUT p2;
+  LPVOID p3;
+
+  p1 = lua_toMidi(L, 1);
+  p2 = lua_toMidiOut(L, 2);
+  p3 = (LPVOID)lua_touserdata(L, 3);
+
+  retval = 
+    midiConnect(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_midiDisconnect( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDI p1;
+  HMIDIOUT p2;
+  LPVOID p3;
+
+  p1 = lua_toMidi(L, 1);
+  p2 = lua_toMidiOut(L, 2);
+  p3 = (LPVOID)lua_touserdata(L, 3);
+
+  retval = 
+    midiDisconnect(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_midiOutGetDevCapsW( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  UINT_PTR p1;
+  MIDIOUTCAPSW* p2;
+  UINT p3;
+
+  p1 = (UINT_PTR)lua_touserdata(L, 1);
+  p2 = (MIDIOUTCAPSW*)g_luacwrapiface->checktype(L, 2, &regType_MIDIOUTCAPSW.hdr);
+  p3 = (UINT)lua_tonumber(L, 3);
+
+  retval = 
+    midiOutGetDevCapsW(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_midiOutGetVolume( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDIOUT p1;
+  DWORD p2;
+
+  p1 = lua_toMidiOut(L, 1);
+  p2 = (DWORD)lua_tonumber(L, 2);
+
+  retval = 
+    midiOutGetVolume(
+      p1,
+      &p2
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  lua_pushnumber(L, p2); ++numret;
+
+  return numret;
+}
+
+int winapi_midiOutSetVolume( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDIOUT p1;
+  DWORD p2;
+
+  p1 = lua_toMidiOut(L, 1);
+  p2 = (DWORD)lua_tonumber(L, 2);
+
+  retval = 
+    midiOutSetVolume(
+      p1,
+      p2
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_midiOutGetErrorTextW( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  MMRESULT p1;
+  LPWSTR p2;
+  UINT p3;
+
+  p1 = (MMRESULT)lua_tonumber(L, 1);
+  p2 = (LPWSTR)lua_tostring(L, 2);
+  p3 = (UINT)lua_tonumber(L, 3);
+
+  retval = 
+    midiOutGetErrorTextW(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_midiOutOpen( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDIOUT p1;
+  UINT p2;
+  DWORD_PTR p3;
+  DWORD_PTR p4;
+  DWORD p5;
+
+  p1 = lua_toMidiOut(L, 1);
+  p2 = (UINT)lua_tonumber(L, 2);
+  p3 = (DWORD_PTR)lua_tonumber(L, 3);
+  p4 = (DWORD_PTR)lua_tonumber(L, 4);
+  p5 = (DWORD)lua_tonumber(L, 5);
+
+  retval = 
+    midiOutOpen(
+      &p1,
+      p2,
+      p3,
+      p4,
+      p5
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  numret += lua_pushMidiOut(L, p1);
+
+  return numret;
+}
+
+int winapi_midiOutClose( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDIOUT p1;
+
+  p1 = lua_toMidiOut(L, 1);
+
+  retval = 
+    midiOutClose(
+      p1
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_midiOutPrepareHeader( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDIOUT p1;
+  MIDIHDR* p2;
+  UINT p3;
+
+  p1 = lua_toMidiOut(L, 1);
+  p2 = (MIDIHDR*)g_luacwrapiface->checktype(L, 2, &regType_MIDIHDR.hdr);
+  p3 = (UINT)lua_tonumber(L, 3);
+
+  retval = 
+    midiOutPrepareHeader(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_midiOutUnprepareHeader( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDIOUT p1;
+  MIDIHDR* p2;
+  UINT p3;
+
+  p1 = lua_toMidiOut(L, 1);
+  p2 = (MIDIHDR*)g_luacwrapiface->checktype(L, 2, &regType_MIDIHDR.hdr);
+  p3 = (UINT)lua_tonumber(L, 3);
+
+  retval = 
+    midiOutUnprepareHeader(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_midiOutShortMsg( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDIOUT p1;
+  DWORD p2;
+
+  p1 = lua_toMidiOut(L, 1);
+  p2 = (DWORD)lua_tonumber(L, 2);
+
+  retval = 
+    midiOutShortMsg(
+      p1,
+      p2
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_midiOutLongMsg( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDIOUT p1;
+  MIDIHDR* p2;
+  UINT p3;
+
+  p1 = lua_toMidiOut(L, 1);
+  p2 = (MIDIHDR*)g_luacwrapiface->checktype(L, 2, &regType_MIDIHDR.hdr);
+  p3 = (UINT)lua_tonumber(L, 3);
+
+  retval = 
+    midiOutLongMsg(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_midiOutReset( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDIOUT p1;
+
+  p1 = lua_toMidiOut(L, 1);
+
+  retval = 
+    midiOutReset(
+      p1
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_midiOutCachePatches( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDIOUT p1;
+  UINT p2;
+  WORD p3;
+  UINT p4;
+
+  p1 = lua_toMidiOut(L, 1);
+  p2 = (UINT)lua_tonumber(L, 2);
+  p3 = lua_tointeger(L, 3);
+  p4 = (UINT)lua_tonumber(L, 4);
+
+  retval = 
+    midiOutCachePatches(
+      p1,
+      p2,
+      &p3,
+      p4
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  lua_pushinteger(L, p3); ++numret;
+
+  return numret;
+}
+
+int winapi_midiOutCacheDrumPatches( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDIOUT p1;
+  UINT p2;
+  WORD p3;
+  UINT p4;
+
+  p1 = lua_toMidiOut(L, 1);
+  p2 = (UINT)lua_tonumber(L, 2);
+  p3 = lua_tointeger(L, 3);
+  p4 = (UINT)lua_tonumber(L, 4);
+
+  retval = 
+    midiOutCacheDrumPatches(
+      p1,
+      p2,
+      &p3,
+      p4
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  lua_pushinteger(L, p3); ++numret;
+
+  return numret;
+}
+
+int winapi_midiOutGetID( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDIOUT p1;
+  UINT p2;
+
+  p1 = lua_toMidiOut(L, 1);
+  p2 = (UINT)lua_tonumber(L, 2);
+
+  retval = 
+    midiOutGetID(
+      p1,
+      &p2
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  lua_pushnumber(L, p2); ++numret;
+
+  return numret;
+}
+
+int winapi_midiOutMessage( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDIOUT p1;
+  UINT p2;
+  DWORD_PTR p3;
+  DWORD_PTR p4;
+
+  p1 = lua_toMidiOut(L, 1);
+  p2 = (UINT)lua_tonumber(L, 2);
+  p3 = (DWORD_PTR)lua_tonumber(L, 3);
+  p4 = (DWORD_PTR)lua_tonumber(L, 4);
+
+  retval = 
+    midiOutMessage(
+      p1,
+      p2,
+      p3,
+      p4
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_midiInGetNumDevs( lua_State *L )
+{
+  int numret = 0;
+  UINT retval;
+
+
+  retval = 
+    midiInGetNumDevs(
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_midiInGetDevCapsW( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  UINT_PTR p1;
+  MIDIINCAPSW* p2;
+  UINT p3;
+
+  p1 = (UINT_PTR)lua_touserdata(L, 1);
+  p2 = (MIDIINCAPSW*)g_luacwrapiface->checktype(L, 2, &regType_MIDIINCAPSW.hdr);
+  p3 = (UINT)lua_tonumber(L, 3);
+
+  retval = 
+    midiInGetDevCapsW(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_midiInGetErrorTextW( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  MMRESULT p1;
+  LPWSTR p2;
+  UINT p3;
+
+  p1 = (MMRESULT)lua_tonumber(L, 1);
+  p2 = (LPWSTR)lua_tostring(L, 2);
+  p3 = (UINT)lua_tonumber(L, 3);
+
+  retval = 
+    midiInGetErrorTextW(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_midiInOpen( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDIIN p1;
+  UINT p2;
+  DWORD_PTR p3;
+  DWORD_PTR p4;
+  DWORD p5;
+
+  p1 = lua_toMidiIn(L, 1);
+  p2 = (UINT)lua_tonumber(L, 2);
+  p3 = (DWORD_PTR)lua_tonumber(L, 3);
+  p4 = (DWORD_PTR)lua_tonumber(L, 4);
+  p5 = (DWORD)lua_tonumber(L, 5);
+
+  retval = 
+    midiInOpen(
+      &p1,
+      p2,
+      p3,
+      p4,
+      p5
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  numret += lua_pushMidiIn(L, p1);
+
+  return numret;
+}
+
+int winapi_midiInClose( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDIIN p1;
+
+  p1 = lua_toMidiIn(L, 1);
+
+  retval = 
+    midiInClose(
+      p1
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_midiInPrepareHeader( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDIIN p1;
+  MIDIHDR* p2;
+  UINT p3;
+
+  p1 = lua_toMidiIn(L, 1);
+  p2 = (MIDIHDR*)g_luacwrapiface->checktype(L, 2, &regType_MIDIHDR.hdr);
+  p3 = (UINT)lua_tonumber(L, 3);
+
+  retval = 
+    midiInPrepareHeader(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_midiInUnprepareHeader( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDIIN p1;
+  MIDIHDR* p2;
+  UINT p3;
+
+  p1 = lua_toMidiIn(L, 1);
+  p2 = (MIDIHDR*)g_luacwrapiface->checktype(L, 2, &regType_MIDIHDR.hdr);
+  p3 = (UINT)lua_tonumber(L, 3);
+
+  retval = 
+    midiInUnprepareHeader(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_midiInAddBuffer( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDIIN p1;
+  MIDIHDR* p2;
+  UINT p3;
+
+  p1 = lua_toMidiIn(L, 1);
+  p2 = (MIDIHDR*)g_luacwrapiface->checktype(L, 2, &regType_MIDIHDR.hdr);
+  p3 = (UINT)lua_tonumber(L, 3);
+
+  retval = 
+    midiInAddBuffer(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_midiInStart( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDIIN p1;
+
+  p1 = lua_toMidiIn(L, 1);
+
+  retval = 
+    midiInStart(
+      p1
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_midiInStop( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDIIN p1;
+
+  p1 = lua_toMidiIn(L, 1);
+
+  retval = 
+    midiInStop(
+      p1
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_midiInReset( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDIIN p1;
+
+  p1 = lua_toMidiIn(L, 1);
+
+  retval = 
+    midiInReset(
+      p1
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_midiInGetID( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDIIN p1;
+  UINT p2;
+
+  p1 = lua_toMidiIn(L, 1);
+  p2 = (UINT)lua_tonumber(L, 2);
+
+  retval = 
+    midiInGetID(
+      p1,
+      &p2
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  lua_pushnumber(L, p2); ++numret;
+
+  return numret;
+}
+
+int winapi_midiInMessage( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIDIIN p1;
+  UINT p2;
+  DWORD_PTR p3;
+  DWORD_PTR p4;
+
+  p1 = lua_toMidiIn(L, 1);
+  p2 = (UINT)lua_tonumber(L, 2);
+  p3 = (DWORD_PTR)lua_tonumber(L, 3);
+  p4 = (DWORD_PTR)lua_tonumber(L, 4);
+
+  retval = 
+    midiInMessage(
+      p1,
+      p2,
+      p3,
+      p4
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_auxGetNumDevs( lua_State *L )
+{
+  int numret = 0;
+  UINT retval;
+
+
+  retval = 
+    auxGetNumDevs(
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_auxGetDevCapsW( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  UINT_PTR p1;
+  AUXCAPSW* p2;
+  UINT p3;
+
+  p1 = (UINT_PTR)lua_touserdata(L, 1);
+  p2 = (AUXCAPSW*)g_luacwrapiface->checktype(L, 2, &regType_AUXCAPSW.hdr);
+  p3 = (UINT)lua_tonumber(L, 3);
+
+  retval = 
+    auxGetDevCapsW(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_auxSetVolume( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  UINT p1;
+  DWORD p2;
+
+  p1 = (UINT)lua_tonumber(L, 1);
+  p2 = (DWORD)lua_tonumber(L, 2);
+
+  retval = 
+    auxSetVolume(
+      p1,
+      p2
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_auxGetVolume( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  UINT p1;
+  DWORD p2;
+
+  p1 = (UINT)lua_tonumber(L, 1);
+  p2 = (DWORD)lua_tonumber(L, 2);
+
+  retval = 
+    auxGetVolume(
+      p1,
+      &p2
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  lua_pushnumber(L, p2); ++numret;
+
+  return numret;
+}
+
+int winapi_auxOutMessage( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  UINT p1;
+  UINT p2;
+  DWORD_PTR p3;
+  DWORD_PTR p4;
+
+  p1 = (UINT)lua_tonumber(L, 1);
+  p2 = (UINT)lua_tonumber(L, 2);
+  p3 = (DWORD_PTR)lua_tonumber(L, 3);
+  p4 = (DWORD_PTR)lua_tonumber(L, 4);
+
+  retval = 
+    auxOutMessage(
+      p1,
+      p2,
+      p3,
+      p4
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_mixerGetNumDevs( lua_State *L )
+{
+  int numret = 0;
+  UINT retval;
+
+
+  retval = 
+    mixerGetNumDevs(
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_mixerGetDevCapsW( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  UINT_PTR p1;
+  MIXERCAPSW* p2;
+  UINT p3;
+
+  p1 = (UINT_PTR)lua_touserdata(L, 1);
+  p2 = (MIXERCAPSW*)g_luacwrapiface->checktype(L, 2, &regType_MIXERCAPSW.hdr);
+  p3 = (UINT)lua_tonumber(L, 3);
+
+  retval = 
+    mixerGetDevCapsW(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_mixerOpen( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIXER p1;
+  UINT p2;
+  DWORD_PTR p3;
+  DWORD_PTR p4;
+  DWORD p5;
+
+  p1 = lua_toMixer(L, 1);
+  p2 = (UINT)lua_tonumber(L, 2);
+  p3 = (DWORD_PTR)lua_tonumber(L, 3);
+  p4 = (DWORD_PTR)lua_tonumber(L, 4);
+  p5 = (DWORD)lua_tonumber(L, 5);
+
+  retval = 
+    mixerOpen(
+      &p1,
+      p2,
+      p3,
+      p4,
+      p5
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  numret += lua_pushMixer(L, p1);
+
+  return numret;
+}
+
+int winapi_mixerClose( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIXER p1;
+
+  p1 = lua_toMixer(L, 1);
+
+  retval = 
+    mixerClose(
+      p1
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_mixerMessage( lua_State *L )
+{
+  int numret = 0;
+  DWORD retval;
+  HMIXER p1;
+  UINT p2;
+  DWORD_PTR p3;
+  DWORD_PTR p4;
+
+  p1 = lua_toMixer(L, 1);
+  p2 = (UINT)lua_tonumber(L, 2);
+  p3 = (DWORD_PTR)lua_tonumber(L, 3);
+  p4 = (DWORD_PTR)lua_tonumber(L, 4);
+
+  retval = 
+    mixerMessage(
+      p1,
+      p2,
+      p3,
+      p4
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_mixerGetLineInfoW( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIXEROBJ p1;
+  MIXERLINEW* p2;
+  DWORD p3;
+
+  p1 = lua_toMixerObject(L, 1);
+  p2 = (MIXERLINEW*)g_luacwrapiface->checktype(L, 2, &regType_MIXERLINEW.hdr);
+  p3 = (DWORD)lua_tonumber(L, 3);
+
+  retval = 
+    mixerGetLineInfoW(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_mixerGetLineControlsW( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIXEROBJ p1;
+  MIXERLINECONTROLSW* p2;
+  DWORD p3;
+
+  p1 = lua_toMixerObject(L, 1);
+  p2 = (MIXERLINECONTROLSW*)g_luacwrapiface->checktype(L, 2, &regType_MIXERLINECONTROLSW.hdr);
+  p3 = (DWORD)lua_tonumber(L, 3);
+
+  retval = 
+    mixerGetLineControlsW(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_mixerGetControlDetailsW( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIXEROBJ p1;
+  MIXERCONTROLDETAILS* p2;
+  DWORD p3;
+
+  p1 = lua_toMixerObject(L, 1);
+  p2 = (MIXERCONTROLDETAILS*)g_luacwrapiface->checktype(L, 2, &regType_MIXERCONTROLDETAILS.hdr);
+  p3 = (DWORD)lua_tonumber(L, 3);
+
+  retval = 
+    mixerGetControlDetailsW(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_mixerSetControlDetails( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  HMIXEROBJ p1;
+  MIXERCONTROLDETAILS* p2;
+  DWORD p3;
+
+  p1 = lua_toMixerObject(L, 1);
+  p2 = (MIXERCONTROLDETAILS*)g_luacwrapiface->checktype(L, 2, &regType_MIXERCONTROLDETAILS.hdr);
+  p3 = (DWORD)lua_tonumber(L, 3);
+
+  retval = 
+    mixerSetControlDetails(
+      p1,
+      p2,
+      p3
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_timeGetSystemTime( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  MMTIME* p1;
+  UINT p2;
+
+  p1 = (MMTIME*)g_luacwrapiface->checktype(L, 1, &regType_MMTIME.hdr);
+  p2 = (UINT)lua_tonumber(L, 2);
+
+  retval = 
+    timeGetSystemTime(
+      p1,
+      p2
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_timeGetTime( lua_State *L )
+{
+  int numret = 0;
+  DWORD retval;
+
+
+  retval = 
+    timeGetTime(
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_timeKillEvent( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  UINT p1;
+
+  p1 = (UINT)lua_tonumber(L, 1);
+
+  retval = 
+    timeKillEvent(
+      p1
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_timeGetDevCaps( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  TIMECAPS* p1;
+  UINT p2;
+
+  p1 = (TIMECAPS*)g_luacwrapiface->checktype(L, 1, &regType_TIMECAPS.hdr);
+  p2 = (UINT)lua_tonumber(L, 2);
+
+  retval = 
+    timeGetDevCaps(
+      p1,
+      p2
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_timeBeginPeriod( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  UINT p1;
+
+  p1 = (UINT)lua_tonumber(L, 1);
+
+  retval = 
+    timeBeginPeriod(
+      p1
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
+int winapi_timeEndPeriod( lua_State *L )
+{
+  int numret = 0;
+  MMRESULT retval;
+  UINT p1;
+
+  p1 = (UINT)lua_tonumber(L, 1);
+
+  retval = 
+    timeEndPeriod(
+      p1
+    );
+
+  // marshal retval
+  lua_pushnumber(L, retval); ++numret;
+
+  return numret;
+}
+
 
 static const luaL_Reg module_lib[ ] = {
   { "GetDefDlgProcW"    , winapi_GetDefDlgProcW  },
@@ -9949,6 +12716,8 @@ static const luaL_Reg module_lib[ ] = {
   { "FrameRect",  winapi_FrameRect },
 #endif
   { "InvertRect",  winapi_InvertRect },
+  { "LoadIconW",  winapi_LoadIconW },
+  { "DestroyIcon",  winapi_DestroyIcon },
   { "LoadImageW",  winapi_LoadImageW },
   { "LoadCursorW",  winapi_LoadCursorW },
   { "SetCursor",  winapi_SetCursor },
@@ -10320,6 +13089,102 @@ static const luaL_Reg module_lib[ ] = {
 #endif
   { "Shell_NotifyIconW",  winapi_Shell_NotifyIconW },
   { "SHAppBarMessage",  winapi_SHAppBarMessage },
+  { "sndPlaySoundW",  winapi_sndPlaySoundW },
+  { "PlaySoundW",  winapi_PlaySoundW },
+  { "waveOutGetNumDevs",  winapi_waveOutGetNumDevs },
+  { "waveOutGetDevCapsW",  winapi_waveOutGetDevCapsW },
+  { "waveOutGetVolume",  winapi_waveOutGetVolume },
+  { "waveOutSetVolume",  winapi_waveOutSetVolume },
+  { "waveOutGetErrorTextW",  winapi_waveOutGetErrorTextW },
+  { "waveOutOpen",  winapi_waveOutOpen },
+  { "waveOutClose",  winapi_waveOutClose },
+  { "waveOutPrepareHeader",  winapi_waveOutPrepareHeader },
+  { "waveOutUnprepareHeader",  winapi_waveOutUnprepareHeader },
+  { "waveOutWrite",  winapi_waveOutWrite },
+  { "waveOutPause",  winapi_waveOutPause },
+  { "waveOutRestart",  winapi_waveOutRestart },
+  { "waveOutReset",  winapi_waveOutReset },
+  { "waveOutBreakLoop",  winapi_waveOutBreakLoop },
+  { "waveOutGetPosition",  winapi_waveOutGetPosition },
+  { "waveOutGetPitch",  winapi_waveOutGetPitch },
+  { "waveOutSetPitch",  winapi_waveOutSetPitch },
+  { "waveOutGetPlaybackRate",  winapi_waveOutGetPlaybackRate },
+  { "waveOutSetPlaybackRate",  winapi_waveOutSetPlaybackRate },
+  { "waveOutGetID",  winapi_waveOutGetID },
+  { "waveOutMessage",  winapi_waveOutMessage },
+  { "waveInGetNumDevs",  winapi_waveInGetNumDevs },
+  { "waveInGetDevCapsW",  winapi_waveInGetDevCapsW },
+  { "waveInGetErrorTextW",  winapi_waveInGetErrorTextW },
+  { "waveInOpen",  winapi_waveInOpen },
+  { "waveInClose",  winapi_waveInClose },
+  { "waveInPrepareHeader",  winapi_waveInPrepareHeader },
+  { "waveInUnprepareHeader",  winapi_waveInUnprepareHeader },
+  { "waveInAddBuffer",  winapi_waveInAddBuffer },
+  { "waveInStart",  winapi_waveInStart },
+  { "waveInStop",  winapi_waveInStop },
+  { "waveInReset",  winapi_waveInReset },
+  { "waveInGetPosition",  winapi_waveInGetPosition },
+  { "waveInGetID",  winapi_waveInGetID },
+  { "waveInMessage",  winapi_waveInMessage },
+  { "midiOutGetNumDevs",  winapi_midiOutGetNumDevs },
+  { "midiStreamOpen",  winapi_midiStreamOpen },
+  { "midiStreamClose",  winapi_midiStreamClose },
+  { "midiStreamProperty",  winapi_midiStreamProperty },
+  { "midiStreamPosition",  winapi_midiStreamPosition },
+  { "midiStreamOut",  winapi_midiStreamOut },
+  { "midiStreamPause",  winapi_midiStreamPause },
+  { "midiStreamRestart",  winapi_midiStreamRestart },
+  { "midiStreamStop",  winapi_midiStreamStop },
+  { "midiConnect",  winapi_midiConnect },
+  { "midiDisconnect",  winapi_midiDisconnect },
+  { "midiOutGetDevCapsW",  winapi_midiOutGetDevCapsW },
+  { "midiOutGetVolume",  winapi_midiOutGetVolume },
+  { "midiOutSetVolume",  winapi_midiOutSetVolume },
+  { "midiOutGetErrorTextW",  winapi_midiOutGetErrorTextW },
+  { "midiOutOpen",  winapi_midiOutOpen },
+  { "midiOutClose",  winapi_midiOutClose },
+  { "midiOutPrepareHeader",  winapi_midiOutPrepareHeader },
+  { "midiOutUnprepareHeader",  winapi_midiOutUnprepareHeader },
+  { "midiOutShortMsg",  winapi_midiOutShortMsg },
+  { "midiOutLongMsg",  winapi_midiOutLongMsg },
+  { "midiOutReset",  winapi_midiOutReset },
+  { "midiOutCachePatches",  winapi_midiOutCachePatches },
+  { "midiOutCacheDrumPatches",  winapi_midiOutCacheDrumPatches },
+  { "midiOutGetID",  winapi_midiOutGetID },
+  { "midiOutMessage",  winapi_midiOutMessage },
+  { "midiInGetNumDevs",  winapi_midiInGetNumDevs },
+  { "midiInGetDevCapsW",  winapi_midiInGetDevCapsW },
+  { "midiInGetErrorTextW",  winapi_midiInGetErrorTextW },
+  { "midiInOpen",  winapi_midiInOpen },
+  { "midiInClose",  winapi_midiInClose },
+  { "midiInPrepareHeader",  winapi_midiInPrepareHeader },
+  { "midiInUnprepareHeader",  winapi_midiInUnprepareHeader },
+  { "midiInAddBuffer",  winapi_midiInAddBuffer },
+  { "midiInStart",  winapi_midiInStart },
+  { "midiInStop",  winapi_midiInStop },
+  { "midiInReset",  winapi_midiInReset },
+  { "midiInGetID",  winapi_midiInGetID },
+  { "midiInMessage",  winapi_midiInMessage },
+  { "auxGetNumDevs",  winapi_auxGetNumDevs },
+  { "auxGetDevCapsW",  winapi_auxGetDevCapsW },
+  { "auxSetVolume",  winapi_auxSetVolume },
+  { "auxGetVolume",  winapi_auxGetVolume },
+  { "auxOutMessage",  winapi_auxOutMessage },
+  { "mixerGetNumDevs",  winapi_mixerGetNumDevs },
+  { "mixerGetDevCapsW",  winapi_mixerGetDevCapsW },
+  { "mixerOpen",  winapi_mixerOpen },
+  { "mixerClose",  winapi_mixerClose },
+  { "mixerMessage",  winapi_mixerMessage },
+  { "mixerGetLineInfoW",  winapi_mixerGetLineInfoW },
+  { "mixerGetLineControlsW",  winapi_mixerGetLineControlsW },
+  { "mixerGetControlDetailsW",  winapi_mixerGetControlDetailsW },
+  { "mixerSetControlDetails",  winapi_mixerSetControlDetails },
+  { "timeGetSystemTime",  winapi_timeGetSystemTime },
+  { "timeGetTime",  winapi_timeGetTime },
+  { "timeKillEvent",  winapi_timeKillEvent },
+  { "timeGetDevCaps",  winapi_timeGetDevCaps },
+  { "timeBeginPeriod",  winapi_timeBeginPeriod },
+  { "timeEndPeriod",  winapi_timeEndPeriod },
   
   { NULL, NULL }
 };
@@ -10347,15 +13212,21 @@ int register_luawinapi(lua_State *L)
 
   // register array types
   g_luacwrapiface->registertype(L, M, &regType_UINT16_64.hdr);
-  g_luacwrapiface->registertype(L, M, &regType_UINT8_32.hdr);
   g_luacwrapiface->registertype(L, M, &regType_UINT8_8.hdr);
-  g_luacwrapiface->registertype(L, M, &regType_UINT16_256.hdr);
   g_luacwrapiface->registertype(L, M, &regType_UINT16_80.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_UINT16_MAXPNAMELEN.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_UINT32_1.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_UINT32_8.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_UINT8_32.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_UINT16_256.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_UINT16_MIXER_LONG_NAME_CHARS.hdr);
   g_luacwrapiface->registertype(L, M, &regType_UINT16_128.hdr);
   g_luacwrapiface->registertype(L, M, &regType_UINT16_32.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_UINT16_MIXER_SHORT_NAME_CHARS.hdr);
   
   // register structure types
   g_luacwrapiface->registertype(L, M, &regType_APPBARDATA.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_WAVEOUTCAPSW.hdr);
 #if (!defined(UNDER_CE))
   g_luacwrapiface->registertype(L, M, &regType_LVGROUPMETRICS.hdr);
 #endif
@@ -10373,8 +13244,10 @@ int register_luawinapi(lua_State *L)
 #if (!defined(UNDER_CE))
   g_luacwrapiface->registertype(L, M, &regType_NMTCKEYDOWN.hdr);
 #endif
+  g_luacwrapiface->registertype(L, M, &regType_TIMECAPS.hdr);
   g_luacwrapiface->registertype(L, M, &regType_POINTS.hdr);
   g_luacwrapiface->registertype(L, M, &regType_RECT.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_AUXCAPS2W.hdr);
 #if (defined(USE_AYGSHELL))
   g_luacwrapiface->registertype(L, M, &regType_SHMENUBARINFO.hdr);
 #endif
@@ -10383,36 +13256,68 @@ int register_luawinapi(lua_State *L)
 #endif
   g_luacwrapiface->registertype(L, M, &regType_CHOOSECOLOR.hdr);
   g_luacwrapiface->registertype(L, M, &regType_NMLISTVIEW.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_MIDIOUTCAPSW.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_MIDIINCAPS2W.hdr);
 #if (defined(UNDER_CE))
   g_luacwrapiface->registertype(L, M, &regType_CONNMGR_CONNECTIONINFO.hdr);
 #endif
+  g_luacwrapiface->registertype(L, M, &regType_WAVEFORMAT.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_WAVEFORMATEX.hdr);
   g_luacwrapiface->registertype(L, M, &regType_DLGTEMPLATE.hdr);
   g_luacwrapiface->registertype(L, M, &regType_TPMPARAMS.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_MIDIHDR.hdr);
   g_luacwrapiface->registertype(L, M, &regType_NMTTDISPINFOW.hdr);
   g_luacwrapiface->registertype(L, M, &regType_DLGITEMTEMPLATE.hdr);
 #if (!defined(UNDER_CE))
   g_luacwrapiface->registertype(L, M, &regType_WINDOWPLACEMENT.hdr);
 #endif
+  g_luacwrapiface->registertype(L, M, &regType_MIXERCONTROLDETAILS_UNSIGNED.hdr);
   g_luacwrapiface->registertype(L, M, &regType_MSG.hdr);
   g_luacwrapiface->registertype(L, M, &regType_TCITEMW.hdr);
   g_luacwrapiface->registertype(L, M, &regType_LARGE_INTEGER.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_MIXERCONTROLDETAILS_SIGNED.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_MIXERCONTROLDETAILS_BOOLEAN.hdr);
   g_luacwrapiface->registertype(L, M, &regType_SYSTEMTIME.hdr);
 #if (defined(UNDER_CE))
   g_luacwrapiface->registertype(L, M, &regType_MSGQUEUEINFO.hdr);
 #endif
+  g_luacwrapiface->registertype(L, M, &regType_AUXCAPSW.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_MIXERCONTROLDETAILS_LISTTEXTW.hdr);
   g_luacwrapiface->registertype(L, M, &regType_TVITEMW.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_NMLVDISPINFOW.hdr);
   g_luacwrapiface->registertype(L, M, &regType_PROCESS_INFORMATION.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_MIDIOUTCAPS2W.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_WAVEINCAPSW.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_MIXERLINECONTROLSW.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_MIXERCONTROLW.hdr);
   g_luacwrapiface->registertype(L, M, &regType_WNDCLASSW.hdr);
   g_luacwrapiface->registertype(L, M, &regType_LVITEMW.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_DRVCONFIGINFOEX.hdr);
   g_luacwrapiface->registertype(L, M, &regType_LOGFONTW.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_TCHITTESTINFO.hdr);
   g_luacwrapiface->registertype(L, M, &regType_FILETIME.hdr);
   g_luacwrapiface->registertype(L, M, &regType_STARTUPINFOW.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_MIXERCAPS2W.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_MIXERCAPSW.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_MIDIPROPTEMPO.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_MIDIPROPTIMEDIV.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_SECURITY_ATTRIBUTES.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_MIXERLINEW.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_MIDIINCAPSW.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_PCMWAVEFORMAT.hdr);
 #if (!defined(UNDER_CE))
   g_luacwrapiface->registertype(L, M, &regType_LVGROUP.hdr);
 #endif
+  g_luacwrapiface->registertype(L, M, &regType_WAVEINCAPS2W.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_WAVEOUTCAPS2W.hdr);
   g_luacwrapiface->registertype(L, M, &regType_OPENFILENAMEW.hdr);
   g_luacwrapiface->registertype(L, M, &regType_ULARGE_INTEGER.hdr);
   g_luacwrapiface->registertype(L, M, &regType_MENUITEMINFOW.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_WAVEHDR.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_TVHITTESTINFO.hdr);
+#if (defined(USE_COMMANDBAR))
+  g_luacwrapiface->registertype(L, M, &regType_COMMANDBANDSRESTOREINFO.hdr);
+#endif
   g_luacwrapiface->registertype(L, M, &regType_NOTIFYICONDATAW.hdr);
   g_luacwrapiface->registertype(L, M, &regType_CREATESTRUCTW.hdr);
   g_luacwrapiface->registertype(L, M, &regType_SIZE.hdr);
@@ -10420,16 +13325,14 @@ int register_luawinapi(lua_State *L)
   g_luacwrapiface->registertype(L, M, &regType_INITCOMMONCONTROLSEX.hdr);
   g_luacwrapiface->registertype(L, M, &regType_COPYDATASTRUCT.hdr);
   g_luacwrapiface->registertype(L, M, &regType_TBBUTTONINFOW.hdr);
-#if (defined(USE_COMMANDBAR))
-  g_luacwrapiface->registertype(L, M, &regType_COMMANDBANDSRESTOREINFO.hdr);
-#endif
+  g_luacwrapiface->registertype(L, M, &regType_MMTIME.hdr);
   g_luacwrapiface->registertype(L, M, &regType_ACCEL.hdr);
   g_luacwrapiface->registertype(L, M, &regType_NMHDR.hdr);
   g_luacwrapiface->registertype(L, M, &regType_POINT.hdr);
 #if (defined(UNDER_CE))
   g_luacwrapiface->registertype(L, M, &regType_MSGQUEUEOPTIONS.hdr);
 #endif
-  g_luacwrapiface->registertype(L, M, &regType_SECURITY_ATTRIBUTES.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_MIDISTRMBUFFVER.hdr);
 #if (!defined(UNDER_CE))
   g_luacwrapiface->registertype(L, M, &regType_PRINTDLGW.hdr);
 #endif
@@ -10441,18 +13344,18 @@ int register_luawinapi(lua_State *L)
   g_luacwrapiface->registertype(L, M, &regType_WNDCLASSEXW.hdr);
 #endif
   g_luacwrapiface->registertype(L, M, &regType_OSVERSIONINFOW.hdr);
-  g_luacwrapiface->registertype(L, M, &regType_TCHITTESTINFO.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_MIDIEVENT.hdr);
   g_luacwrapiface->registertype(L, M, &regType_NMTREEVIEWW.hdr);
   g_luacwrapiface->registertype(L, M, &regType_TTHITTESTINFOW.hdr);
   g_luacwrapiface->registertype(L, M, &regType_TTTOOLINFOW.hdr);
-  g_luacwrapiface->registertype(L, M, &regType_TVHITTESTINFO.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_DRVCONFIGINFO.hdr);
 #if (defined(USE_AYGSHELL))
   g_luacwrapiface->registertype(L, M, &regType_SHACTIVATEINFO.hdr);
 #endif
 #if (!defined(UNDER_CE))
   g_luacwrapiface->registertype(L, M, &regType_NMITEMACTIVATE.hdr);
 #endif
-  g_luacwrapiface->registertype(L, M, &regType_NMLVDISPINFOW.hdr);
+  g_luacwrapiface->registertype(L, M, &regType_MIXERCONTROLDETAILS.hdr);
   g_luacwrapiface->registertype(L, M, &regType_NMHDDISPINFOW.hdr);
 
   winapi_RegisterWndProc(L);

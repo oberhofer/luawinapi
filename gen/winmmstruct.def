@@ -1,0 +1,375 @@
+#
+# Declaration file with WinAPI MMSystem structs
+#
+
+#########################################################################
+# MMSystem
+
+typedef struct mmtime_tag {
+    UINT wType;
+    union {
+        DWORD ms;
+        DWORD sample;
+        DWORD cb;
+        DWORD ticks;
+        struct {
+            BYTE hour;
+            BYTE min;
+            BYTE sec;
+            BYTE frame;
+            BYTE fps;
+            BYTE dummy;
+            BYTE pad[2];
+        } smpte;
+        struct {
+            DWORD songptrpos;
+        } midi;
+    } u;
+} MMTIME;
+
+typedef struct tagDRVCONFIGINFOEX {
+    DWORD dwDCISize;
+    LPCWSTR lpszDCISectionName;
+    LPCWSTR lpszDCIAliasName;
+    DWORD dnDevNode;
+} DRVCONFIGINFOEX;
+
+typedef struct tagDRVCONFIGINFO {
+    DWORD dwDCISize;
+    LPCWSTR lpszDCISectionName;
+    LPCWSTR lpszDCIAliasName;
+} DRVCONFIGINFO;
+
+#########################################################################
+# MMSystem WAVE
+
+typedef struct wavehdr_tag {
+    LPSTR lpData;
+    DWORD dwBufferLength;
+    DWORD dwBytesRecorded;
+    DWORD_PTR dwUser;
+    DWORD dwFlags;
+    DWORD dwLoops;
+#    struct wavehdr_tag *lpNext;
+    DWORD_PTR reserved;
+} WAVEHDR;
+
+
+typedef struct tagWAVEOUTCAPSW {
+    WORD wMid;
+    WORD wPid;
+    MMVERSION vDriverVersion;
+    WCHAR szPname[MAXPNAMELEN];
+    DWORD dwFormats;
+    WORD wChannels;
+    WORD wReserved1;
+    DWORD dwSupport;
+} WAVEOUTCAPSW;
+
+
+typedef struct tagWAVEOUTCAPS2W {
+    WORD wMid;
+    WORD wPid;
+    MMVERSION vDriverVersion;
+    WCHAR szPname[MAXPNAMELEN];
+    DWORD dwFormats;
+    WORD wChannels;
+    WORD wReserved1;
+    DWORD dwSupport;
+    GUID ManufacturerGuid;
+    GUID ProductGuid;
+    GUID NameGuid;
+} WAVEOUTCAPS2W;
+
+typedef struct tagWAVEINCAPSW {
+    WORD wMid;
+    WORD wPid;
+    MMVERSION vDriverVersion;
+    WCHAR szPname[MAXPNAMELEN];
+    DWORD dwFormats;
+    WORD wChannels;
+    WORD wReserved1;
+} WAVEINCAPSW;
+
+typedef struct tagWAVEINCAPS2W {
+    WORD wMid;
+    WORD wPid;
+    MMVERSION vDriverVersion;
+    WCHAR szPname[MAXPNAMELEN];
+    DWORD dwFormats;
+    WORD wChannels;
+    WORD wReserved1;
+    GUID ManufacturerGuid;
+    GUID ProductGuid;
+    GUID NameGuid;
+} WAVEINCAPS2W;
+
+
+typedef struct waveformat_tag {
+    WORD wFormatTag;
+    WORD nChannels;
+    DWORD nSamplesPerSec;
+    DWORD nAvgBytesPerSec;
+    WORD nBlockAlign;
+} WAVEFORMAT;
+
+typedef struct pcmwaveformat_tag {
+    WAVEFORMAT wf;
+    WORD wBitsPerSample;
+} PCMWAVEFORMAT;
+
+typedef struct tWAVEFORMATEX {
+    WORD wFormatTag;
+    WORD nChannels;
+    DWORD nSamplesPerSec;
+    DWORD nAvgBytesPerSec;
+    WORD nBlockAlign;
+    WORD wBitsPerSample;
+    WORD cbSize;
+} WAVEFORMATEX;
+
+
+#########################################################################
+# MMSystem MIDI
+
+typedef struct tagMIDIOUTCAPSW {
+    WORD wMid;
+    WORD wPid;
+    MMVERSION vDriverVersion;
+    WCHAR szPname[MAXPNAMELEN];
+    WORD wTechnology;
+    WORD wVoices;
+    WORD wNotes;
+    WORD wChannelMask;
+    DWORD dwSupport;
+} MIDIOUTCAPSW;
+
+typedef struct tagMIDIOUTCAPS2W {
+    WORD wMid;
+    WORD wPid;
+    MMVERSION vDriverVersion;
+    WCHAR szPname[MAXPNAMELEN];
+    WORD wTechnology;
+    WORD wVoices;
+    WORD wNotes;
+    WORD wChannelMask;
+    DWORD dwSupport;
+    GUID ManufacturerGuid;
+    GUID ProductGuid;
+    GUID NameGuid;
+} MIDIOUTCAPS2W;
+
+typedef struct tagMIDIINCAPSW {
+    WORD wMid;
+    WORD wPid;
+    MMVERSION vDriverVersion;
+    WCHAR szPname[MAXPNAMELEN];
+    DWORD dwSupport;
+} MIDIINCAPSW;
+
+typedef struct tagMIDIINCAPS2W {
+    WORD wMid;
+    WORD wPid;
+    MMVERSION vDriverVersion;
+    WCHAR szPname[MAXPNAMELEN];
+    DWORD dwSupport;
+    GUID ManufacturerGuid;
+    GUID ProductGuid;
+    GUID NameGuid;
+} MIDIINCAPS2W;
+
+typedef struct midihdr_tag {
+    LPSTR lpData;
+    DWORD dwBufferLength;
+    DWORD dwBytesRecorded;
+    DWORD_PTR dwUser;
+    DWORD dwFlags;
+#    struct midihdr_tag *lpNext;
+    DWORD_PTR reserved;
+    DWORD dwOffset;
+    DWORD_PTR dwReserved[8];
+} MIDIHDR;
+
+typedef struct midievent_tag {
+    DWORD dwDeltaTime;
+    DWORD dwStreamID;
+    DWORD dwEvent;
+    DWORD dwParms[1];
+} MIDIEVENT;
+
+typedef struct midistrmbuffver_tag {
+    DWORD dwVersion;
+    DWORD dwMid;
+    DWORD dwOEMVersion;
+} MIDISTRMBUFFVER;
+
+typedef struct midiproptimediv_tag {
+    DWORD cbStruct;
+    DWORD dwTimeDiv;
+} MIDIPROPTIMEDIV;
+
+typedef struct midiproptempo_tag {
+    DWORD cbStruct;
+    DWORD dwTempo;
+} MIDIPROPTEMPO;
+
+#########################################################################
+# MMSystem AUX
+
+typedef struct tagAUXCAPSW {
+    WORD wMid;
+    WORD wPid;
+    MMVERSION vDriverVersion;
+    WCHAR szPname[MAXPNAMELEN];
+    WORD wTechnology;
+    WORD wReserved1;
+    DWORD dwSupport;
+} AUXCAPSW;
+
+typedef struct tagAUXCAPS2W {
+    WORD wMid;
+    WORD wPid;
+    MMVERSION vDriverVersion;
+    WCHAR szPname[MAXPNAMELEN];
+    WORD wTechnology;
+    WORD wReserved1;
+    DWORD dwSupport;
+    GUID ManufacturerGuid;
+    GUID ProductGuid;
+    GUID NameGuid;
+} AUXCAPS2W;
+
+#########################################################################
+# MMSystem MIXER
+
+typedef struct tagMIXERCAPSW {
+    WORD wMid;
+    WORD wPid;
+    MMVERSION vDriverVersion;
+    WCHAR szPname[MAXPNAMELEN];
+    DWORD fdwSupport;
+    DWORD cDestinations;
+} MIXERCAPSW;
+
+typedef struct tagMIXERCAPS2W {
+    WORD wMid;
+    WORD wPid;
+    MMVERSION vDriverVersion;
+    WCHAR szPname[MAXPNAMELEN];
+    DWORD fdwSupport;
+    DWORD cDestinations;
+    GUID ManufacturerGuid;
+    GUID ProductGuid;
+    GUID NameGuid;
+} MIXERCAPS2W;
+
+typedef struct tagMIXERLINEW {
+    DWORD cbStruct;
+    DWORD dwDestination;
+    DWORD dwSource;
+    DWORD dwLineID;
+    DWORD fdwLine;
+    DWORD_PTR dwUser;
+    DWORD dwComponentType;
+    DWORD cChannels;
+    DWORD cConnections;
+    DWORD cControls;
+    WCHAR szShortName[MIXER_SHORT_NAME_CHARS];
+    WCHAR szName[MIXER_LONG_NAME_CHARS];
+    struct {
+        DWORD dwType;
+        DWORD dwDeviceID;
+        WORD wMid;
+        WORD wPid;
+        MMVERSION vDriverVersion;
+        WCHAR szPname[MAXPNAMELEN];
+    } Target;
+} MIXERLINEW;
+
+typedef struct tagMIXERCONTROLW {
+    DWORD cbStruct;
+    DWORD dwControlID;
+    DWORD dwControlType;
+    DWORD fdwControl;
+    DWORD cMultipleItems;
+    WCHAR szShortName[MIXER_SHORT_NAME_CHARS];
+    WCHAR szName[MIXER_LONG_NAME_CHARS];
+    union {
+#        struct {
+            LONG lMinimum;
+            LONG lMaximum;
+#        };
+#        struct {
+            DWORD dwMinimum;
+            DWORD dwMaximum;
+#        };
+        DWORD dwReserved[6];
+    } Bounds;
+    union {
+        DWORD cSteps;
+        DWORD cbCustomData;
+        DWORD dwReserved[6];
+    } Metrics;
+} MIXERCONTROLW;
+
+typedef struct tagMIXERLINECONTROLSW {
+    DWORD cbStruct;
+    DWORD dwLineID;
+#    union {
+        DWORD dwControlID;
+        DWORD dwControlType;
+#    };
+    DWORD cControls;
+    DWORD cbmxctrl;
+    LPMIXERCONTROLW pamxctrl;
+} MIXERLINECONTROLSW;
+
+typedef struct tMIXERCONTROLDETAILS {
+    DWORD cbStruct;
+    DWORD dwControlID;
+    DWORD cChannels;
+#    union {
+        HWND hwndOwner;
+        DWORD cMultipleItems;
+#    };
+    DWORD cbDetails;
+    LPVOID paDetails;
+} MIXERCONTROLDETAILS;
+
+typedef struct tagMIXERCONTROLDETAILS_LISTTEXTW {
+    DWORD dwParam1;
+    DWORD dwParam2;
+    WCHAR szName[MIXER_LONG_NAME_CHARS];
+} MIXERCONTROLDETAILS_LISTTEXTW;
+
+typedef struct tMIXERCONTROLDETAILS_BOOLEAN {
+    LONG fValue;
+} MIXERCONTROLDETAILS_BOOLEAN;
+
+typedef struct tMIXERCONTROLDETAILS_SIGNED {
+    LONG lValue;
+} MIXERCONTROLDETAILS_SIGNED;
+
+typedef struct tMIXERCONTROLDETAILS_UNSIGNED {
+    DWORD dwValue;
+} MIXERCONTROLDETAILS_UNSIGNED;
+
+#########################################################################
+# MMSystem TIME
+
+typedef struct timecaps_tag {
+    UINT wPeriodMin;
+    UINT wPeriodMax;
+} TIMECAPS;
+
+#########################################################################
+# MMSystem JOYSTICK
+
+
+#########################################################################
+# MMSystem MMIO
+
+
+#########################################################################
+# MMSystem MCI
+

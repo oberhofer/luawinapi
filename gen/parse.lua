@@ -97,9 +97,18 @@ local structs = P{"structdeclarations";
 
   attribs_opt   = Cg(V"attributes", "attribs")^-1;
 
-  arraypostfix  = Cg(P'[' * WS * numlit * WS * P']', "len") * WS;
+  arraypostfix  = P'[' * WS * Cg((numlit + identifier), "len") * WS * P']' * WS;
 
-  member        = Ct(V"attribs_opt" * WS * Cg(identifier, "typ") * WS * Cg(identifier, "name") * WS * V"arraypostfix"^-1) * P';' * WS;
+  simple_member = Cg(identifier, "typ") * WS * Cg(identifier, "name");
+
+  struct_member = (P"union" + P"struct") * WS * identifier^-1 * WS * P'{' * WS
+                    * Cg(V"memberlist", "members")
+                    * P'}' * WS * Cg(identifier, "name");
+
+
+  member        = Ct(V"attribs_opt" * WS
+					* (V"struct_member" + V"simple_member") * WS
+					* V"arraypostfix"^-1) * P';' * WS;
 
   memberlist    = Ct(V"member"^0);
 

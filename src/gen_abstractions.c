@@ -341,6 +341,161 @@ static const struct luaL_Reg Region_WrapMethods[ ] = {
 };
 
 // used to identify the type
+const char* MixerObject_Typename = "MixerObject";
+
+// push on stack
+int lua_pushMixerObject( lua_State *L, HMIXEROBJ hdl )
+{
+  if (NULL == hdl)
+  {
+    // return nil
+    return 0;
+  }
+
+  // lookup handle in handle map
+  luaL_getmetatable(L, MixerObject_Typename);
+  lua_pushstring(L, "$Handles");
+  lua_rawget(L, -2);                      // stack: $Handles | metatable
+
+  lua_pushlightuserdata(L, hdl);
+  lua_rawget(L, -2);                      // stack: nil/object | $Handles | metatable
+
+  if (lua_isnil(L, -1))
+  {
+    HMIXEROBJ* ud;
+  
+    // pop nil value
+    lua_pop(L, 1);
+
+    // push userdata
+    ud = (HMIXEROBJ*)lua_newuserdata(L, sizeof(HMIXEROBJ));
+    *ud = hdl;                              // stack: object | $Handles | metatable
+
+    // set metatable
+    lua_pushvalue(L, -3);
+    lua_setmetatable(L, -2);
+
+    // push key/value for lookup table
+    lua_pushlightuserdata(L, hdl);
+    lua_pushvalue(L, -2);                 // stack: object |  key  | object | $Handles | metatable
+
+    // add item to lookup table
+    lua_rawset(L, -4);                    // stack: object | $Handles | metatable
+  }
+
+  // cleanup stack (remove $Handles | metatable)
+  lua_remove(L, -2);
+  lua_remove(L, -2);
+
+  return 1;
+}
+
+// get from stack
+HMIXEROBJ lua_toMixerObject( lua_State *L, int idx )
+{
+  HMIXEROBJ v = 0;
+  switch (lua_type(L, idx))
+  {
+    case LUA_TNIL:
+      {
+      }
+      break;
+    case LUA_TLIGHTUSERDATA:
+      {
+        v = (HMIXEROBJ)lua_touserdata(L, idx);
+      }
+      break;
+    case LUA_TNUMBER:
+      {
+        v = (HMIXEROBJ)lua_tointeger(L, idx);
+      }
+      break;
+    case LUA_TUSERDATA:
+      {
+        HMIXEROBJ* ud  = (HMIXEROBJ*)luaL_checkudata(L, idx, MixerObject_Typename);
+        v = *ud;
+      }
+      break;
+    default:
+      {
+        const char *msg = lua_pushfstring(L, "MixerObject (handle) expected but got %s", luaL_typename(L, idx));
+        luaL_argerror(L, idx, msg);
+      }
+      break;
+  }
+  return v;
+}
+
+// implements __index metamethod (for .handle attribute)
+static int MixerObject_index(lua_State *L)
+{
+  HMIXEROBJ* ud  = (HMIXEROBJ*)luaL_checkudata(L, 1, MixerObject_Typename);
+
+  const char* stridx = lua_tolstring(L, 2, NULL);
+
+  // check for .handle
+  if (0 == strcmp(stridx, "handle"))
+  {
+    lua_pushlightuserdata(L, *ud);
+    return 1;
+  }
+  else
+  {
+    luaL_getmetafield(L, 1, stridx);
+  }
+
+  return 1;
+}
+
+// to wrap handle in an object
+static int MixerObject_wrap(lua_State *L)
+
+{
+  HMIXEROBJ handle;
+
+  if (lua_isnil(L, -1))
+  {
+   lua_pushnil(L);
+  }
+  else if (lua_islightuserdata(L, -1))
+  {
+    HMIXEROBJ handle = 0;
+    handle = (HMIXEROBJ)(lua_touserdata(L, -1));
+    return lua_pushMixerObject(L, handle);
+  }
+  else if (lua_isuserdata(L, -1))
+  {
+    HMIXEROBJ* ud  = (HMIXEROBJ*)luaL_checkudata(L, -1, MixerObject_Typename);
+    lua_pushvalue(L, -1);
+    return 1;
+  }
+  
+  handle = 0;
+  if (lua_isnumber(L, -1))
+  {
+    handle = (HMIXEROBJ)lua_tointeger(L, -1);
+  }
+  
+  return lua_pushMixerObject(L, handle);
+}
+
+
+static const struct luaL_Reg MixerObject_Methods[ ] = {
+  { "__index", MixerObject_index},
+  { "wrap", MixerObject_wrap },
+  { "mixerGetLineInfoW",  winapi_mixerGetLineInfoW },
+  { "mixerGetLineControlsW",  winapi_mixerGetLineControlsW },
+  { "mixerGetControlDetailsW",  winapi_mixerGetControlDetailsW },
+  { "mixerSetControlDetails",  winapi_mixerSetControlDetails },
+  { NULL, NULL }
+};
+
+static const struct luaL_Reg MixerObject_WrapMethods[ ] = {
+  { "WrapMixerObject", MixerObject_wrap },
+  { NULL, NULL }
+};
+
+// used to identify the type
 const char* Window_Typename = "Window";
 
 // push on stack
@@ -619,157 +774,6 @@ static const struct luaL_Reg Window_Methods[ ] = {
 
 static const struct luaL_Reg Window_WrapMethods[ ] = {
   { "WrapWindow", Window_wrap },
-  { NULL, NULL }
-};
-
-// used to identify the type
-const char* Icon_Typename = "Icon";
-
-// push on stack
-int lua_pushIcon( lua_State *L, HICON hdl )
-{
-  if (NULL == hdl)
-  {
-    // return nil
-    return 0;
-  }
-
-  // lookup handle in handle map
-  luaL_getmetatable(L, Icon_Typename);
-  lua_pushstring(L, "$Handles");
-  lua_rawget(L, -2);                      // stack: $Handles | metatable
-
-  lua_pushlightuserdata(L, hdl);
-  lua_rawget(L, -2);                      // stack: nil/object | $Handles | metatable
-
-  if (lua_isnil(L, -1))
-  {
-    HICON* ud;
-  
-    // pop nil value
-    lua_pop(L, 1);
-
-    // push userdata
-    ud = (HICON*)lua_newuserdata(L, sizeof(HICON));
-    *ud = hdl;                              // stack: object | $Handles | metatable
-
-    // set metatable
-    lua_pushvalue(L, -3);
-    lua_setmetatable(L, -2);
-
-    // push key/value for lookup table
-    lua_pushlightuserdata(L, hdl);
-    lua_pushvalue(L, -2);                 // stack: object |  key  | object | $Handles | metatable
-
-    // add item to lookup table
-    lua_rawset(L, -4);                    // stack: object | $Handles | metatable
-  }
-
-  // cleanup stack (remove $Handles | metatable)
-  lua_remove(L, -2);
-  lua_remove(L, -2);
-
-  return 1;
-}
-
-// get from stack
-HICON lua_toIcon( lua_State *L, int idx )
-{
-  HICON v = 0;
-  switch (lua_type(L, idx))
-  {
-    case LUA_TNIL:
-      {
-      }
-      break;
-    case LUA_TLIGHTUSERDATA:
-      {
-        v = (HICON)lua_touserdata(L, idx);
-      }
-      break;
-    case LUA_TNUMBER:
-      {
-        v = (HICON)lua_tointeger(L, idx);
-      }
-      break;
-    case LUA_TUSERDATA:
-      {
-        HICON* ud  = (HICON*)luaL_checkudata(L, idx, Icon_Typename);
-        v = *ud;
-      }
-      break;
-    default:
-      {
-        const char *msg = lua_pushfstring(L, "Icon (handle) expected but got %s", luaL_typename(L, idx));
-        luaL_argerror(L, idx, msg);
-      }
-      break;
-  }
-  return v;
-}
-
-// implements __index metamethod (for .handle attribute)
-static int Icon_index(lua_State *L)
-{
-  HICON* ud  = (HICON*)luaL_checkudata(L, 1, Icon_Typename);
-
-  const char* stridx = lua_tolstring(L, 2, NULL);
-
-  // check for .handle
-  if (0 == strcmp(stridx, "handle"))
-  {
-    lua_pushlightuserdata(L, *ud);
-    return 1;
-  }
-  else
-  {
-    luaL_getmetafield(L, 1, stridx);
-  }
-
-  return 1;
-}
-
-// to wrap handle in an object
-static int Icon_wrap(lua_State *L)
-
-{
-  HICON handle;
-
-  if (lua_isnil(L, -1))
-  {
-   lua_pushnil(L);
-  }
-  else if (lua_islightuserdata(L, -1))
-  {
-    HICON handle = 0;
-    handle = (HICON)(lua_touserdata(L, -1));
-    return lua_pushIcon(L, handle);
-  }
-  else if (lua_isuserdata(L, -1))
-  {
-    HICON* ud  = (HICON*)luaL_checkudata(L, -1, Icon_Typename);
-    lua_pushvalue(L, -1);
-    return 1;
-  }
-  
-  handle = 0;
-  if (lua_isnumber(L, -1))
-  {
-    handle = (HICON)lua_tointeger(L, -1);
-  }
-  
-  return lua_pushIcon(L, handle);
-}
-
-
-static const struct luaL_Reg Icon_Methods[ ] = {
-  { "__index", Icon_index},
-  { "wrap", Icon_wrap },
-  { NULL, NULL }
-};
-
-static const struct luaL_Reg Icon_WrapMethods[ ] = {
-  { "WrapIcon", Icon_wrap },
   { NULL, NULL }
 };
 
@@ -1091,6 +1095,1431 @@ static const struct luaL_Reg DC_WrapMethods[ ] = {
   { NULL, NULL }
 };
 
+// used to identify the type
+const char* MidiOut_Typename = "MidiOut";
+
+// push on stack
+int lua_pushMidiOut( lua_State *L, HMIDIOUT hdl )
+{
+  if (NULL == hdl)
+  {
+    // return nil
+    return 0;
+  }
+
+  // lookup handle in handle map
+  luaL_getmetatable(L, MidiOut_Typename);
+  lua_pushstring(L, "$Handles");
+  lua_rawget(L, -2);                      // stack: $Handles | metatable
+
+  lua_pushlightuserdata(L, hdl);
+  lua_rawget(L, -2);                      // stack: nil/object | $Handles | metatable
+
+  if (lua_isnil(L, -1))
+  {
+    HMIDIOUT* ud;
+  
+    // pop nil value
+    lua_pop(L, 1);
+
+    // push userdata
+    ud = (HMIDIOUT*)lua_newuserdata(L, sizeof(HMIDIOUT));
+    *ud = hdl;                              // stack: object | $Handles | metatable
+
+    // set metatable
+    lua_pushvalue(L, -3);
+    lua_setmetatable(L, -2);
+
+    // push key/value for lookup table
+    lua_pushlightuserdata(L, hdl);
+    lua_pushvalue(L, -2);                 // stack: object |  key  | object | $Handles | metatable
+
+    // add item to lookup table
+    lua_rawset(L, -4);                    // stack: object | $Handles | metatable
+  }
+
+  // cleanup stack (remove $Handles | metatable)
+  lua_remove(L, -2);
+  lua_remove(L, -2);
+
+  return 1;
+}
+
+// get from stack
+HMIDIOUT lua_toMidiOut( lua_State *L, int idx )
+{
+  HMIDIOUT v = 0;
+  switch (lua_type(L, idx))
+  {
+    case LUA_TNIL:
+      {
+      }
+      break;
+    case LUA_TLIGHTUSERDATA:
+      {
+        v = (HMIDIOUT)lua_touserdata(L, idx);
+      }
+      break;
+    case LUA_TNUMBER:
+      {
+        v = (HMIDIOUT)lua_tointeger(L, idx);
+      }
+      break;
+    case LUA_TUSERDATA:
+      {
+        HMIDIOUT* ud  = (HMIDIOUT*)luaL_checkudata(L, idx, MidiOut_Typename);
+        v = *ud;
+      }
+      break;
+    default:
+      {
+        const char *msg = lua_pushfstring(L, "MidiOut (handle) expected but got %s", luaL_typename(L, idx));
+        luaL_argerror(L, idx, msg);
+      }
+      break;
+  }
+  return v;
+}
+
+// implements __index metamethod (for .handle attribute)
+static int MidiOut_index(lua_State *L)
+{
+  HMIDIOUT* ud  = (HMIDIOUT*)luaL_checkudata(L, 1, MidiOut_Typename);
+
+  const char* stridx = lua_tolstring(L, 2, NULL);
+
+  // check for .handle
+  if (0 == strcmp(stridx, "handle"))
+  {
+    lua_pushlightuserdata(L, *ud);
+    return 1;
+  }
+  else
+  {
+    luaL_getmetafield(L, 1, stridx);
+  }
+
+  return 1;
+}
+
+// to wrap handle in an object
+static int MidiOut_wrap(lua_State *L)
+
+{
+  HMIDIOUT handle;
+
+  if (lua_isnil(L, -1))
+  {
+   lua_pushnil(L);
+  }
+  else if (lua_islightuserdata(L, -1))
+  {
+    HMIDIOUT handle = 0;
+    handle = (HMIDIOUT)(lua_touserdata(L, -1));
+    return lua_pushMidiOut(L, handle);
+  }
+  else if (lua_isuserdata(L, -1))
+  {
+    HMIDIOUT* ud  = (HMIDIOUT*)luaL_checkudata(L, -1, MidiOut_Typename);
+    lua_pushvalue(L, -1);
+    return 1;
+  }
+  
+  handle = 0;
+  if (lua_isnumber(L, -1))
+  {
+    handle = (HMIDIOUT)lua_tointeger(L, -1);
+  }
+  
+  return lua_pushMidiOut(L, handle);
+}
+
+
+static const struct luaL_Reg MidiOut_Methods[ ] = {
+  { "__index", MidiOut_index},
+  { "wrap", MidiOut_wrap },
+  { "midiOutGetVolume",  winapi_midiOutGetVolume },
+  { "midiOutSetVolume",  winapi_midiOutSetVolume },
+  { "midiOutOpen",  winapi_midiOutOpen },
+  { "midiOutClose",  winapi_midiOutClose },
+  { "midiOutPrepareHeader",  winapi_midiOutPrepareHeader },
+  { "midiOutUnprepareHeader",  winapi_midiOutUnprepareHeader },
+  { "midiOutShortMsg",  winapi_midiOutShortMsg },
+  { "midiOutLongMsg",  winapi_midiOutLongMsg },
+  { "midiOutReset",  winapi_midiOutReset },
+  { "midiOutCachePatches",  winapi_midiOutCachePatches },
+  { "midiOutCacheDrumPatches",  winapi_midiOutCacheDrumPatches },
+  { "midiOutGetID",  winapi_midiOutGetID },
+  { "midiOutMessage",  winapi_midiOutMessage },
+  { NULL, NULL }
+};
+
+static const struct luaL_Reg MidiOut_WrapMethods[ ] = {
+  { "WrapMidiOut", MidiOut_wrap },
+  { NULL, NULL }
+};
+
+// used to identify the type
+const char* MidiIn_Typename = "MidiIn";
+
+// push on stack
+int lua_pushMidiIn( lua_State *L, HMIDIIN hdl )
+{
+  if (NULL == hdl)
+  {
+    // return nil
+    return 0;
+  }
+
+  // lookup handle in handle map
+  luaL_getmetatable(L, MidiIn_Typename);
+  lua_pushstring(L, "$Handles");
+  lua_rawget(L, -2);                      // stack: $Handles | metatable
+
+  lua_pushlightuserdata(L, hdl);
+  lua_rawget(L, -2);                      // stack: nil/object | $Handles | metatable
+
+  if (lua_isnil(L, -1))
+  {
+    HMIDIIN* ud;
+  
+    // pop nil value
+    lua_pop(L, 1);
+
+    // push userdata
+    ud = (HMIDIIN*)lua_newuserdata(L, sizeof(HMIDIIN));
+    *ud = hdl;                              // stack: object | $Handles | metatable
+
+    // set metatable
+    lua_pushvalue(L, -3);
+    lua_setmetatable(L, -2);
+
+    // push key/value for lookup table
+    lua_pushlightuserdata(L, hdl);
+    lua_pushvalue(L, -2);                 // stack: object |  key  | object | $Handles | metatable
+
+    // add item to lookup table
+    lua_rawset(L, -4);                    // stack: object | $Handles | metatable
+  }
+
+  // cleanup stack (remove $Handles | metatable)
+  lua_remove(L, -2);
+  lua_remove(L, -2);
+
+  return 1;
+}
+
+// get from stack
+HMIDIIN lua_toMidiIn( lua_State *L, int idx )
+{
+  HMIDIIN v = 0;
+  switch (lua_type(L, idx))
+  {
+    case LUA_TNIL:
+      {
+      }
+      break;
+    case LUA_TLIGHTUSERDATA:
+      {
+        v = (HMIDIIN)lua_touserdata(L, idx);
+      }
+      break;
+    case LUA_TNUMBER:
+      {
+        v = (HMIDIIN)lua_tointeger(L, idx);
+      }
+      break;
+    case LUA_TUSERDATA:
+      {
+        HMIDIIN* ud  = (HMIDIIN*)luaL_checkudata(L, idx, MidiIn_Typename);
+        v = *ud;
+      }
+      break;
+    default:
+      {
+        const char *msg = lua_pushfstring(L, "MidiIn (handle) expected but got %s", luaL_typename(L, idx));
+        luaL_argerror(L, idx, msg);
+      }
+      break;
+  }
+  return v;
+}
+
+// implements __index metamethod (for .handle attribute)
+static int MidiIn_index(lua_State *L)
+{
+  HMIDIIN* ud  = (HMIDIIN*)luaL_checkudata(L, 1, MidiIn_Typename);
+
+  const char* stridx = lua_tolstring(L, 2, NULL);
+
+  // check for .handle
+  if (0 == strcmp(stridx, "handle"))
+  {
+    lua_pushlightuserdata(L, *ud);
+    return 1;
+  }
+  else
+  {
+    luaL_getmetafield(L, 1, stridx);
+  }
+
+  return 1;
+}
+
+// to wrap handle in an object
+static int MidiIn_wrap(lua_State *L)
+
+{
+  HMIDIIN handle;
+
+  if (lua_isnil(L, -1))
+  {
+   lua_pushnil(L);
+  }
+  else if (lua_islightuserdata(L, -1))
+  {
+    HMIDIIN handle = 0;
+    handle = (HMIDIIN)(lua_touserdata(L, -1));
+    return lua_pushMidiIn(L, handle);
+  }
+  else if (lua_isuserdata(L, -1))
+  {
+    HMIDIIN* ud  = (HMIDIIN*)luaL_checkudata(L, -1, MidiIn_Typename);
+    lua_pushvalue(L, -1);
+    return 1;
+  }
+  
+  handle = 0;
+  if (lua_isnumber(L, -1))
+  {
+    handle = (HMIDIIN)lua_tointeger(L, -1);
+  }
+  
+  return lua_pushMidiIn(L, handle);
+}
+
+
+static const struct luaL_Reg MidiIn_Methods[ ] = {
+  { "__index", MidiIn_index},
+  { "wrap", MidiIn_wrap },
+  { "midiInOpen",  winapi_midiInOpen },
+  { "midiInClose",  winapi_midiInClose },
+  { "midiInPrepareHeader",  winapi_midiInPrepareHeader },
+  { "midiInUnprepareHeader",  winapi_midiInUnprepareHeader },
+  { "midiInAddBuffer",  winapi_midiInAddBuffer },
+  { "midiInStart",  winapi_midiInStart },
+  { "midiInStop",  winapi_midiInStop },
+  { "midiInReset",  winapi_midiInReset },
+  { "midiInGetID",  winapi_midiInGetID },
+  { "midiInMessage",  winapi_midiInMessage },
+  { NULL, NULL }
+};
+
+static const struct luaL_Reg MidiIn_WrapMethods[ ] = {
+  { "WrapMidiIn", MidiIn_wrap },
+  { NULL, NULL }
+};
+
+// used to identify the type
+const char* Driver_Typename = "Driver";
+
+// push on stack
+int lua_pushDriver( lua_State *L, HDRVR hdl )
+{
+  if (NULL == hdl)
+  {
+    // return nil
+    return 0;
+  }
+
+  // lookup handle in handle map
+  luaL_getmetatable(L, Driver_Typename);
+  lua_pushstring(L, "$Handles");
+  lua_rawget(L, -2);                      // stack: $Handles | metatable
+
+  lua_pushlightuserdata(L, hdl);
+  lua_rawget(L, -2);                      // stack: nil/object | $Handles | metatable
+
+  if (lua_isnil(L, -1))
+  {
+    HDRVR* ud;
+  
+    // pop nil value
+    lua_pop(L, 1);
+
+    // push userdata
+    ud = (HDRVR*)lua_newuserdata(L, sizeof(HDRVR));
+    *ud = hdl;                              // stack: object | $Handles | metatable
+
+    // set metatable
+    lua_pushvalue(L, -3);
+    lua_setmetatable(L, -2);
+
+    // push key/value for lookup table
+    lua_pushlightuserdata(L, hdl);
+    lua_pushvalue(L, -2);                 // stack: object |  key  | object | $Handles | metatable
+
+    // add item to lookup table
+    lua_rawset(L, -4);                    // stack: object | $Handles | metatable
+  }
+
+  // cleanup stack (remove $Handles | metatable)
+  lua_remove(L, -2);
+  lua_remove(L, -2);
+
+  return 1;
+}
+
+// get from stack
+HDRVR lua_toDriver( lua_State *L, int idx )
+{
+  HDRVR v = 0;
+  switch (lua_type(L, idx))
+  {
+    case LUA_TNIL:
+      {
+      }
+      break;
+    case LUA_TLIGHTUSERDATA:
+      {
+        v = (HDRVR)lua_touserdata(L, idx);
+      }
+      break;
+    case LUA_TNUMBER:
+      {
+        v = (HDRVR)lua_tointeger(L, idx);
+      }
+      break;
+    case LUA_TUSERDATA:
+      {
+        HDRVR* ud  = (HDRVR*)luaL_checkudata(L, idx, Driver_Typename);
+        v = *ud;
+      }
+      break;
+    default:
+      {
+        const char *msg = lua_pushfstring(L, "Driver (handle) expected but got %s", luaL_typename(L, idx));
+        luaL_argerror(L, idx, msg);
+      }
+      break;
+  }
+  return v;
+}
+
+// implements __index metamethod (for .handle attribute)
+static int Driver_index(lua_State *L)
+{
+  HDRVR* ud  = (HDRVR*)luaL_checkudata(L, 1, Driver_Typename);
+
+  const char* stridx = lua_tolstring(L, 2, NULL);
+
+  // check for .handle
+  if (0 == strcmp(stridx, "handle"))
+  {
+    lua_pushlightuserdata(L, *ud);
+    return 1;
+  }
+  else
+  {
+    luaL_getmetafield(L, 1, stridx);
+  }
+
+  return 1;
+}
+
+// to wrap handle in an object
+static int Driver_wrap(lua_State *L)
+
+{
+  HDRVR handle;
+
+  if (lua_isnil(L, -1))
+  {
+   lua_pushnil(L);
+  }
+  else if (lua_islightuserdata(L, -1))
+  {
+    HDRVR handle = 0;
+    handle = (HDRVR)(lua_touserdata(L, -1));
+    return lua_pushDriver(L, handle);
+  }
+  else if (lua_isuserdata(L, -1))
+  {
+    HDRVR* ud  = (HDRVR*)luaL_checkudata(L, -1, Driver_Typename);
+    lua_pushvalue(L, -1);
+    return 1;
+  }
+  
+  handle = 0;
+  if (lua_isnumber(L, -1))
+  {
+    handle = (HDRVR)lua_tointeger(L, -1);
+  }
+  
+  return lua_pushDriver(L, handle);
+}
+
+
+static const struct luaL_Reg Driver_Methods[ ] = {
+  { "__index", Driver_index},
+  { "wrap", Driver_wrap },
+  { NULL, NULL }
+};
+
+static const struct luaL_Reg Driver_WrapMethods[ ] = {
+  { "WrapDriver", Driver_wrap },
+  { NULL, NULL }
+};
+
+// used to identify the type
+const char* Midi_Typename = "Midi";
+
+// push on stack
+int lua_pushMidi( lua_State *L, HMIDI hdl )
+{
+  if (NULL == hdl)
+  {
+    // return nil
+    return 0;
+  }
+
+  // lookup handle in handle map
+  luaL_getmetatable(L, Midi_Typename);
+  lua_pushstring(L, "$Handles");
+  lua_rawget(L, -2);                      // stack: $Handles | metatable
+
+  lua_pushlightuserdata(L, hdl);
+  lua_rawget(L, -2);                      // stack: nil/object | $Handles | metatable
+
+  if (lua_isnil(L, -1))
+  {
+    HMIDI* ud;
+  
+    // pop nil value
+    lua_pop(L, 1);
+
+    // push userdata
+    ud = (HMIDI*)lua_newuserdata(L, sizeof(HMIDI));
+    *ud = hdl;                              // stack: object | $Handles | metatable
+
+    // set metatable
+    lua_pushvalue(L, -3);
+    lua_setmetatable(L, -2);
+
+    // push key/value for lookup table
+    lua_pushlightuserdata(L, hdl);
+    lua_pushvalue(L, -2);                 // stack: object |  key  | object | $Handles | metatable
+
+    // add item to lookup table
+    lua_rawset(L, -4);                    // stack: object | $Handles | metatable
+  }
+
+  // cleanup stack (remove $Handles | metatable)
+  lua_remove(L, -2);
+  lua_remove(L, -2);
+
+  return 1;
+}
+
+// get from stack
+HMIDI lua_toMidi( lua_State *L, int idx )
+{
+  HMIDI v = 0;
+  switch (lua_type(L, idx))
+  {
+    case LUA_TNIL:
+      {
+      }
+      break;
+    case LUA_TLIGHTUSERDATA:
+      {
+        v = (HMIDI)lua_touserdata(L, idx);
+      }
+      break;
+    case LUA_TNUMBER:
+      {
+        v = (HMIDI)lua_tointeger(L, idx);
+      }
+      break;
+    case LUA_TUSERDATA:
+      {
+        HMIDI* ud  = (HMIDI*)luaL_checkudata(L, idx, Midi_Typename);
+        v = *ud;
+      }
+      break;
+    default:
+      {
+        const char *msg = lua_pushfstring(L, "Midi (handle) expected but got %s", luaL_typename(L, idx));
+        luaL_argerror(L, idx, msg);
+      }
+      break;
+  }
+  return v;
+}
+
+// implements __index metamethod (for .handle attribute)
+static int Midi_index(lua_State *L)
+{
+  HMIDI* ud  = (HMIDI*)luaL_checkudata(L, 1, Midi_Typename);
+
+  const char* stridx = lua_tolstring(L, 2, NULL);
+
+  // check for .handle
+  if (0 == strcmp(stridx, "handle"))
+  {
+    lua_pushlightuserdata(L, *ud);
+    return 1;
+  }
+  else
+  {
+    luaL_getmetafield(L, 1, stridx);
+  }
+
+  return 1;
+}
+
+// to wrap handle in an object
+static int Midi_wrap(lua_State *L)
+
+{
+  HMIDI handle;
+
+  if (lua_isnil(L, -1))
+  {
+   lua_pushnil(L);
+  }
+  else if (lua_islightuserdata(L, -1))
+  {
+    HMIDI handle = 0;
+    handle = (HMIDI)(lua_touserdata(L, -1));
+    return lua_pushMidi(L, handle);
+  }
+  else if (lua_isuserdata(L, -1))
+  {
+    HMIDI* ud  = (HMIDI*)luaL_checkudata(L, -1, Midi_Typename);
+    lua_pushvalue(L, -1);
+    return 1;
+  }
+  
+  handle = 0;
+  if (lua_isnumber(L, -1))
+  {
+    handle = (HMIDI)lua_tointeger(L, -1);
+  }
+  
+  return lua_pushMidi(L, handle);
+}
+
+
+static const struct luaL_Reg Midi_Methods[ ] = {
+  { "__index", Midi_index},
+  { "wrap", Midi_wrap },
+  { "midiConnect",  winapi_midiConnect },
+  { "midiDisconnect",  winapi_midiDisconnect },
+  { NULL, NULL }
+};
+
+static const struct luaL_Reg Midi_WrapMethods[ ] = {
+  { "WrapMidi", Midi_wrap },
+  { NULL, NULL }
+};
+
+// used to identify the type
+const char* WaveOut_Typename = "WaveOut";
+
+// push on stack
+int lua_pushWaveOut( lua_State *L, HWAVEOUT hdl )
+{
+  if (NULL == hdl)
+  {
+    // return nil
+    return 0;
+  }
+
+  // lookup handle in handle map
+  luaL_getmetatable(L, WaveOut_Typename);
+  lua_pushstring(L, "$Handles");
+  lua_rawget(L, -2);                      // stack: $Handles | metatable
+
+  lua_pushlightuserdata(L, hdl);
+  lua_rawget(L, -2);                      // stack: nil/object | $Handles | metatable
+
+  if (lua_isnil(L, -1))
+  {
+    HWAVEOUT* ud;
+  
+    // pop nil value
+    lua_pop(L, 1);
+
+    // push userdata
+    ud = (HWAVEOUT*)lua_newuserdata(L, sizeof(HWAVEOUT));
+    *ud = hdl;                              // stack: object | $Handles | metatable
+
+    // set metatable
+    lua_pushvalue(L, -3);
+    lua_setmetatable(L, -2);
+
+    // push key/value for lookup table
+    lua_pushlightuserdata(L, hdl);
+    lua_pushvalue(L, -2);                 // stack: object |  key  | object | $Handles | metatable
+
+    // add item to lookup table
+    lua_rawset(L, -4);                    // stack: object | $Handles | metatable
+  }
+
+  // cleanup stack (remove $Handles | metatable)
+  lua_remove(L, -2);
+  lua_remove(L, -2);
+
+  return 1;
+}
+
+// get from stack
+HWAVEOUT lua_toWaveOut( lua_State *L, int idx )
+{
+  HWAVEOUT v = 0;
+  switch (lua_type(L, idx))
+  {
+    case LUA_TNIL:
+      {
+      }
+      break;
+    case LUA_TLIGHTUSERDATA:
+      {
+        v = (HWAVEOUT)lua_touserdata(L, idx);
+      }
+      break;
+    case LUA_TNUMBER:
+      {
+        v = (HWAVEOUT)lua_tointeger(L, idx);
+      }
+      break;
+    case LUA_TUSERDATA:
+      {
+        HWAVEOUT* ud  = (HWAVEOUT*)luaL_checkudata(L, idx, WaveOut_Typename);
+        v = *ud;
+      }
+      break;
+    default:
+      {
+        const char *msg = lua_pushfstring(L, "WaveOut (handle) expected but got %s", luaL_typename(L, idx));
+        luaL_argerror(L, idx, msg);
+      }
+      break;
+  }
+  return v;
+}
+
+// implements __index metamethod (for .handle attribute)
+static int WaveOut_index(lua_State *L)
+{
+  HWAVEOUT* ud  = (HWAVEOUT*)luaL_checkudata(L, 1, WaveOut_Typename);
+
+  const char* stridx = lua_tolstring(L, 2, NULL);
+
+  // check for .handle
+  if (0 == strcmp(stridx, "handle"))
+  {
+    lua_pushlightuserdata(L, *ud);
+    return 1;
+  }
+  else
+  {
+    luaL_getmetafield(L, 1, stridx);
+  }
+
+  return 1;
+}
+
+// to wrap handle in an object
+static int WaveOut_wrap(lua_State *L)
+
+{
+  HWAVEOUT handle;
+
+  if (lua_isnil(L, -1))
+  {
+   lua_pushnil(L);
+  }
+  else if (lua_islightuserdata(L, -1))
+  {
+    HWAVEOUT handle = 0;
+    handle = (HWAVEOUT)(lua_touserdata(L, -1));
+    return lua_pushWaveOut(L, handle);
+  }
+  else if (lua_isuserdata(L, -1))
+  {
+    HWAVEOUT* ud  = (HWAVEOUT*)luaL_checkudata(L, -1, WaveOut_Typename);
+    lua_pushvalue(L, -1);
+    return 1;
+  }
+  
+  handle = 0;
+  if (lua_isnumber(L, -1))
+  {
+    handle = (HWAVEOUT)lua_tointeger(L, -1);
+  }
+  
+  return lua_pushWaveOut(L, handle);
+}
+
+
+static const struct luaL_Reg WaveOut_Methods[ ] = {
+  { "__index", WaveOut_index},
+  { "wrap", WaveOut_wrap },
+  { "waveOutGetVolume",  winapi_waveOutGetVolume },
+  { "waveOutSetVolume",  winapi_waveOutSetVolume },
+  { "waveOutOpen",  winapi_waveOutOpen },
+  { "waveOutClose",  winapi_waveOutClose },
+  { "waveOutPrepareHeader",  winapi_waveOutPrepareHeader },
+  { "waveOutUnprepareHeader",  winapi_waveOutUnprepareHeader },
+  { "waveOutWrite",  winapi_waveOutWrite },
+  { "waveOutPause",  winapi_waveOutPause },
+  { "waveOutRestart",  winapi_waveOutRestart },
+  { "waveOutReset",  winapi_waveOutReset },
+  { "waveOutBreakLoop",  winapi_waveOutBreakLoop },
+  { "waveOutGetPosition",  winapi_waveOutGetPosition },
+  { "waveOutGetPitch",  winapi_waveOutGetPitch },
+  { "waveOutSetPitch",  winapi_waveOutSetPitch },
+  { "waveOutGetPlaybackRate",  winapi_waveOutGetPlaybackRate },
+  { "waveOutSetPlaybackRate",  winapi_waveOutSetPlaybackRate },
+  { "waveOutGetID",  winapi_waveOutGetID },
+  { "waveOutMessage",  winapi_waveOutMessage },
+  { NULL, NULL }
+};
+
+static const struct luaL_Reg WaveOut_WrapMethods[ ] = {
+  { "WrapWaveOut", WaveOut_wrap },
+  { NULL, NULL }
+};
+
+// used to identify the type
+const char* WaveIn_Typename = "WaveIn";
+
+// push on stack
+int lua_pushWaveIn( lua_State *L, HWAVEIN hdl )
+{
+  if (NULL == hdl)
+  {
+    // return nil
+    return 0;
+  }
+
+  // lookup handle in handle map
+  luaL_getmetatable(L, WaveIn_Typename);
+  lua_pushstring(L, "$Handles");
+  lua_rawget(L, -2);                      // stack: $Handles | metatable
+
+  lua_pushlightuserdata(L, hdl);
+  lua_rawget(L, -2);                      // stack: nil/object | $Handles | metatable
+
+  if (lua_isnil(L, -1))
+  {
+    HWAVEIN* ud;
+  
+    // pop nil value
+    lua_pop(L, 1);
+
+    // push userdata
+    ud = (HWAVEIN*)lua_newuserdata(L, sizeof(HWAVEIN));
+    *ud = hdl;                              // stack: object | $Handles | metatable
+
+    // set metatable
+    lua_pushvalue(L, -3);
+    lua_setmetatable(L, -2);
+
+    // push key/value for lookup table
+    lua_pushlightuserdata(L, hdl);
+    lua_pushvalue(L, -2);                 // stack: object |  key  | object | $Handles | metatable
+
+    // add item to lookup table
+    lua_rawset(L, -4);                    // stack: object | $Handles | metatable
+  }
+
+  // cleanup stack (remove $Handles | metatable)
+  lua_remove(L, -2);
+  lua_remove(L, -2);
+
+  return 1;
+}
+
+// get from stack
+HWAVEIN lua_toWaveIn( lua_State *L, int idx )
+{
+  HWAVEIN v = 0;
+  switch (lua_type(L, idx))
+  {
+    case LUA_TNIL:
+      {
+      }
+      break;
+    case LUA_TLIGHTUSERDATA:
+      {
+        v = (HWAVEIN)lua_touserdata(L, idx);
+      }
+      break;
+    case LUA_TNUMBER:
+      {
+        v = (HWAVEIN)lua_tointeger(L, idx);
+      }
+      break;
+    case LUA_TUSERDATA:
+      {
+        HWAVEIN* ud  = (HWAVEIN*)luaL_checkudata(L, idx, WaveIn_Typename);
+        v = *ud;
+      }
+      break;
+    default:
+      {
+        const char *msg = lua_pushfstring(L, "WaveIn (handle) expected but got %s", luaL_typename(L, idx));
+        luaL_argerror(L, idx, msg);
+      }
+      break;
+  }
+  return v;
+}
+
+// implements __index metamethod (for .handle attribute)
+static int WaveIn_index(lua_State *L)
+{
+  HWAVEIN* ud  = (HWAVEIN*)luaL_checkudata(L, 1, WaveIn_Typename);
+
+  const char* stridx = lua_tolstring(L, 2, NULL);
+
+  // check for .handle
+  if (0 == strcmp(stridx, "handle"))
+  {
+    lua_pushlightuserdata(L, *ud);
+    return 1;
+  }
+  else
+  {
+    luaL_getmetafield(L, 1, stridx);
+  }
+
+  return 1;
+}
+
+// to wrap handle in an object
+static int WaveIn_wrap(lua_State *L)
+
+{
+  HWAVEIN handle;
+
+  if (lua_isnil(L, -1))
+  {
+   lua_pushnil(L);
+  }
+  else if (lua_islightuserdata(L, -1))
+  {
+    HWAVEIN handle = 0;
+    handle = (HWAVEIN)(lua_touserdata(L, -1));
+    return lua_pushWaveIn(L, handle);
+  }
+  else if (lua_isuserdata(L, -1))
+  {
+    HWAVEIN* ud  = (HWAVEIN*)luaL_checkudata(L, -1, WaveIn_Typename);
+    lua_pushvalue(L, -1);
+    return 1;
+  }
+  
+  handle = 0;
+  if (lua_isnumber(L, -1))
+  {
+    handle = (HWAVEIN)lua_tointeger(L, -1);
+  }
+  
+  return lua_pushWaveIn(L, handle);
+}
+
+
+static const struct luaL_Reg WaveIn_Methods[ ] = {
+  { "__index", WaveIn_index},
+  { "wrap", WaveIn_wrap },
+  { "waveInOpen",  winapi_waveInOpen },
+  { "waveInClose",  winapi_waveInClose },
+  { "waveInPrepareHeader",  winapi_waveInPrepareHeader },
+  { "waveInUnprepareHeader",  winapi_waveInUnprepareHeader },
+  { "waveInAddBuffer",  winapi_waveInAddBuffer },
+  { "waveInStart",  winapi_waveInStart },
+  { "waveInStop",  winapi_waveInStop },
+  { "waveInReset",  winapi_waveInReset },
+  { "waveInGetPosition",  winapi_waveInGetPosition },
+  { "waveInGetID",  winapi_waveInGetID },
+  { "waveInMessage",  winapi_waveInMessage },
+  { NULL, NULL }
+};
+
+static const struct luaL_Reg WaveIn_WrapMethods[ ] = {
+  { "WrapWaveIn", WaveIn_wrap },
+  { NULL, NULL }
+};
+
+// used to identify the type
+const char* MidiStream_Typename = "MidiStream";
+
+// push on stack
+int lua_pushMidiStream( lua_State *L, HMIDISTRM hdl )
+{
+  if (NULL == hdl)
+  {
+    // return nil
+    return 0;
+  }
+
+  // lookup handle in handle map
+  luaL_getmetatable(L, MidiStream_Typename);
+  lua_pushstring(L, "$Handles");
+  lua_rawget(L, -2);                      // stack: $Handles | metatable
+
+  lua_pushlightuserdata(L, hdl);
+  lua_rawget(L, -2);                      // stack: nil/object | $Handles | metatable
+
+  if (lua_isnil(L, -1))
+  {
+    HMIDISTRM* ud;
+  
+    // pop nil value
+    lua_pop(L, 1);
+
+    // push userdata
+    ud = (HMIDISTRM*)lua_newuserdata(L, sizeof(HMIDISTRM));
+    *ud = hdl;                              // stack: object | $Handles | metatable
+
+    // set metatable
+    lua_pushvalue(L, -3);
+    lua_setmetatable(L, -2);
+
+    // push key/value for lookup table
+    lua_pushlightuserdata(L, hdl);
+    lua_pushvalue(L, -2);                 // stack: object |  key  | object | $Handles | metatable
+
+    // add item to lookup table
+    lua_rawset(L, -4);                    // stack: object | $Handles | metatable
+  }
+
+  // cleanup stack (remove $Handles | metatable)
+  lua_remove(L, -2);
+  lua_remove(L, -2);
+
+  return 1;
+}
+
+// get from stack
+HMIDISTRM lua_toMidiStream( lua_State *L, int idx )
+{
+  HMIDISTRM v = 0;
+  switch (lua_type(L, idx))
+  {
+    case LUA_TNIL:
+      {
+      }
+      break;
+    case LUA_TLIGHTUSERDATA:
+      {
+        v = (HMIDISTRM)lua_touserdata(L, idx);
+      }
+      break;
+    case LUA_TNUMBER:
+      {
+        v = (HMIDISTRM)lua_tointeger(L, idx);
+      }
+      break;
+    case LUA_TUSERDATA:
+      {
+        HMIDISTRM* ud  = (HMIDISTRM*)luaL_checkudata(L, idx, MidiStream_Typename);
+        v = *ud;
+      }
+      break;
+    default:
+      {
+        const char *msg = lua_pushfstring(L, "MidiStream (handle) expected but got %s", luaL_typename(L, idx));
+        luaL_argerror(L, idx, msg);
+      }
+      break;
+  }
+  return v;
+}
+
+// implements __index metamethod (for .handle attribute)
+static int MidiStream_index(lua_State *L)
+{
+  HMIDISTRM* ud  = (HMIDISTRM*)luaL_checkudata(L, 1, MidiStream_Typename);
+
+  const char* stridx = lua_tolstring(L, 2, NULL);
+
+  // check for .handle
+  if (0 == strcmp(stridx, "handle"))
+  {
+    lua_pushlightuserdata(L, *ud);
+    return 1;
+  }
+  else
+  {
+    luaL_getmetafield(L, 1, stridx);
+  }
+
+  return 1;
+}
+
+// to wrap handle in an object
+static int MidiStream_wrap(lua_State *L)
+
+{
+  HMIDISTRM handle;
+
+  if (lua_isnil(L, -1))
+  {
+   lua_pushnil(L);
+  }
+  else if (lua_islightuserdata(L, -1))
+  {
+    HMIDISTRM handle = 0;
+    handle = (HMIDISTRM)(lua_touserdata(L, -1));
+    return lua_pushMidiStream(L, handle);
+  }
+  else if (lua_isuserdata(L, -1))
+  {
+    HMIDISTRM* ud  = (HMIDISTRM*)luaL_checkudata(L, -1, MidiStream_Typename);
+    lua_pushvalue(L, -1);
+    return 1;
+  }
+  
+  handle = 0;
+  if (lua_isnumber(L, -1))
+  {
+    handle = (HMIDISTRM)lua_tointeger(L, -1);
+  }
+  
+  return lua_pushMidiStream(L, handle);
+}
+
+
+static const struct luaL_Reg MidiStream_Methods[ ] = {
+  { "__index", MidiStream_index},
+  { "wrap", MidiStream_wrap },
+  { "midiStreamOpen",  winapi_midiStreamOpen },
+  { "midiStreamClose",  winapi_midiStreamClose },
+  { "midiStreamProperty",  winapi_midiStreamProperty },
+  { "midiStreamPosition",  winapi_midiStreamPosition },
+  { "midiStreamOut",  winapi_midiStreamOut },
+  { "midiStreamPause",  winapi_midiStreamPause },
+  { "midiStreamRestart",  winapi_midiStreamRestart },
+  { "midiStreamStop",  winapi_midiStreamStop },
+  { NULL, NULL }
+};
+
+static const struct luaL_Reg MidiStream_WrapMethods[ ] = {
+  { "WrapMidiStream", MidiStream_wrap },
+  { NULL, NULL }
+};
+
+// used to identify the type
+const char* Icon_Typename = "Icon";
+
+// push on stack
+int lua_pushIcon( lua_State *L, HICON hdl )
+{
+  if (NULL == hdl)
+  {
+    // return nil
+    return 0;
+  }
+
+  // lookup handle in handle map
+  luaL_getmetatable(L, Icon_Typename);
+  lua_pushstring(L, "$Handles");
+  lua_rawget(L, -2);                      // stack: $Handles | metatable
+
+  lua_pushlightuserdata(L, hdl);
+  lua_rawget(L, -2);                      // stack: nil/object | $Handles | metatable
+
+  if (lua_isnil(L, -1))
+  {
+    HICON* ud;
+  
+    // pop nil value
+    lua_pop(L, 1);
+
+    // push userdata
+    ud = (HICON*)lua_newuserdata(L, sizeof(HICON));
+    *ud = hdl;                              // stack: object | $Handles | metatable
+
+    // set metatable
+    lua_pushvalue(L, -3);
+    lua_setmetatable(L, -2);
+
+    // push key/value for lookup table
+    lua_pushlightuserdata(L, hdl);
+    lua_pushvalue(L, -2);                 // stack: object |  key  | object | $Handles | metatable
+
+    // add item to lookup table
+    lua_rawset(L, -4);                    // stack: object | $Handles | metatable
+  }
+
+  // cleanup stack (remove $Handles | metatable)
+  lua_remove(L, -2);
+  lua_remove(L, -2);
+
+  return 1;
+}
+
+// get from stack
+HICON lua_toIcon( lua_State *L, int idx )
+{
+  HICON v = 0;
+  switch (lua_type(L, idx))
+  {
+    case LUA_TNIL:
+      {
+      }
+      break;
+    case LUA_TLIGHTUSERDATA:
+      {
+        v = (HICON)lua_touserdata(L, idx);
+      }
+      break;
+    case LUA_TNUMBER:
+      {
+        v = (HICON)lua_tointeger(L, idx);
+      }
+      break;
+    case LUA_TUSERDATA:
+      {
+        HICON* ud  = (HICON*)luaL_checkudata(L, idx, Icon_Typename);
+        v = *ud;
+      }
+      break;
+    default:
+      {
+        const char *msg = lua_pushfstring(L, "Icon (handle) expected but got %s", luaL_typename(L, idx));
+        luaL_argerror(L, idx, msg);
+      }
+      break;
+  }
+  return v;
+}
+
+// implements __index metamethod (for .handle attribute)
+static int Icon_index(lua_State *L)
+{
+  HICON* ud  = (HICON*)luaL_checkudata(L, 1, Icon_Typename);
+
+  const char* stridx = lua_tolstring(L, 2, NULL);
+
+  // check for .handle
+  if (0 == strcmp(stridx, "handle"))
+  {
+    lua_pushlightuserdata(L, *ud);
+    return 1;
+  }
+  else
+  {
+    luaL_getmetafield(L, 1, stridx);
+  }
+
+  return 1;
+}
+
+// to wrap handle in an object
+static int Icon_wrap(lua_State *L)
+
+{
+  HICON handle;
+
+  if (lua_isnil(L, -1))
+  {
+   lua_pushnil(L);
+  }
+  else if (lua_islightuserdata(L, -1))
+  {
+    HICON handle = 0;
+    handle = (HICON)(lua_touserdata(L, -1));
+    return lua_pushIcon(L, handle);
+  }
+  else if (lua_isuserdata(L, -1))
+  {
+    HICON* ud  = (HICON*)luaL_checkudata(L, -1, Icon_Typename);
+    lua_pushvalue(L, -1);
+    return 1;
+  }
+  
+  handle = 0;
+  if (lua_isnumber(L, -1))
+  {
+    handle = (HICON)lua_tointeger(L, -1);
+  }
+  
+  return lua_pushIcon(L, handle);
+}
+
+
+static const struct luaL_Reg Icon_Methods[ ] = {
+  { "__index", Icon_index},
+  { "wrap", Icon_wrap },
+  { "DestroyIcon",  winapi_DestroyIcon },
+  { NULL, NULL }
+};
+
+static const struct luaL_Reg Icon_WrapMethods[ ] = {
+  { "WrapIcon", Icon_wrap },
+  { NULL, NULL }
+};
+
+// used to identify the type
+const char* Mixer_Typename = "Mixer";
+
+// push on stack
+int lua_pushMixer( lua_State *L, HMIXER hdl )
+{
+  if (NULL == hdl)
+  {
+    // return nil
+    return 0;
+  }
+
+  // lookup handle in handle map
+  luaL_getmetatable(L, Mixer_Typename);
+  lua_pushstring(L, "$Handles");
+  lua_rawget(L, -2);                      // stack: $Handles | metatable
+
+  lua_pushlightuserdata(L, hdl);
+  lua_rawget(L, -2);                      // stack: nil/object | $Handles | metatable
+
+  if (lua_isnil(L, -1))
+  {
+    HMIXER* ud;
+  
+    // pop nil value
+    lua_pop(L, 1);
+
+    // push userdata
+    ud = (HMIXER*)lua_newuserdata(L, sizeof(HMIXER));
+    *ud = hdl;                              // stack: object | $Handles | metatable
+
+    // set metatable
+    lua_pushvalue(L, -3);
+    lua_setmetatable(L, -2);
+
+    // push key/value for lookup table
+    lua_pushlightuserdata(L, hdl);
+    lua_pushvalue(L, -2);                 // stack: object |  key  | object | $Handles | metatable
+
+    // add item to lookup table
+    lua_rawset(L, -4);                    // stack: object | $Handles | metatable
+  }
+
+  // cleanup stack (remove $Handles | metatable)
+  lua_remove(L, -2);
+  lua_remove(L, -2);
+
+  return 1;
+}
+
+// get from stack
+HMIXER lua_toMixer( lua_State *L, int idx )
+{
+  HMIXER v = 0;
+  switch (lua_type(L, idx))
+  {
+    case LUA_TNIL:
+      {
+      }
+      break;
+    case LUA_TLIGHTUSERDATA:
+      {
+        v = (HMIXER)lua_touserdata(L, idx);
+      }
+      break;
+    case LUA_TNUMBER:
+      {
+        v = (HMIXER)lua_tointeger(L, idx);
+      }
+      break;
+    case LUA_TUSERDATA:
+      {
+        HMIXER* ud  = (HMIXER*)luaL_checkudata(L, idx, Mixer_Typename);
+        v = *ud;
+      }
+      break;
+    default:
+      {
+        const char *msg = lua_pushfstring(L, "Mixer (handle) expected but got %s", luaL_typename(L, idx));
+        luaL_argerror(L, idx, msg);
+      }
+      break;
+  }
+  return v;
+}
+
+// implements __index metamethod (for .handle attribute)
+static int Mixer_index(lua_State *L)
+{
+  HMIXER* ud  = (HMIXER*)luaL_checkudata(L, 1, Mixer_Typename);
+
+  const char* stridx = lua_tolstring(L, 2, NULL);
+
+  // check for .handle
+  if (0 == strcmp(stridx, "handle"))
+  {
+    lua_pushlightuserdata(L, *ud);
+    return 1;
+  }
+  else
+  {
+    luaL_getmetafield(L, 1, stridx);
+  }
+
+  return 1;
+}
+
+// to wrap handle in an object
+static int Mixer_wrap(lua_State *L)
+
+{
+  HMIXER handle;
+
+  if (lua_isnil(L, -1))
+  {
+   lua_pushnil(L);
+  }
+  else if (lua_islightuserdata(L, -1))
+  {
+    HMIXER handle = 0;
+    handle = (HMIXER)(lua_touserdata(L, -1));
+    return lua_pushMixer(L, handle);
+  }
+  else if (lua_isuserdata(L, -1))
+  {
+    HMIXER* ud  = (HMIXER*)luaL_checkudata(L, -1, Mixer_Typename);
+    lua_pushvalue(L, -1);
+    return 1;
+  }
+  
+  handle = 0;
+  if (lua_isnumber(L, -1))
+  {
+    handle = (HMIXER)lua_tointeger(L, -1);
+  }
+  
+  return lua_pushMixer(L, handle);
+}
+
+
+static const struct luaL_Reg Mixer_Methods[ ] = {
+  { "__index", Mixer_index},
+  { "wrap", Mixer_wrap },
+  { "mixerOpen",  winapi_mixerOpen },
+  { "mixerClose",  winapi_mixerClose },
+  { "mixerMessage",  winapi_mixerMessage },
+  { NULL, NULL }
+};
+
+static const struct luaL_Reg Mixer_WrapMethods[ ] = {
+  { "WrapMixer", Mixer_wrap },
+  { NULL, NULL }
+};
+
 
 //////////////////////////////////////////////////////////////////////////
 /**
@@ -1146,6 +2575,26 @@ void registerAbstractions(lua_State *L)
   lua_pop(L, 1);
 
 #if (LUA_VERSION_NUM > 501)
+  luaL_setfuncs(L, MixerObject_WrapMethods, 0);
+#else
+  luaL_openlib(L, NULL, MixerObject_WrapMethods, 0);
+#endif
+
+  luaL_newmetatable(L, MixerObject_Typename);
+  lua_pushstring(L, "$Handles");
+  lua_newtable(L);
+  lua_rawset(L, -3);
+//  lua_pushstring(L, "__index");
+//  lua_newtable(L);
+#if (LUA_VERSION_NUM > 501)
+  luaL_setfuncs(L, MixerObject_Methods, 0);
+#else
+  luaL_openlib(L, NULL, MixerObject_Methods, 0);
+#endif
+//  lua_rawset(L, -3);
+  lua_pop(L, 1);
+
+#if (LUA_VERSION_NUM > 501)
   luaL_setfuncs(L, Window_WrapMethods, 0);
 #else
   luaL_openlib(L, NULL, Window_WrapMethods, 0);
@@ -1161,6 +2610,166 @@ void registerAbstractions(lua_State *L)
   luaL_setfuncs(L, Window_Methods, 0);
 #else
   luaL_openlib(L, NULL, Window_Methods, 0);
+#endif
+//  lua_rawset(L, -3);
+  lua_pop(L, 1);
+
+#if (LUA_VERSION_NUM > 501)
+  luaL_setfuncs(L, DC_WrapMethods, 0);
+#else
+  luaL_openlib(L, NULL, DC_WrapMethods, 0);
+#endif
+
+  luaL_newmetatable(L, DC_Typename);
+  lua_pushstring(L, "$Handles");
+  lua_newtable(L);
+  lua_rawset(L, -3);
+//  lua_pushstring(L, "__index");
+//  lua_newtable(L);
+#if (LUA_VERSION_NUM > 501)
+  luaL_setfuncs(L, DC_Methods, 0);
+#else
+  luaL_openlib(L, NULL, DC_Methods, 0);
+#endif
+//  lua_rawset(L, -3);
+  lua_pop(L, 1);
+
+#if (LUA_VERSION_NUM > 501)
+  luaL_setfuncs(L, MidiOut_WrapMethods, 0);
+#else
+  luaL_openlib(L, NULL, MidiOut_WrapMethods, 0);
+#endif
+
+  luaL_newmetatable(L, MidiOut_Typename);
+  lua_pushstring(L, "$Handles");
+  lua_newtable(L);
+  lua_rawset(L, -3);
+//  lua_pushstring(L, "__index");
+//  lua_newtable(L);
+#if (LUA_VERSION_NUM > 501)
+  luaL_setfuncs(L, MidiOut_Methods, 0);
+#else
+  luaL_openlib(L, NULL, MidiOut_Methods, 0);
+#endif
+//  lua_rawset(L, -3);
+  lua_pop(L, 1);
+
+#if (LUA_VERSION_NUM > 501)
+  luaL_setfuncs(L, MidiIn_WrapMethods, 0);
+#else
+  luaL_openlib(L, NULL, MidiIn_WrapMethods, 0);
+#endif
+
+  luaL_newmetatable(L, MidiIn_Typename);
+  lua_pushstring(L, "$Handles");
+  lua_newtable(L);
+  lua_rawset(L, -3);
+//  lua_pushstring(L, "__index");
+//  lua_newtable(L);
+#if (LUA_VERSION_NUM > 501)
+  luaL_setfuncs(L, MidiIn_Methods, 0);
+#else
+  luaL_openlib(L, NULL, MidiIn_Methods, 0);
+#endif
+//  lua_rawset(L, -3);
+  lua_pop(L, 1);
+
+#if (LUA_VERSION_NUM > 501)
+  luaL_setfuncs(L, Driver_WrapMethods, 0);
+#else
+  luaL_openlib(L, NULL, Driver_WrapMethods, 0);
+#endif
+
+  luaL_newmetatable(L, Driver_Typename);
+  lua_pushstring(L, "$Handles");
+  lua_newtable(L);
+  lua_rawset(L, -3);
+//  lua_pushstring(L, "__index");
+//  lua_newtable(L);
+#if (LUA_VERSION_NUM > 501)
+  luaL_setfuncs(L, Driver_Methods, 0);
+#else
+  luaL_openlib(L, NULL, Driver_Methods, 0);
+#endif
+//  lua_rawset(L, -3);
+  lua_pop(L, 1);
+
+#if (LUA_VERSION_NUM > 501)
+  luaL_setfuncs(L, Midi_WrapMethods, 0);
+#else
+  luaL_openlib(L, NULL, Midi_WrapMethods, 0);
+#endif
+
+  luaL_newmetatable(L, Midi_Typename);
+  lua_pushstring(L, "$Handles");
+  lua_newtable(L);
+  lua_rawset(L, -3);
+//  lua_pushstring(L, "__index");
+//  lua_newtable(L);
+#if (LUA_VERSION_NUM > 501)
+  luaL_setfuncs(L, Midi_Methods, 0);
+#else
+  luaL_openlib(L, NULL, Midi_Methods, 0);
+#endif
+//  lua_rawset(L, -3);
+  lua_pop(L, 1);
+
+#if (LUA_VERSION_NUM > 501)
+  luaL_setfuncs(L, WaveOut_WrapMethods, 0);
+#else
+  luaL_openlib(L, NULL, WaveOut_WrapMethods, 0);
+#endif
+
+  luaL_newmetatable(L, WaveOut_Typename);
+  lua_pushstring(L, "$Handles");
+  lua_newtable(L);
+  lua_rawset(L, -3);
+//  lua_pushstring(L, "__index");
+//  lua_newtable(L);
+#if (LUA_VERSION_NUM > 501)
+  luaL_setfuncs(L, WaveOut_Methods, 0);
+#else
+  luaL_openlib(L, NULL, WaveOut_Methods, 0);
+#endif
+//  lua_rawset(L, -3);
+  lua_pop(L, 1);
+
+#if (LUA_VERSION_NUM > 501)
+  luaL_setfuncs(L, WaveIn_WrapMethods, 0);
+#else
+  luaL_openlib(L, NULL, WaveIn_WrapMethods, 0);
+#endif
+
+  luaL_newmetatable(L, WaveIn_Typename);
+  lua_pushstring(L, "$Handles");
+  lua_newtable(L);
+  lua_rawset(L, -3);
+//  lua_pushstring(L, "__index");
+//  lua_newtable(L);
+#if (LUA_VERSION_NUM > 501)
+  luaL_setfuncs(L, WaveIn_Methods, 0);
+#else
+  luaL_openlib(L, NULL, WaveIn_Methods, 0);
+#endif
+//  lua_rawset(L, -3);
+  lua_pop(L, 1);
+
+#if (LUA_VERSION_NUM > 501)
+  luaL_setfuncs(L, MidiStream_WrapMethods, 0);
+#else
+  luaL_openlib(L, NULL, MidiStream_WrapMethods, 0);
+#endif
+
+  luaL_newmetatable(L, MidiStream_Typename);
+  lua_pushstring(L, "$Handles");
+  lua_newtable(L);
+  lua_rawset(L, -3);
+//  lua_pushstring(L, "__index");
+//  lua_newtable(L);
+#if (LUA_VERSION_NUM > 501)
+  luaL_setfuncs(L, MidiStream_Methods, 0);
+#else
+  luaL_openlib(L, NULL, MidiStream_Methods, 0);
 #endif
 //  lua_rawset(L, -3);
   lua_pop(L, 1);
@@ -1186,21 +2795,21 @@ void registerAbstractions(lua_State *L)
   lua_pop(L, 1);
 
 #if (LUA_VERSION_NUM > 501)
-  luaL_setfuncs(L, DC_WrapMethods, 0);
+  luaL_setfuncs(L, Mixer_WrapMethods, 0);
 #else
-  luaL_openlib(L, NULL, DC_WrapMethods, 0);
+  luaL_openlib(L, NULL, Mixer_WrapMethods, 0);
 #endif
 
-  luaL_newmetatable(L, DC_Typename);
+  luaL_newmetatable(L, Mixer_Typename);
   lua_pushstring(L, "$Handles");
   lua_newtable(L);
   lua_rawset(L, -3);
 //  lua_pushstring(L, "__index");
 //  lua_newtable(L);
 #if (LUA_VERSION_NUM > 501)
-  luaL_setfuncs(L, DC_Methods, 0);
+  luaL_setfuncs(L, Mixer_Methods, 0);
 #else
-  luaL_openlib(L, NULL, DC_Methods, 0);
+  luaL_openlib(L, NULL, Mixer_Methods, 0);
 #endif
 //  lua_rawset(L, -3);
   lua_pop(L, 1);
