@@ -84,7 +84,12 @@ static void raiseMsgProcError(WndProcThunk* thunk, const char* errormsg, HWND hw
     }
     else
     {
-      luaL_error(L, "Raising MSGPROC error failed. No error function available.\n%s", errormsg);
+      CHAR buf[4069];
+      sprintf(&buf, "Raising MSGPROC error failed. No error function available.\n%s", errormsg);
+      
+      MessageBoxA(NULL, buf, "Error", MB_OK);
+    
+      PostQuitMessage(0);
     
       // pop function
       lua_pop(L, 1);
