@@ -22,7 +22,7 @@ cd src
 
 @rem create luawinapi.dll
 %MYCOMPILE% enumwindow.c gdihelpers.c gen_abstractions.c gen_structs.c stdcallthunk.c luawinapi.c wndproc.c luaaux.c
-%MYLINK% /DLL /MACHINE:X86 /MANIFEST /MANIFESTFILE:"luawinapi.dll.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /out:luawinapi.dll /DEF:luawinapi.def enumwindow.obj gdihelpers.obj gen_abstractions.obj gen_structs.obj stdcallthunk.obj luawinapi.obj wndproc.obj luaaux.obj lua5.1.lib luacwrap.lib kernel32.lib user32.lib gdi32.lib comctl32.lib comdlg32.lib Msimg32.lib
+%MYLINK% /DLL /MACHINE:X86 /MANIFEST /MANIFESTFILE:"luawinapi.dll.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /out:luawinapi.dll /DEF:luawinapi.def enumwindow.obj gdihelpers.obj gen_abstractions.obj gen_structs.obj stdcallthunk.obj luawinapi.obj wndproc.obj luaaux.obj lua5.1.lib luacwrap.lib kernel32.lib user32.lib gdi32.lib comctl32.lib comdlg32.lib shell32.lib Msimg32.lib
 if exist luawinapi.dll.manifest^
   %MYMT% -manifest luawinapi.dll.manifest -outputresource:luawinapi.dll;2
 

@@ -267,7 +267,13 @@ int winapi_$(func.name)( lua_State *L )
     $(func.name)(
 //# for i, param in ipairs(func.params) do
 //#   local prefix = ""
-//#   if (param.attribs and param.attribs.out) then prefix = "&" end
+//#   if (param.attribs) then
+//#     if (param.attribs.out) then 
+//#       prefix = "&" 
+//#     elseif (param.attribs.deref) then 
+//#       prefix = "*"
+//#     end
+//#   end
 //#   local postfix = ","
 //#   if (i == #func.params) then postfix = "" end
       $(prefix)p$(i)$(postfix)

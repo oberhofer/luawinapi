@@ -23,7 +23,9 @@
 
 int winapi_GetLastError( lua_State *L );
 int winapi_SetLastError( lua_State *L );
+int winapi_GetModuleFileNameW( lua_State *L );
 int winapi_GetModuleHandleW( lua_State *L );
+int winapi_GetModuleHandleExW( lua_State *L );
 #if (!defined(UNDER_CE))
 int winapi_OutputDebugStringA( lua_State *L );
 #endif
@@ -43,6 +45,11 @@ int winapi_ReleaseMutex( lua_State *L );
 int winapi_WaitForSingleObject( lua_State *L );
 int winapi_GetExitCodeThread( lua_State *L );
 int winapi_GetExitCodeProcess( lua_State *L );
+int winapi_LoadResource( lua_State *L );
+int winapi_SizeofResource( lua_State *L );
+int winapi_GlobalDeleteAtom( lua_State *L );
+int winapi_InitAtomTable( lua_State *L );
+int winapi_DeleteAtom( lua_State *L );
 int winapi_RegisterClassW( lua_State *L );
 int winapi_UnregisterClassW( lua_State *L );
 int winapi_GetClassInfoW( lua_State *L );
@@ -135,6 +142,7 @@ int winapi_GetMessagePos( lua_State *L );
 int winapi_GetMessageTime( lua_State *L );
 int winapi_GetMessageExtraInfo( lua_State *L );
 int winapi_SetMessageExtraInfo( lua_State *L );
+int winapi_RegisterWindowMessageW( lua_State *L );
 int winapi_GetMessageW( lua_State *L );
 int winapi_PostMessageW( lua_State *L );
 int winapi_PostThreadMessageW( lua_State *L );
@@ -591,5 +599,7 @@ int winapi_ConnMgrMapURL( lua_State *L );
 #if (defined(UNDER_CE))
 int winapi_ConnMgrApiReadyEvent( lua_State *L );
 #endif
+int winapi_Shell_NotifyIconW( lua_State *L );
+int winapi_SHAppBarMessage( lua_State *L );
 
 LUA_API int luaopen_luawinapi(lua_State *L);

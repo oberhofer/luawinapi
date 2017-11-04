@@ -20,12 +20,12 @@ basic_types = {
   ["UINT16"]     = "$u16",
   ["INT32"]      = "$i32",
   ["UINT32"]     = "$u32",
-  
+
   ["INT"]        = "$int",
   ["UINT"]       = "$uint",
   ["ULONG"]      = "$ulong",
   ["LONG"]       = "$long",
-  
+
   ["POINTER"]    = "$ptr",
 
   ["LPCSTR"]     = "$ptr",
@@ -70,7 +70,7 @@ type_aliases = {
   ["int"]       = "INT",
 
   ["HRESULT"]   = "ULONG",
-  
+
   ["LRESULT"]   = "ULONG",
 
   ["UINT_PTR"]  = "POINTER",
@@ -82,6 +82,7 @@ type_aliases = {
 
   ["PVOID"]     = "POINTER",
   ["LPVOID"]    = "POINTER",
+  ["LPCVOID"]   = "POINTER",
 
   ["LPINT"]     = "POINTER",
 
@@ -93,6 +94,7 @@ type_aliases = {
   ["HMODULE"]   = "HANDLE",
   ["HWND"]      = "HANDLE",
   ["HDC"]       = "HANDLE",
+  ["HRSRC"]     = "HANDLE",
   ["HMENU"]     = "HANDLE",
   ["HICON"]     = "HANDLE",
   ["HCURSOR"]   = "HANDLE",
@@ -107,6 +109,9 @@ type_aliases = {
   ["HGLRC"]     = "HANDLE",
   ["HFONT"]     = "HANDLE",
   ["HINTERNET"] = "HANDLE",
+
+  ["HGLOBAL"]   = "HANDLE",
+  ["HLOCAL"]    = "HANDLE",
 
   ["HTREEITEM"] = "HANDLE",
 
@@ -130,6 +135,9 @@ abstractiondefs = {
   },
   Region = {
     handle = "HRGN"
+  },
+  Icon = {
+    handle = "HICON"
   },
   MsgQueue = {
     handle = "HMSGQUEUE",
@@ -275,6 +283,10 @@ marshall_fragments =
 --    ["out"] = "luawrap_push(L, $name); ++numret;"
   },
   ["LUAREF"] = {
+    ["in"]  = "$name = ($type)g_luacwrapiface->createreference(L, $index);",
+    ["out"] = "g_luacwrapiface->pushreference(L, (int)$name); ++numret;",
+  },
+  ["PDWORD"] = {
     ["in"]  = "$name = ($type)g_luacwrapiface->createreference(L, $index);",
     ["out"] = "g_luacwrapiface->pushreference(L, (int)$name); ++numret;",
   },

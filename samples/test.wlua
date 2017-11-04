@@ -58,6 +58,15 @@ handlers =
     end
     return hit
   end,
+  [WM_CREATE] = function(hwnd, wParam, lParam)
+
+
+    local icon = winapi.LoadImageW(NULL, _T("logo.ico"), IMAGE_ICON, 0, 0, LR_LOADFROMFILE)
+	winapi.setIcon(hwnd, ICON_SMALL, icon)
+	winapi.setIcon(hwnd, ICON_LARGE, icon)
+
+    return 0
+  end,
   [WM_DESTROY] = function(hwnd, wParam, lParam)
     winapi.PostQuitMessage(0)
     return 0

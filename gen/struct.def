@@ -62,6 +62,34 @@ typedef struct _PROCESS_INFORMATION {
     DWORD dwThreadId;
 } PROCESS_INFORMATION;
 
+typedef struct _LARGE_INTEGER {
+  DWORD LowPart;
+  LONG HighPart;
+  LONGLONG QuadPart;
+} LARGE_INTEGER;
+
+typedef struct _ULARGE_INTEGER {
+  DWORD LowPart;
+  DWORD HighPart;
+  ULONGLONG QuadPart;
+} ULARGE_INTEGER;
+
+typedef struct _FILETIME {
+    DWORD dwLowDateTime;
+    DWORD dwHighDateTime;
+} FILETIME;
+
+typedef struct _SYSTEMTIME {
+    WORD wYear;
+    WORD wMonth;
+    WORD wDayOfWeek;
+    WORD wDay;
+    WORD wHour;
+    WORD wMinute;
+    WORD wSecond;
+    WORD wMilliseconds;
+} SYSTEMTIME;
+
 #########################################################################
 # System32
 
@@ -746,3 +774,41 @@ typedef struct tagCHOOSECOLOR {
     ULONG ulMinRcvBw;
     ULONG ulMaxConnLatency;
 } CONNMGR_CONNECTIONINFO;
+
+#########################################################################
+# shellapi
+
+typedef struct _NOTIFYICONDATAW {
+    DWORD cbSize;
+    HWND hWnd;
+    UINT uID;
+    UINT uFlags;
+    UINT uCallbackMessage;
+    HICON hIcon;
+    WCHAR szTip[128];
+    DWORD dwState;
+    DWORD dwStateMask;
+    WCHAR szInfo[256];
+#    union {
+        UINT uTimeout;
+        UINT uVersion;
+ #   } DUMMYUNIONNAME;
+    WCHAR szInfoTitle[64];
+    DWORD dwInfoFlags;
+#endif/* NTDDI_VERSION >= NTDDI_WIN2K */
+#if (NTDDI_VERSION >= NTDDI_WINXP)
+    GUID guidItem;
+#endif /* NTDDI_VERSION >= NTDDI_WINXP */
+#if (NTDDI_VERSION >= NTDDI_VISTA)
+    HICON hBalloonIcon;
+#endif /* NTDDI_VERSION >= NTDDI_VISTA */
+} NOTIFYICONDATAW;
+
+typedef struct _AppBarData {
+    DWORD cbSize;
+    HWND hWnd;
+    UINT uCallbackMessage;
+    UINT uEdge;
+    RECT rc;
+    LPARAM lParam;
+} APPBARDATA;

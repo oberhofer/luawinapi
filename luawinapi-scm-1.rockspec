@@ -50,7 +50,7 @@ local function make_plat(plat)
                   "src/wndproc.c"
                 },
       defines = defines[plat],
-      libraries = { "kernel32", "user32", "gdi32", "comctl32", "comdlg32", "Msimg32" },
+      libraries = { "kernel32", "user32", "gdi32", "comctl32", "comdlg32", "shell32", "Msimg32" },
       -- luacwrap.h should be there
       incdirs = { "$(LUACWRAP_INCDIR)" },
       -- luaxx.lib/.a/.dll should be there

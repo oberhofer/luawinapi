@@ -22,15 +22,17 @@ typedef HANDLE HMSGQUEUE;
 
 void registerAbstractions(lua_State *L);
 
-int lua_pushDC( lua_State *L, HDC hdl );
-HDC lua_toDC( lua_State *L, int idx );
-int lua_pushWindow( lua_State *L, HWND hdl );
-HWND lua_toWindow( lua_State *L, int idx );
 #if (defined(USE_MSGQUEUE))
 int lua_pushMsgQueue( lua_State *L, HMSGQUEUE hdl );
 HMSGQUEUE lua_toMsgQueue( lua_State *L, int idx );
 #endif
 int lua_pushRegion( lua_State *L, HRGN hdl );
 HRGN lua_toRegion( lua_State *L, int idx );
+int lua_pushWindow( lua_State *L, HWND hdl );
+HWND lua_toWindow( lua_State *L, int idx );
+int lua_pushIcon( lua_State *L, HICON hdl );
+HICON lua_toIcon( lua_State *L, int idx );
+int lua_pushDC( lua_State *L, HDC hdl );
+HDC lua_toDC( lua_State *L, int idx );
 
 
