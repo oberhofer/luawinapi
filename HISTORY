@@ -37,3 +37,11 @@
 * fixed 64 bit thunk
 * adjustments for 64bit platforms (platform specific types)
 * added marshalling of out params
+
+1.4.0
+
+* added more wrapped WinAPI functions and structs
+* fix signature of GetModuleHandleW
+* fix fallback in raiseMsgProcError
+* wrap winmm functions/structures
+* 
