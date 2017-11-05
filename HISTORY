@@ -44,4 +44,5 @@
 * fix signature of GetModuleHandleW
 * fix fallback in raiseMsgProcError
 * wrap winmm functions/structures
-* 
+* add drvproc.c to rockspec
+* add logo.ico to samples
