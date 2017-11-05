@@ -48,6 +48,7 @@ local function make_plat(plat)
                   "src/stdcallthunk.c",
                   "src/luawinapi.c",
                   "src/wndproc.c"
+                  "src/drvproc.c"
                 },
       defines = defines[plat],
       libraries = { "kernel32", "user32", "gdi32", "comctl32", "comdlg32", "Msimg32", "shell32", "winmm" },
