@@ -84,7 +84,7 @@ static void raiseDriverProcError(DrvProcThunk* thunk, const char* errormsg, DWOR
     else
     {
       CHAR buf[4069];
-      sprintf(&buf, "Error in DriverProc.\n%s", errormsg);
+      snprintf(buf, ARRAYSIZE(buf), "Error in DriverProc.\n%s", errormsg);
       
       MessageBoxA(NULL, buf, "Error", MB_OK);
 

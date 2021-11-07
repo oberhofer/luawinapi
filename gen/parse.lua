@@ -5,7 +5,7 @@
   LICENSE file
 
   parser for winapi declaration files
-  
+
 --]==]
 
 local lpeg = require 'lpeg'
@@ -67,13 +67,17 @@ end
 --
 local functions = P{"declOrComment";
 
-  attributes    = (P'[' * WS * C(identifier^0) * WS * (',' * WS * C(identifier) * WS)^0 * P']') / indexattribs * WS;
+  attrib        = Ct(Cg(identifier, "name") * WS * ('=' * WS * Cg(identifier, "value") * WS)^-1) * WS;
 
-  attribs_opt   = Cg(V"attributes", "attribs")^-1;
+  attributelist = Ct(P'[' * WS * V'attrib'^0 * WS * (',' * WS * V'attrib')^0 * P']') * WS;
 
-  parameter     = Ct(V"attribs_opt" * WS * Cg(identifier, "typ")) * WS;
+  attribs_opt   = Cg(V"attributelist", "attribs")^-1;
 
-  parameterlist = Ct(P'(' * WS * V"parameter"^0 * (',' *  WS * V"parameter")^0 * P')');
+  arraypostfix  = P'[' * WS * Cg((numlit + identifier), "len") * WS * P']' * WS;
+
+  parameter     = Ct(V"attribs_opt" * WS * Cg(identifier, "typ") * WS * Cg(identifier, "name")^-1 * WS * V"arraypostfix"^-1) * WS;
+
+  parameterlist = Ct(P'(' * WS * V"parameter"^0 * WS * (',' *  WS * V"parameter")^0 * P')');
 
   -- [notCE] WINUSERAPI BOOL WINAPI IsMenu(HMENU);
   functiondeclaration = Ct(V"attribs_opt" * WS * identifier * WS *
@@ -93,9 +97,11 @@ funcgrammar = WS * functions * -1
 --
 local structs = P{"structdeclarations";
 
-  attributes    = (P'[' * WS * C(identifier^0) * WS * (',' * WS * C(identifier) * WS)^0 * P']') / indexattribs * WS;
+  attrib        = Ct(Cg(identifier, "name") * WS * ('=' * WS * Cg(identifier, "value") * WS)^-1) * WS;
 
-  attribs_opt   = Cg(V"attributes", "attribs")^-1;
+  attributelist = Ct(P'[' * WS * V'attrib'^0 * WS * (',' * WS * V'attrib')^0 * P']') * WS;
+
+  attribs_opt   = Cg(V"attributelist", "attribs")^-1;
 
   arraypostfix  = P'[' * WS * Cg((numlit + identifier), "len") * WS * P']' * WS;
 
@@ -107,8 +113,9 @@ local structs = P{"structdeclarations";
 
 
   member        = Ct(V"attribs_opt" * WS
-					* (V"struct_member" + V"simple_member") * WS
-					* V"arraypostfix"^-1) * P';' * WS;
+                    * (V"struct_member" + V"simple_member") * WS
+                    * V"arraypostfix"^-1) * WS
+                    * P';' * WS;
 
   memberlist    = Ct(V"member"^0);
 
@@ -124,3 +131,27 @@ local structs = P{"structdeclarations";
 
 structgrammar = WS * structs * -1
 
+
+--[[
+local dumper = require("DataDumper")
+
+
+function unittest()
+
+  local text = [=[
+
+[MsgQueue] COREDLLAPI BOOL      WINAPI ReadMsgQueue   (HMSGQUEUE, PVOID, DWORD, [out] DWORD, DWORD, [out] DWORD);
+
+  ]=]
+
+
+   -- parse all function declarations
+  local funcs = lpeg.match(funcgrammar, text)
+
+  print(DataDumper(funcs) )
+
+  -- return result
+end
+
+unittest()
+--]]

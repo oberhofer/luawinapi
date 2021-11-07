@@ -16,8 +16,8 @@ print("-----------------GetModuleHandleW")
 
 hInstance = winapi.GetModuleHandleW(nil)
 
-clsFirst  = toUCS2Z("ClassFirst")
-clsSecond = toUCS2Z("ClassSecond")
+clsFirst  = "ClassFirst"
+clsSecond = "ClassSecond"
 
 function RunModal(parent, child)
   assert(parent)
@@ -118,7 +118,7 @@ wcFirst.hIcon          = 0  -- winapi.LoadIcon(NULL, IDI_APPLICATION);
 wcFirst.hCursor        = winapi.LoadCursorW(NULL, IDC_ARROW);
 wcFirst.hbrBackground  = winapi.GetStockObject(WHITE_BRUSH);
 wcFirst.lpszMenuName   = 0
-wcFirst.lpszClassName  = clsFirst
+wcFirst.lpszClassName  = winapi.widestringfromutf8(clsFirst)
 
 wcSecond = winapi.WNDCLASSW:new()
 wcSecond.style          = CS_HREDRAW + CS_VREDRAW;
@@ -130,7 +130,7 @@ wcSecond.hIcon          = 0  -- winapi.LoadIcon(NULL, IDI_APPLICATION);
 wcSecond.hCursor        = winapi.LoadCursorW(NULL, IDC_ARROW);
 wcSecond.hbrBackground  = winapi.GetStockObject(WHITE_BRUSH);
 wcSecond.lpszMenuName   = 0
-wcSecond.lpszClassName  = clsSecond
+wcSecond.lpszClassName  = winapi.widestringfromutf8(clsSecond)
 
 print("-----------------RegisterClassW")
 
@@ -150,7 +150,7 @@ print("---------------CreateWindowExW -------------------")
 hFirst = winapi.CreateWindowExW(
     0,
       clsFirst,                     -- window class name
-      toUCS2Z("First Window"),      -- window caption
+      "First Window",               -- window caption
       WS_CAPTION + WS_SYSMENU,      -- window style
       0,                            -- initial x position
       0,                            -- initial y position
@@ -167,8 +167,8 @@ end
 
 button = winapi.CreateWindowExW(
       0,
-      toUCS2Z("BUTTON"),            -- window class name
-      toUCS2Z("Open Modal"),        -- window caption
+      "BUTTON",                     -- window class name
+      "Open Modal",                 -- window caption
       WS_CHILD + WS_VISIBLE,        -- window style
       20,                           -- initial x position
       20,                           -- initial y position
@@ -183,7 +183,7 @@ button = winapi.CreateWindowExW(
 hSecond = winapi.CreateWindowExW(
     0,
       clsSecond,                    -- window class name
-      toUCS2Z("Second Window"),     -- window caption
+      "Second Window",              -- window caption
       WS_CAPTION + WS_SYSMENU,      -- window style
       0,                            -- initial x position
       0,                            -- initial y position
@@ -196,8 +196,8 @@ hSecond = winapi.CreateWindowExW(
 
 button = winapi.CreateWindowExW(
       0,
-      toUCS2Z("BUTTON"),            -- window class name
-      toUCS2Z("Close"),             -- window caption
+      "BUTTON",                     -- window class name
+      "Close",                      -- window caption
       WS_CHILD + WS_VISIBLE,        -- window style
       20,                           -- initial x position
       20,                           -- initial y position

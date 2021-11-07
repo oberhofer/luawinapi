@@ -4,26 +4,11 @@
   Copyright (C) 2011 Klaus Oberhofer. See copyright notice in
   LICENSE file
 
-  Test window enumeration
+  Test audio device enumeration
 
 --]==]
 
-
 local audio = require("luawinapi")
-
-
----------------------------------------------------------------------
--- converts UCS2 buffers to ASCII
-function bufToASCII(text)
-  local result = {}
-  for idx = 1, #text do
-    if (0 == text[idx]) then
-	  break
-	end
-    table.insert(result,  string.char(text[idx]) )
-  end
-  return table.concat(result);
-end
 
 
 function enumWavDevices()
@@ -35,12 +20,11 @@ function enumWavDevices()
 		print("Wave Device: ", devid)
 
 		local res = audio.waveOutGetDevCapsW(devid, caps, #caps)
-
 		print(res)
 
-		print(caps)
-		print(#caps.szPname)
-		print(bufToASCII(caps.szPname))
+		-- print(caps)
+		-- print(#caps.szPname)
+		print(audio.utf8fromwidestring(caps.szPname))
 
 	end
 
@@ -56,12 +40,11 @@ function enumMidiDevices()
 		print("Midi Device: ", devid)
 
 		local res = audio.midiOutGetDevCapsW(devid, caps, #caps)
-
 		print(res)
 
-		print(caps)
-		print(#caps.szPname)
-		print(bufToASCII(caps.szPname))
+		-- print(caps)
+		-- print(#caps.szPname)
+		print(audio.utf8fromwidestring(caps.szPname))
 
 	end
 
@@ -77,12 +60,11 @@ function enumAuxDevices()
 		print("Aux Device: ", devid, audio.auxGetNumDevs())
 
 		local res = audio.auxGetDevCapsW(devid, caps, #caps)
-
 		print(res)
 
-		print(caps)
-		print(#caps.szPname)
-		print(bufToASCII(caps.szPname))
+		-- print(caps)
+		-- print(#caps.szPname)
+		print(audio.utf8fromwidestring(caps.szPname))
 
 	end
 end
@@ -96,12 +78,11 @@ function enumMixerDevices()
 		print("Mixer Device: ", devid)
 
 		local res = audio.mixerGetDevCapsW(devid, caps, #caps)
-
 		print(res)
 
-		print(caps)
-		print(#caps.szPname)
-		print(bufToASCII(caps.szPname))
+		-- print(caps)
+		-- print(#caps.szPname)
+		print(audio.utf8fromwidestring(caps.szPname))
 
 	end
 end

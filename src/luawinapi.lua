@@ -82,38 +82,6 @@ end
 -- WIN32_IE = 0x0550
 
 ---------------------------------------------------------------------
--- converts ASCII to UCS2
-function toUCS2(text)
-  local result = {}
-  for idx = 1, string.len(text) do
-    table.insert(result, string.sub(text, idx, idx) .. "\000")
-  end
-  return table.concat(result);
-end
-
-function toUCS2Z(text)
-  local result = {}
-  for idx = 1, string.len(text) do
-    table.insert(result, string.sub(text, idx, idx) .. "\000")
-  end
-  table.insert(result, "\000\000")
-  return table.concat(result);
-end
-
--- for convenience
-_T = toUCS2Z
-
----------------------------------------------------------------------
--- converts UCS2 to ASCII
-function toASCII(text)
-  local result = {}
-  for idx = 1, string.len(text), 2 do
-    table.insert(result, string.sub(text, idx, idx))
-  end
-  return table.concat(result);
-end
-
----------------------------------------------------------------------
 -- converts bool to BOOL
 function toBOOL(value)
   if (value) then
@@ -1827,7 +1795,7 @@ CB_MSGMAX = 0x0163
 ---------------------------------------------------------------------
 -- DateTime Picker Control constants
 
-DATETIMEPICK_CLASSW = _T"SysDateTimePick32"
+DATETIMEPICK_CLASSW = "SysDateTimePick32"
 --DATETIMEPICK_CLASSA = "SysDateTimePick32"
 
 DTS_UPDOWN = 0x0001
@@ -1887,7 +1855,7 @@ DTN_CLOSEUP = (DTN_FIRST+7)
 ---------------------------------------------------------------------
 -- Header control constants
 
-WC_HEADERW = _T"SysHeader32"
+WC_HEADERW = "SysHeader32"
 
 HDS_HORZ     = 0x0000
 HDS_BUTTONS  = 0x0002
@@ -2805,7 +2773,7 @@ TCN_FOCUSCHANGE = (TCN_FIRST-4)
 
 -- tooltip constants
 
-TOOLTIPS_CLASSW = _T"tooltips_class32"
+TOOLTIPS_CLASSW = "tooltips_class32"
 
 TTS_ALWAYSTIP   = 0x01
 TTS_NOPREFIX    = 0x02

@@ -14,6 +14,8 @@
 
 #include "stdcallthunk.h"
 
+#include "utfstrconvert.h"
+
 #ifndef LUAWINAPI_API
 #define LUAWINAPI_API __declspec(dllexport)
 #endif
@@ -72,7 +74,7 @@ LUAWINAPI_API int luaopen_luawinapi_core(lua_State *L)
   lua_pushstring(L, "Klaus Oberhofer");
   lua_setfield(L, -2, "_AUTHOR");
 
-  lua_pushstring(L, "1.3.0-1");
+  lua_pushstring(L, "2.0.0-1");
   lua_setfield(L, -2, "_VERSION");
 
   lua_pushstring(L, "MIT license: See LICENSE for details.");
@@ -80,7 +82,7 @@ LUAWINAPI_API int luaopen_luawinapi_core(lua_State *L)
 
   lua_pushstring(L, "https://github.com/oberhofer/luawinapi");
   lua_setfield(L, -2, "_URL");
-  
+
   // register package functionality
   register_luawinapi(L);
 

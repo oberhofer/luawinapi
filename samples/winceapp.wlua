@@ -12,7 +12,7 @@ winapi = require("luawinapi")
 
 -- should be set under WindowsCE
 if (not UNDER_CE) then
-  winapi.MessageBoxW(nil, _T("Sorry, no WindowsCE detected. Bye."), _T("Error"), MB_OK)
+  winapi.MessageBoxW(nil, "Sorry, no WindowsCE detected. Bye.", "Error", MB_OK)
   return
 end
 
@@ -21,7 +21,7 @@ end
 g_hInstance        = winapi.GetModuleHandleW(nil)
 -- g_uMsgMetricChange = winapi.RegisterWindowMessage(SH_UIMETRIC_CHANGE);
 
-g_szClassName      = _T("{F5B17D44-C824-4891-8CE3-111C7071C703}")
+g_szClassName      = "{F5B17D44-C824-4891-8CE3-111C7071C703}"
 
 function FindPrevInstance()
   local cTries = 0;
@@ -77,7 +77,7 @@ function CreateMainWindow(nShowCmd)
   wndClass.hCursor        = winapi.LoadCursorW(NULL, IDC_ARROW);
   wndClass.hbrBackground  = COLOR_WINDOW + 1;
   wndClass.lpszMenuName   = 0
-  wndClass.lpszClassName  = g_szClassName
+  wndClass.lpszClassName  = winapi.widestringfromutf8(g_szClassName)
 
 
   -- Register the window class
@@ -93,7 +93,7 @@ function CreateMainWindow(nShowCmd)
   hwnd = winapi.CreateWindowExW(
         0,
         g_szClassName,                    -- window class name
-        toUCS2Z("CeApp"),                 -- window caption
+        "CeApp",                          -- window caption
         WS_OVERLAPPEDWINDOW + WS_SYSMENU, -- window style
         CW_USEDEFAULT,                    -- initial x position
         CW_USEDEFAULT,                    -- initial y position
@@ -284,5 +284,5 @@ end
 local status, err = pcall(main)
 if (not status) then
   local text = err .. "\n" .. debug.traceback()
-  winapi.MessageBoxW(nil, _T(text), _T("Error"), MB_OK)
+  winapi.MessageBoxW(nil, text, "Error", MB_OK)
 end

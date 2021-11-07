@@ -11,12 +11,12 @@ local lf = winapi.LOGFONTW:new()
 winapi.GetObjectW(hsysfont, #lf, lf)
 
 
-print(toASCII(tostring(lf.lfFaceName)))
+print(lf.lfFaceName)
 
 print(lf)
 
 
-lf.lfFaceName = toUCS2Z("Arial")
+lf.lfFaceName = winapi.widestringfromutf8("Arial")
 
 print(lf)
 

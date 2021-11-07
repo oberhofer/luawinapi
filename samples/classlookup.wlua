@@ -10,13 +10,13 @@
 
 local winapi = require("luawinapi")
 
-mainWndClass = _T("Notepad2")
+mainWndClass = "Notepad++"
 
 result = {}
 
-winapi.MessageBoxW(nil, _T"Please start notepad2.exe and push it to the back", _T"Info", MB_OK)
+winapi.MessageBoxW(nil, "Please start Notepad++ and push it to the back", "Info", MB_OK)
 
-local hwnd = winapi.FindWindowW(mainWndClass)
+local hwnd = winapi.FindWindowW(mainWndClass, nil)
 if (hwnd) then
 
   local threadid = winapi.GetWindowThreadProcessId(hwnd)
@@ -26,7 +26,7 @@ if (hwnd) then
   winapi.EnumThreadWindows(threadid,
     function(h)
       if (0 ~= winapi.IsWindowEnabled(h)) then
-        -- print(h.handle)
+        print("Move window to the foreground", hwnd.handle, threadid)
         winapi.SetForegroundWindow(h)
         return false
       end
@@ -34,5 +34,5 @@ if (hwnd) then
     end
   )
 else
-  winapi.MessageBoxW(nil, _T"Notepad2 not found ! Forget to start ?", _T"Error", MB_OK)
+  winapi.MessageBoxW(nil, "Notepad++ not found ! Forget to start ?", "Error", MB_OK)
 end

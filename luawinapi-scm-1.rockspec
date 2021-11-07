@@ -18,7 +18,7 @@ description = {
 
 dependencies = {
   "lua >= 5.1",
-  "luacwrap ~> 1.3",
+  "luacwrap ~> 2.0",
   "bit32"
 }
 
@@ -49,6 +49,9 @@ local function make_plat(plat)
                   "src/luawinapi.c",
                   "src/wndproc.c",
                   "src/drvproc.c",
+                  "src/luatypeconvert.c",
+                  "src/modhelper.c",
+                  "src/utfstrconvert.c",
                 },
       defines = defines[plat],
       libraries = { "kernel32", "user32", "gdi32", "comctl32", "comdlg32", "Msimg32", "shell32", "winmm" },

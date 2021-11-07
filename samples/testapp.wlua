@@ -29,7 +29,7 @@ print("-----------------GetModuleHandleW")
 
 hInstance = winapi.GetModuleHandleW(nil)
 
-clsname = toUCS2Z("Getting Started")
+clsname = "Getting Started"
 
 
 handlers =
@@ -92,7 +92,7 @@ wndClass.hIcon          = 0  -- winapi.LoadIcon(NULL, IDI_APPLICATION);
 wndClass.hCursor        = winapi.LoadCursorW(NULL, IDC_ARROW);
 wndClass.hbrBackground  = winapi.GetStockObject(WHITE_BRUSH);
 wndClass.lpszMenuName   = 0
-wndClass.lpszClassName  = clsname
+wndClass.lpszClassName  = winapi.widestringfromutf8(clsname)
 
 print("-----------------RegisterClassW")
 
@@ -106,8 +106,8 @@ print("---------------CreateWindowExW -------------------")
 hWnd = winapi.CreateWindowExW(
     0,
       clsname,                      -- window class name
-      toUCS2Z("Getting Started"),        -- window caption
-      WS_VISIBLE, -- window style
+      "Getting Started",            -- window caption
+      WS_VISIBLE,                   -- window style
       CW_USEDEFAULT,                -- initial x position
       CW_USEDEFAULT,                -- initial y position
       CW_USEDEFAULT,                -- initial x size

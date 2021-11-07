@@ -15,6 +15,8 @@
 
 #include "gen_abstractions.h"
 
+#include "utfstrconvert.h"
+
 
 BOOL CALLBACK EnumProc(HWND hwndChild, LPARAM lParam)
 {
@@ -92,7 +94,6 @@ BOOL EnumThreadWindows(DWORD threadid,
   }
   return result;
 }
-
 #endif
 
 
@@ -181,15 +182,15 @@ int winapi_GetClassNameW(lua_State* L)
 {
   HWND hwnd;
   size_t size;
-  char buffer[2048];
+  WCHAR buffer[2048];
   LUASTACK_SET(L);
 
   hwnd = lua_toWindow(L, 1);
 
-  size = GetClassNameW(hwnd, (LPWSTR)&buffer, sizeof(buffer)/sizeof(WCHAR));
+  size = GetClassNameW(hwnd, (LPWSTR)&buffer, ARRAYSIZE(buffer));
   if (size)
   {
-    lua_pushlstring(L, buffer, size*sizeof(WCHAR));
+    winapi_pushlwidestring_Z(L, buffer, size);
 
     LUASTACK_CLEAN(L, 1);
     return 1;

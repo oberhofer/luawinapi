@@ -46,3 +46,16 @@
 * wrap winmm functions/structures
 * add drvproc.c to rockspec
 * add logo.ico to samples
+
+2.0.0
+
+* depends on luacwrap version 2.0.0-1
+* All strings are encoded as UTF-8 and converted to UTF-16 (aka. widestrings) 
+  in the function wrappers when needed. 
+  For widestrings within wrapped struct members the user has two Lua functions
+    winapi.widestringfromutf8(string or wrapped type)
+    winapi.utf8fromwidestring(string or wrapped type)
+  which support the string conversion in the two directions.
+* genwrap.lua: add skipimpl function definition attribute, which skips 
+  generation of wrapper implementation (to allow a user provided impl.)
+* support Lua 5.1, 5.2, 5.3 and 5.4

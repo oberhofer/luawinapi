@@ -85,7 +85,7 @@ static void raiseMsgProcError(WndProcThunk* thunk, const char* errormsg, HWND hw
     else
     {
       CHAR buf[4069];
-      sprintf(&buf, "Raising MSGPROC error failed. No error function available.\n%s", errormsg);
+      sprintf(buf, "Raising MSGPROC error failed. No error function available.\n%s", errormsg);
       
       MessageBoxA(NULL, buf, "Error", MB_OK);
     

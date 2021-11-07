@@ -8,7 +8,8 @@
 
 --]==]
 
-require("templateengine")
+local templateengine = require("templateengine")
+local lpeg = require("lpeg")
 
 dofile("parse.lua")
 
@@ -29,6 +30,7 @@ basic_types = {
   ["POINTER"]    = "$ptr",
 
   ["LPCSTR"]     = "$ptr",
+  ["LPSTR"]      = "$ptr",
 
   ["LPCWSTR"]    = "$ptr",
   ["LPWSTR"]     = "$ptr",
@@ -56,6 +58,7 @@ type_aliases = {
 
   ["WORD"]      = "UINT16",
   ["USHORT"]    = "UINT16",
+  
   ["WCHAR"]     = "UINT16",
 
   ["BOOL"]      = "INT32",
@@ -83,6 +86,8 @@ type_aliases = {
 
 -- ["LPCWSTR"]   = "POINTER",
 -- ["LPWSTR"]    = "POINTER",
+
+  ["LPDWORD"]   = "DWORD",
 
   ["PVOID"]     = "POINTER",
   ["LPVOID"]    = "POINTER",
@@ -157,7 +162,7 @@ abstractiondefs = {
   },
   MsgQueue = {
     handle = "HMSGQUEUE",
-    attribs = { ["MsgQueue"] = true }
+    attribs = { { name="MsgQueue" } }
   },
   Driver = {
     handle = "HDRVR"
@@ -195,7 +200,7 @@ marshall_fragments =
     ["out"] = "lua_pushinteger(L, $name); ++numret;"
   },
   ["UINT8"] = {
-    ["in"]  = "$name = lua_tointeger(L, $index);",
+    ["in"]  = "$name = (BYTE)lua_tointeger(L, $index);",
     ["out"] = "lua_pushinteger(L, $name); ++numret;"
   },
   ["INT16"] = {
@@ -205,7 +210,7 @@ marshall_fragments =
   },
   ["UINT16"] = {
 
-    ["in"]  = "$name = lua_tointeger(L, $index);",
+    ["in"]  = "$name = (WORD)lua_tointeger(L, $index);",
     ["out"] = "lua_pushinteger(L, $name); ++numret;"
   },
   ["INT32"] = {
@@ -263,17 +268,17 @@ marshall_fragments =
   },
   ["HANDLE"] = {
 
-    ["in"]  = "$name = ($type)lua_tohandle(L, $index);",
+    ["in"]  = "$name = ($type)winapi_tohandle(L, $index);",
     ["out"] = "lua_pushlightuserdata(L, (PVOID)$name); ++numret;"
   },
   ["WNDPROC"] = {
 
-    ["in"]  = "$name = ($type)lua_tohandle(L, $index);",
+    ["in"]  = "$name = ($type)winapi_tohandle(L, $index);",
     ["out"] = "lua_pushlightuserdata(L, $name); ++numret;"
   },
   ["DLGPROC"] = {
 
-    ["in"]  = "$name = ($type)lua_tohandle(L, $index);",
+    ["in"]  = "$name = ($type)winapi_tohandle(L, $index);",
     ["out"] = "lua_pushlightuserdata(L, $name); ++numret;"
   },
   ["LPCSTR"] = {
@@ -283,40 +288,75 @@ marshall_fragments =
   },
   ["LPCWSTR"] = {
 
-    ["in"]  = "$name = ($type)lua_tostring(L, $index);",
-    ["out"] = "lua_pushwstring(L, $name); ++numret;"
+    ["in"]  = "$name = winapi_towidestring_Z(L, $index);",
+    ["out"] = "lua_pushwidestring(L, $name); ++numret;"
   },
   ["LPCWSTR_OR_ATOM"] = {
 
     ["declare"] = "LPCWSTR $name$defval;",
-    ["in"]  = "$name = (LPCWSTR)lua_tostring_or_atom(L, $index);",
+    ["in"]  = "$name = winapi_towidestring_or_atom_Z(L, $index);",
     ["out"] = "-- LPCWSTR_OR_ATOM could not be used as out param --"
   },
-  ["LPWSTR"] = {
+  ["LPSTR"] = {
 
     ["in"]  = "$name = ($type)lua_tostring(L, $index);",
     ["out"] = "lua_pushstring(L, $name); ++numret;"
   },
+  -- creates a modifiable local copy (used only by CreateProcessW)
+  ["LPWSTR_LOCALCOPY"] = {
+    ["declare"] = "LPWSTR $name$defval;",
+    -- make a writeable copy of the given parameter
+	  ["in"]    = [[size_t sourcelen;
+    LPCWSTR source = winapi_widestringfromutf8_Z(L, $index, &sourcelen);
+    
+    size_t buflen = sizeof(WCHAR) * sourcelen;
+    $name = (LPWSTR)malloc(buflen);
+    if (NULL == $name)
+    {
+      luaL_error(L, "internal malloc error");
+    }
+    else
+    {
+      memcpy($name, source, buflen);
+    }]],
+    ["incall"]  = "$name",
+    ["out"] = [[free($name);]],
+  },
+  -- WCHAR buffer - used together with a size parameter
+  ["LPWSTR"] = {
+    ["declare"] = "LPWSTR $name$defval;",
+	  ["init"]    = [[{
+    size_t buflen = sizeof(WCHAR) * $sizeparam;
+    $name = (LPWSTR)malloc(buflen);
+    if (NULL == $name)
+    {
+      luaL_error(L, "internal malloc error");
+    }
+  }]],
+    ["incall"]  = "$name",
+    ["out"] = [[winapi_pushlwidestring_Z(L, $name, $sizeparam); ++numret;
+  free($name);]],
+  },
   ["RESOURCEREF"] = {
 
     ["declare"] = "LPCWSTR $name$defval;",
-    ["in"]  = "$name = (LPCWSTR)lua_toresourceref(L, $index);",
+    ["in"]  = "$name = (LPCWSTR)winapi_toresourceref(L, $index);",
     ["out"] = "-- resourceref could not be used as out param --"
   },
   ["HANDLE_OR_UINT"] = {
 
     ["declare"] = "UINT_PTR $name$defval;",
-    ["in"]  = "$name = (UINT_PTR)lua_tohandle(L, $index);",
+    ["in"]  = "$name = (UINT_PTR)winapi_tohandle(L, $index);",
     ["out"] = "-- HANDLE_OR_UINT could not be used as out param --"
   },
   ["WPARAM"] = {
 
-    ["in"]  = "$name = ($type)lua_tolwparam(L, $index);",
+    ["in"]  = "$name = ($type)winapi_tolwparam(L, $index);",
     ["out"] = "lua_pushlightuserdata(L, (void*)$name); ++numret;"
   },
   ["LPARAM"] = {
 
-    ["in"]  = "$name = ($type)lua_tolwparam(L, $index);",
+    ["in"]  = "$name = ($type)winapi_tolwparam(L, $index);",
     ["out"] = "lua_pushlightuserdata(L, (void*)$name); ++numret;"
   },
   -- special marshaller for wrapped structs
@@ -326,10 +366,6 @@ marshall_fragments =
 --    ["out"] = "luawrap_push(L, $name); ++numret;"
   },
   ["LUAREF"] = {
-    ["in"]  = "$name = ($type)g_luacwrapiface->createreference(L, $index);",
-    ["out"] = "g_luacwrapiface->pushreference(L, (int)$name); ++numret;",
-  },
-  ["PDWORD"] = {
     ["in"]  = "$name = ($type)g_luacwrapiface->createreference(L, $index);",
     ["out"] = "g_luacwrapiface->pushreference(L, (int)$name); ++numret;",
   },
@@ -356,20 +392,40 @@ prerequisites = {
   },
 }
 
+generatedbymessage = "!!! This file is generated by genwrap.lua  !!!"
+
 function prerequisite_begin(item, _put)
-  for attr, _ in pairs(item.attribs or {}) do
-    if (prerequisites[attr]) then
-      _put("#if " .. prerequisites[attr].expression .. "\n")
+  for _, attr in pairs(item.attribs or {}) do
+    if (prerequisites[attr.name]) then
+      _put("#if " .. prerequisites[attr.name].expression .. "\n")
     end
   end
 end
 
 function prerequisite_end(item, _put)
-  for attr, _ in pairs(item.attribs or {}) do
-    if (prerequisites[attr]) then
+  for _, attr in pairs(item.attribs or {}) do
+    if (prerequisites[attr.name]) then
       _put("#endif\n")
     end
   end
+end
+
+function attribs_contains(item, name)
+  for _, attr in pairs(item.attribs or {}) do
+    if (attr.name == name) then
+		return true
+    end
+  end
+  return false
+end
+
+function attribs_value(item, name)
+  for _, attr in pairs(item.attribs or {}) do
+    if (attr.name == name) then
+		return attr.value
+    end
+  end
+  return nil
 end
 
 
@@ -396,10 +452,8 @@ end
 
 -- determine descriptor id for a given type name
 function get_descriptor_id(param)
-  local attribs = param.attribs or {}
-
   local result = "LUAREF"
-  if (not attribs.luaref) then
+  if (not attribs_contains(param, "luaref")) then
     result = resolve_alias(param.typ)
   end
   result = basic_types[result] or result
@@ -418,17 +472,18 @@ function get_marshall_type(name)
 end
 
 
-default_decl = "$type $name$defval;"
 function declare_param(param, name)
+  local default_decl = "$type $name$defval;"
   --
   local basetyp = get_marshall_type(param.typ)
+  print("    ", param.typ, " ->  ", basetyp)
 
   local defaultvalue = ""
-  if (param.attribs and param.attribs.nullisvalid) then
+  if (attribs_contains(param, "nullisvalid")) then
     defaultvalue = " = 0"
   end
 
-  local vars = { ["type"] = param.typ, ["name"] = name, ["defval"] = defaultvalue }
+  local vars = { ["type"] = param.typ, ["name"] = name, ["defval"] = defaultvalue, ["len"]=param.len or "DEFAULTLEN" }
 
   -- find entry
   local entry = marshall_fragments[basetyp]
@@ -441,11 +496,65 @@ function declare_param(param, name)
   end
 end
 
+-- init basic type
+function init_param(param, dir, name, index)
+  -- can be called either with param or type
+  local typ     = param.typ or param
+  local attribs = param.attribs or {}
+
+  --
+  local basetyp = get_marshall_type(typ)
+
+  local vars = { 
+    ["type"] = param.typ, ["name"] = name, ["index"] = index, ["defval"] = defaultvalue, ["len"]=param.len or "DEFAULTLEN", 
+    ["sizeparam"]=attribs_value(param, "sizeparam") 
+  }
+
+  -- find entry
+  local entry = marshall_fragments[basetyp]
+  if (entry) then
+    if (entry.init) then
+      return expand(entry.init, vars)
+    else
+      return ""
+    end
+  end
+end
+
+-- use basic type in function call
+function use_param(param, name)
+
+  local typ     = param.typ or param
+  local attribs = param.attribs or {}
+
+  --
+  local basetyp = get_marshall_type(typ)
+
+  local vars = { 
+    ["type"] = param.typ, ["name"] = name
+  }
+  
+  -- find entry
+  local entry = marshall_fragments[basetyp]
+  if (entry) then
+    if (entry.incall) then
+      return expand(entry.incall, vars)
+    end
+  end
+  
+  local prefix = ""
+  if (attribs_contains(param, "out")) then 
+    prefix = "&" 
+  elseif (attribs_contains(param, "deref")) then 
+    prefix = "*"
+  end
+  return prefix .. name
+end
+
 -- marshall basic type
 function marshal_param(param, dir, name, index)
   -- can be called either with param or type
   local typ     = param.typ or param
-  local attribs = param.attribs or {}
 
   --
   basetyp = get_marshall_type(typ)
@@ -453,17 +562,17 @@ function marshal_param(param, dir, name, index)
 
   -- find entry
   local entry = marshall_fragments["LUAREF"]
-  if (not attribs.luaref) then
+  if (not attribs_contains(param, "luaref")) then
     entry = marshall_fragments[basetyp]
   end
   if (entry) then
     -- check direction
     if (entry[dir]) then
-      local res = expand(entry[dir], { ["type"] = typ, ["name"] = name, ["index"] = index  } )
-      if (attribs.nullisvalid) then
+      local res = expand(entry[dir], { ["type"] = typ, ["name"] = name, ["index"] = index, ["sizeparam"]=attribs_value(param, "sizeparam") } )
+      if (attribs_contains(param, "nullisvalid")) then
         res = "if (!lua_isnil(L, " .. index .. "))\n  {\n    " .. res .."\n  }"
       end
-      if (attribs.notnil) then
+      if (attribs_contains(param, "notnil")) then
         res = [[
 if (lua_isnil(L, ]] .. index .. [[))  {
     luaL_error(L, "nil is not allowed for parameter #]] .. index .. [[");
@@ -533,7 +642,7 @@ function processStructMembers(types)
 	local function handleMembers(root, base, name)
 		for _, member in pairs(base.members or {}) do
 
-		    local curbase = name .. member.name;
+		  local curbase = name .. member.name;
 			local curname = curbase:gsub("%.", "_")
 
 			if (nil == member.typ) then
@@ -592,8 +701,8 @@ function processArrayTypes(types)
                     -- create new type descriptor if necessary
                     result[newtyp] = {
                         ["alias"]  = basic_alias,
-                        ["typ"]  = basic_type,
-                        ["len"]  = member.len
+                        ["typ"]    = basic_type,
+                        ["len"]    = member.len
                     }
                 end
                 member.typ = newtyp
@@ -614,7 +723,7 @@ function collectAbstractionMethods()
       --  2) except methods where the value of the first parameter could be null
       if ((#func.params > 0) and
         (func.params[1].typ == abst.handle) and
-        (not (func.params[1].attribs and func.params[1].attribs.nullisvalid))) then
+        (not (attribs_contains(func.params[1], "nullisvalid")))) then
         print("  " .. func.name)
         table.insert(methods, func)
 

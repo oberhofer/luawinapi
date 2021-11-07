@@ -22,7 +22,7 @@ print("-----------------GetModuleHandleW")
 
 hInstance = winapi.GetModuleHandleW(nil)
 
-clsname = toUCS2Z("GettingStarted")
+clsname = "GettingStarted"
 
 
 handlers =
@@ -61,7 +61,7 @@ handlers =
   [WM_CREATE] = function(hwnd, wParam, lParam)
 
 
-    local icon = winapi.LoadImageW(NULL, _T("logo.ico"), IMAGE_ICON, 0, 0, LR_LOADFROMFILE)
+    local icon = winapi.LoadImageW(NULL, "logo.ico", IMAGE_ICON, 0, 0, LR_LOADFROMFILE)
 	winapi.setIcon(hwnd, ICON_SMALL, icon)
 	winapi.setIcon(hwnd, ICON_LARGE, icon)
 
@@ -99,7 +99,7 @@ wndClass.hIcon          = 0  -- winapi.LoadIcon(NULL, IDI_APPLICATION);
 wndClass.hCursor        = winapi.LoadCursorW(NULL, IDC_ARROW);
 wndClass.hbrBackground  = winapi.GetStockObject(WHITE_BRUSH);
 wndClass.lpszMenuName   = 0
-wndClass.lpszClassName  = clsname
+wndClass.lpszClassName  = winapi.widestringfromutf8(clsname)
 
 print("-----------------RegisterClassW")
 
@@ -116,11 +116,11 @@ print("---------------CreateMenu-------------------------")
 
 local hmenu = winapi.CreateMenu();
 local hSubMenu = winapi.CreateMenu();
-winapi.AppendMenuW(hSubMenu, MF_STRING, 1, _T("Item 1"));
-winapi.AppendMenuW(hSubMenu, MF_STRING, 1, _T("Item 2"));
-winapi.AppendMenuW(hSubMenu, MF_STRING, 1, _T("Item 3"));
+winapi.AppendMenuW(hSubMenu, MF_STRING, 1, "Item 1");
+winapi.AppendMenuW(hSubMenu, MF_STRING, 1, "Item 2");
+winapi.AppendMenuW(hSubMenu, MF_STRING, 1, "Item 3");
 
-winapi.AppendMenuW(hmenu, MF_POPUP, hSubMenu, _T("TopItem"));
+winapi.AppendMenuW(hmenu, MF_POPUP, hSubMenu, "TopItem");
 --]==]
 
 local hmenu = winapi.CreateMenu()
@@ -131,18 +131,18 @@ local mii  = winapi.MENUITEMINFOW:new()
 mii.cbSize = #mii
 mii.fMask = MIIM_ID + MIIM_STRING + MIIM_DATA;
 mii.fType = MFT_STRING;
-mii.dwTypeData = _T("Item 1");
+mii.dwTypeData = winapi.widestringfromutf8("Item 1");
 winapi.InsertMenuItemW(hSubMenu, winapi.GetMenuItemCount(hSubMenu), TRUE, mii);
-mii.dwTypeData = _T("Item 2");
+mii.dwTypeData = winapi.widestringfromutf8("Item 2");
 winapi.InsertMenuItemW(hSubMenu, winapi.GetMenuItemCount(hSubMenu), TRUE, mii);
-mii.dwTypeData = _T("Item 3");
+mii.dwTypeData = winapi.widestringfromutf8("Item 3");
 winapi.InsertMenuItemW(hSubMenu, winapi.GetMenuItemCount(hSubMenu), TRUE, mii);
 
 
 mii.fMask = MIIM_STRING + MIIM_DATA + MIIM_SUBMENU;
 mii.fType = MFT_STRING;
 mii.hSubMenu = hSubMenu;
-mii.dwTypeData = _T("TopItem");
+mii.dwTypeData = winapi.widestringfromutf8("TopItem");
 winapi.InsertMenuItemW(hmenu, winapi.GetMenuItemCount(hmenu), TRUE, mii);
 
 
@@ -150,7 +150,7 @@ print("---------------CreateWindowExW -------------------")
 hWnd = winapi.CreateWindowExW(
       0,
       clsname,                          -- window class name
-      toUCS2Z("Getting Started"),       -- window caption
+      "Getting Started",                -- window caption
       WS_OVERLAPPEDWINDOW + WS_VISIBLE, -- window style
       CW_USEDEFAULT,                    -- initial x position
       CW_USEDEFAULT,                    -- initial y position
@@ -160,11 +160,12 @@ hWnd = winapi.CreateWindowExW(
       hmenu,                            -- window menu handle
       hInstance,                        -- program instance handle
       0)                                -- creation parameters
+assert(hWnd);
 
 hEdit = winapi.CreateWindowExW(
       0,
-      toUCS2Z("EDIT"),                  -- window class name
-      toUCS2Z("Getting Started"),       -- window caption
+      "EDIT",                           -- window class name
+      "Getting Started",                -- window caption
       WS_VISIBLE + WS_CHILD,            -- window style
       CW_USEDEFAULT,                    -- initial x position
       CW_USEDEFAULT,                    -- initial y position
@@ -174,12 +175,12 @@ hEdit = winapi.CreateWindowExW(
       0,                                -- window menu handle
       hInstance,                        -- program instance handle
       0)                                -- creation parameters
-
+assert(hEdit);
 
 hLabel = winapi.CreateWindowExW(
       0,
-      toUCS2Z("static"),                -- window class name
-      toUCS2Z("Getting Started"),       -- window caption
+      "static",                         -- window class name
+      "Getting Started",                -- window caption
       WS_VISIBLE + WS_CHILD,            -- window style
       200,                              -- initial x position
       200,                              -- initial y position
@@ -189,12 +190,12 @@ hLabel = winapi.CreateWindowExW(
       0,                                -- window menu handle
       hInstance,                        -- program instance handle
       0)                                -- creation parameters
-
+assert(hLabel);
 
 hBtn = winapi.CreateWindowExW(
       0,
-      toUCS2Z("BUTTON"),                -- window class name
-      toUCS2Z("mein button"),           -- window caption
+      "BUTTON",                         -- window class name
+      "mein button",                    -- window caption
       WS_VISIBLE + WS_CHILD,            -- window style
       20,                               -- initial x position
       320,                              -- initial y position
@@ -204,6 +205,7 @@ hBtn = winapi.CreateWindowExW(
       0,                                -- window menu handle
       hInstance,                        -- program instance handle
       0)                                -- creation parameters
+assert(hBtn);
 
 
 print("----------- hwnd ", hWnd)
@@ -220,19 +222,19 @@ print("---------------UpdateWindow -------------------")
 hWnd:UpdateWindow()
 
 print("---------------ProcessMessages -------------------")
-return winapi.ProcessMessages()
+-- return winapi.ProcessMessages()
 
--- print("---------------end  -------------------")
-
---[[
+-- [[
 -- this is possible, too
 
 msg = winapi.MSG:new()
-while (GetMessage(msg.__ptr, NULL, 0, 0)) do
-  TranslateMessage(msg.__ptr);
-  DispatchMessage(msg.__ptr);
+while (0 ~= winapi.GetMessageW(msg, NULL, 0, 0)) do
+  winapi.TranslateMessage(msg);
+  winapi.DispatchMessageW(msg);
 end
-return msg.wParam
-]]
 
+print("---------------end  -------------------")
+
+return msg.wParam
+--]]
 

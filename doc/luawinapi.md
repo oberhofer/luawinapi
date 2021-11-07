@@ -13,7 +13,7 @@ minimal lightweight wrapper that integrates smoothly into the target language.
 ## Features
 
 * LuaWinAPI wraps parts of kernel32, user32, gdi32, comctl32, comdlg32, Msimg32
-* supports Lua 5.1, 5.2 and 5.3
+* supports Lua 5.1, 5.2, 5.3 and 5.4
 
 # Dependencies
 
@@ -80,6 +80,18 @@ The advantage is better portability to WinCE (although not to Win95 but that's o
 As Lua does not support UNICODE directly we have to deal with some inconveniences 
 aka. conversions. Fortunately lua has opaque strings so this is not really a problem.
 
+In the current version (beginning from 2.0.0) all strings are encoded as UTF-8 and 
+converted to UTF-16 (aka. widestrings) when the strings are used. 
+Conversion to/from UTF-8 is done automatically for function parameters of 
+wrapped Win32-API functions.
+
+For widestrings within wrapped struct members the user has two Lua functions
+
+    winapi.widestringfromutf8(string or wrapped type)
+    winapi.utf8fromwidestring(string or wrapped type)
+ 
+which support the string conversion in the two directions.
+
 ## Wrapped Handles
 
 Parts of the WinAPI are kind of object oriented. The LuaWinAPI project tries
@@ -123,7 +135,7 @@ LuaWinAPI provides a convenience shortcut to subclass an existing window.
 
     Subclass_callback = winapi.WndProc.subclass(hwnd, object, subClassWndProc)
   
-The window function always receives two additional parameters a object parameter
+The window function always receives two additional parameters: an object parameter
 which had been specified on subclassing and the prevproc parameter which could be 
 used to call the original window procedure.   
  
@@ -172,7 +184,7 @@ LuaWinAPI is licensed under the terms of the MIT license reproduced below.
 This means that LuaWinAPI is free software and can be used for both academic
 and commercial purposes at absolutely no cost.
 
-Copyright (C) 2011-2016 Klaus Oberhofer
+Copyright (C) 2011-2021 Klaus Oberhofer
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

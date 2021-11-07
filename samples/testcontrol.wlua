@@ -17,7 +17,7 @@ winapi = require("luawinapi")
 hInstance = winapi.GetModuleHandleW(nil)
 
 
-WC_CONTROL = _T("MyControlClass")
+WC_CONTROL = "MyControlClass"
 
 
 mtControl =
@@ -120,7 +120,7 @@ function WndProc(hwnd, msg, wParam, lParam)
   return winapi.DefWindowProcW(hwnd, msg, wParam, lParam)
 end
 
-WC_MAINWND = _T("MyMainWndClass")
+WC_MAINWND = "MyMainWndClass"
 
 function RegisterMainWndClass()
 
@@ -137,7 +137,7 @@ function RegisterMainWndClass()
   wndClass.hCursor        = 0  -- winapi.LoadCursor(NULL, IDC_ARROW);
   wndClass.hbrBackground  = winapi.GetStockObject(WHITE_BRUSH);
   wndClass.lpszMenuName   = 0
-  wndClass.lpszClassName  = WC_MAINWND
+  wndClass.lpszClassName  = winapi.widestringfromutf8(WC_MAINWND)
 
   atom = winapi.RegisterClassW(wndClass);
   print("-----------------atom", atom)
@@ -155,7 +155,7 @@ print("---------------CreateWindowExW -------------------")
 hWnd = winapi.CreateWindowExW(
     0,
       WC_MAINWND,                   -- window class name
-      _T("Getting Started"),        -- window caption
+      "Getting Started",            -- window caption
       WS_SYSMENU + WS_VISIBLE,      -- window style
       CW_USEDEFAULT,                -- initial x position
       CW_USEDEFAULT,                -- initial y position
@@ -165,14 +165,14 @@ hWnd = winapi.CreateWindowExW(
       0,                            -- window menu handle
       hInstance,                    -- program instance handle
       0);                           -- creation parameters
-
+assert(hWnd)
 
 print("hwnd", hWnd,  hWnd.handle)
 
 hControl = winapi.CreateWindowExW(
     0,
       WC_CONTROL,                   -- window class name
-      toUCS2Z("Getting Started"),   -- window caption
+      "Getting Started",            -- window caption
       WS_CHILD + WS_VISIBLE + WS_BORDER,  -- window style
       20,                           -- initial x position
       200,                          -- initial y position

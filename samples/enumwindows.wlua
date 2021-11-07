@@ -17,24 +17,19 @@ function getText(hwnd)
   local textLength = winapi.SendMessageW(hwnd, WM_GETTEXTLENGTH) + 1
   local buffer   = string.rep("\0\0", textLength)
   winapi.SendMessageW(hwnd, WM_GETTEXT, textLength, buffer)
-  return buffer
+  return winapi.utf8fromwidestring(buffer)
 end
 
 winapi.EnumWindows(0, function(hwnd)
-
-  windows[#windows+1] = { hwnd=hwnd, class=toASCII(winapi.GetClassNameW(hwnd)), title=toASCII(getText(hwnd)) }
-
-  -- print(hwnd.handle, toASCII(winapi.GetClassNameW(hwnd)), toASCII(getText(hwnd)))
+  windows[#windows+1] = { hwnd=hwnd, class=winapi.GetClassNameW(hwnd), title=getText(hwnd) }
+  print(hwnd.handle, winapi.GetClassNameW(hwnd), getText(hwnd))
   return true
 end)
 
-
 for _, w in ipairs(windows) do
-
 	if ( nil ~= string.find(w.title, "pad") ) then
 		print(w.hwnd.handle, w.class, w.title)
 	end
-
 end
 
 

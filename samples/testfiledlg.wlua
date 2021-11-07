@@ -29,7 +29,7 @@ print("-----------------GetModuleHandleW")
 
 hInstance = winapi.GetModuleHandleW(nil)
 
-clsname = toUCS2Z("GettingStarted")
+clsname = "GettingStarted"
 
 
 handlers =
@@ -37,8 +37,8 @@ handlers =
   [WM_CREATE] = function(hwnd, wParam, lParam)
     hEdit = winapi.CreateWindowExW(
         0,
-          toUCS2Z("EDIT"),              -- window class name
-          toUCS2Z("Getting Started"),   -- window caption
+          "EDIT",                       -- window class name
+          "Getting Started",            -- window caption
           bor(WS_VISIBLE, WS_CHILD, ES_MULTILINE),  -- window style
           CW_USEDEFAULT,                -- initial x position
           CW_USEDEFAULT,                -- initial y position
@@ -69,7 +69,7 @@ handlers =
       ofn.lStructSize = #ofn
       ofn.hwndOwner = hwnd.handle
       -- ofn.hInstance;
-      -- ofn.lpstrFilter = _T("*.txt");
+      -- ofn.lpstrFilter = winapi.widestringfromutf8("*.txt");
       -- ofn.lpstrCustomFilter
       -- ofn.nMaxCustFilter;
       -- ofn.nFilterIndex;
@@ -91,9 +91,9 @@ handlers =
         winapi.SendMessageW(hwnd.handle, WM_SETTEXT, 0, buffer)
 
         -- load filename
-        local file = io.open(toASCII(buffer), "r")
+        local file = io.open(buffer, "r")
         local content = file:read("*a")
-        winapi.SendMessageW(hEdit.handle, WM_SETTEXT, 0, _T(content))
+        winapi.SendMessageW(hEdit.handle, WM_SETTEXT, 0, winapi.widestringfromutf8(content))
       end
     elseif (wParam == CMD_SAVEFILE) then
     
@@ -105,20 +105,20 @@ handlers =
       ofn.lStructSize = #ofn
       ofn.hwndOwner = hwnd.handle
       -- ofn.hInstance;
-      ofn.lpstrFilter = _T("Text Files (*.txt)\0*.txt\0All Files (*.*)\0*.*\0");
+      ofn.lpstrFilter = winapi.widestringfromutf8("Text Files (*.txt)\0*.txt\0All Files (*.*)\0*.*\0");
       -- ofn.lpstrCustomFilter
       -- ofn.nMaxCustFilter;
       -- ofn.nFilterIndex;
       ofn.lpstrFile = buffer
       ofn.nMaxFile = 260
-      ofn.lpstrFileTitle = _T("FileTitle");
+      ofn.lpstrFileTitle = winapi.widestringfromutf8("FileTitle");
       ofn.nMaxFileTitle = 9;
       -- ofn.lpstrInitialDir;
-      ofn.lpstrTitle = _T("Title");
+      ofn.lpstrTitle = winapi.widestringfromutf8("Title");
       ofn.Flags = bor(OFN_SHOWHELP, OFN_OVERWRITEPROMPT);
       -- ofn.nFileOffset;
       -- ofn.nFileExtension;
-      -- ofn.lpstrDefExt = _T("txt");
+      -- ofn.lpstrDefExt = winapi.widestringfromutf8("txt");
       -- ofn.lCustData;
       local result = winapi.GetSaveFileNameW(ofn)
       winapi.Assert(result);
@@ -158,7 +158,7 @@ wndClass.hIcon          = 0  -- winapi.LoadIcon(NULL, IDI_APPLICATION);
 wndClass.hCursor        = winapi.LoadCursorW(NULL, IDC_ARROW);
 wndClass.hbrBackground  = winapi.GetStockObject(WHITE_BRUSH);
 wndClass.lpszMenuName   = 0
-wndClass.lpszClassName  = clsname
+wndClass.lpszClassName  = winapi.widestringfromutf8(clsname)
 
 print("-----------------RegisterClassW")
 
@@ -173,17 +173,17 @@ print("---------------CreateMenu-------------------------")
 
 local hmenu = winapi.CreateMenu();
 local hSubMenu = winapi.CreateMenu();
-winapi.AppendMenuW(hSubMenu, MF_STRING, CMD_OPENFILE, _T("OpenFile"));
-winapi.AppendMenuW(hSubMenu, MF_STRING, CMD_SAVEFILE, _T("SaveFile"));
+winapi.AppendMenuW(hSubMenu, MF_STRING, CMD_OPENFILE, "OpenFile");
+winapi.AppendMenuW(hSubMenu, MF_STRING, CMD_SAVEFILE, "SaveFile");
 
-winapi.AppendMenuW(hmenu, MF_POPUP, hSubMenu, _T("File"));
+winapi.AppendMenuW(hmenu, MF_POPUP, hSubMenu, "File");
 
 
 print("---------------CreateWindowExW -------------------")
 hMainWnd = winapi.CreateWindowExW(
     0,
       clsname,                          -- window class name
-      toUCS2Z("Getting Started"),       -- window caption
+      "Getting Started",                -- window caption
       bor(WS_OVERLAPPEDWINDOW, WS_VISIBLE), -- window style
       CW_USEDEFAULT,                    -- initial x position
       CW_USEDEFAULT,                    -- initial y position
@@ -193,7 +193,7 @@ hMainWnd = winapi.CreateWindowExW(
       hmenu,                            -- window menu handle
       hInstance,                        -- program instance handle
       0)                                -- creation parameters
-
+assert(hMainWnd)
 
 print("----------- hMainWnd ", hMainWnd)
 if (0 == hMainWnd) then
